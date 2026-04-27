@@ -47,3 +47,8 @@ git commit -m "Mise à jour docs"
 git push
 mkdocs gh-deploy
 ```
+
+
+## Notes 
+- ⚠️ Ne pas supprimer la branche `gh-pages` si aucune autre branche n'a été configuréé
+- Pour les utilisateurs ou organisations de Github Standard (pas de licence Entreprise) mettre le répertoire en public
