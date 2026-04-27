@@ -1,3 +1,6 @@
 site_name: CryptAbyss 2026
 theme:
   name: mkdocs
+
+nav:
+  - Accueil: index.md
