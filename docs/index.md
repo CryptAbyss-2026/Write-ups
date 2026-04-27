@@ -1,17 +1,11 @@
-# Welcome to MkDocs
+# 🧩 Bienvenue dans les Write-Ups de **CryptAbyss 2026**
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Bienvenue dans cet espace dédié aux analyses et résolutions du CTF organisé par l’Université de Picardie Jules Verne : **CryptAbyss 2026**.
 
-## Commands
+Ici, chaque challenge est disséqué avec rigueur — des premières pistes aux solutions complètes — afin de mettre en lumière les mécanismes, les raisonnements et les techniques mobilisées. Que vous soyez venu pour comprendre une approche, approfondir vos compétences ou simplement comparer vos résultats, ces write-ups ont été conçus pour offrir une lecture claire et structurée.
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+Plongez dans les différentes catégories, explorez les vulnérabilités, et décortiquez chaque étape comme si vous y étiez.
 
-## Project layout
+---
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+> _Analyse. Compréhension. Maîtrise._
