@@ -41,6 +41,17 @@ mkdocs gh-deploy
 Le site sera disponnible à l'adresse : https://USER.github.io/REPO/
 
 ## Mise à jour du site
+Déposer le document dans `docs/` et mettre à jour [mkdocs.yml](mkdocs.yml)
+
+Exemple :
+```yml
+site_name: CryptAbyss 2026
+nav:
+  - Catégorie: 
+    - flag_name: write-up.md
+```
+
+Puis mettre à jour le répertoire et le site :
 ```bash
 git add .
 git commit -m "Mise à jour docs"
