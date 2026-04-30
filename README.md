@@ -42,6 +42,8 @@ Le site sera disponnible à l'adresse : https://USER.github.io/REPO/
 
 ## Mise à jour du site
 Déposer le document dans `docs/` et mettre à jour [mkdocs.yml](mkdocs.yml)
+Si vous avez des images les placer dans le dossier `assets/` et faire des références vers vos images (Exemple : `../assets/mon_image.png`)
+Voir documentation : https://www.markdownlang.com/fr/basic/images.html   
 
 Exemple :
 ```yml
