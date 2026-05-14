@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Challenge 2 - Multi-layer Caesar - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Challenge 2 - Multi-layer Caesar";
+        var mkdocs_page_input_path = "crypto\\challenge2.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Challenge 2 - Multi-layer Caesar</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#difficulte">Difficulté</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#fichiers-fournis">Fichiers fournis</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#etapes-de-resolution">Étapes de résolution</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-decodage-du-fichier-principal">1. Décodage du fichier principal</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-analyse-de-la-cle">2. Analyse de la clé</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-dechiffrement-caesar">3. Déchiffrement Caesar</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#indices">Indices</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-1">Indice 1</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-2">Indice 2</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-3">Indice 3</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topologie">Topologie</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Crypto</li>
+      <li class="breadcrumb-item active">Challenge 2 - Multi-layer Caesar</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="challenge-2-multi-layer-caesar">Challenge 2 — Multi-layer + Caesar</h1>
+<h2 id="difficulte">Difficulté</h2>
+<p>Medium</p>
+<hr />
+<h2 id="description">Description</h2>
+<p>Un message codé est présent dans le fichier <code>challenge2.txt</code>.</p>
+<p>Une clé encodée est fournie dans le fichier <code>key</code>.</p>
+<hr />
+<h2 id="fichiers-fournis">Fichiers fournis</h2>
+<ul>
+<li><code>challenge2.txt</code></li>
+<li><code>key</code></li>
+</ul>
+<hr />
+<h2 id="etapes-de-resolution">Étapes de résolution</h2>
+<h3 id="1-decodage-du-fichier-principal">1. Décodage du fichier principal</h3>
+<pre><code class="language-bash">base64 -d challenge2.txt
+</code></pre>
+<p>Résultat :</p>
+<pre><code class="language-text">Fausse piste : la clé est indispensable.
+
+IODJ2: eudyr wx dv uhxvvl oh whvw
+
+Tu es proche... mais pas encore.
+</code></pre>
+<p>Le premier message est une fausse piste.</p>
+<hr />
+<h3 id="2-analyse-de-la-cle">2. Analyse de la clé</h3>
+<pre><code class="language-bash">base64 -d key
+</code></pre>
+<p>Résultat :</p>
+<pre><code class="language-text">clé = 3
+essaye de deviner le chiffrement utiliser dans le contenu de challenge2.txt pour trouver le flag caché
+</code></pre>
+<p>La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.</p>
+<hr />
+<h3 id="3-dechiffrement-caesar">3. Déchiffrement Caesar</h3>
+<p>Message à traiter :</p>
+<pre><code class="language-text">IODJ2: eudyr wx dv uhxvvl oh whvw
+</code></pre>
+<p>Appliquer un décalage de <code>-3</code>.</p>
+<p>Résultat :</p>
+<pre><code class="language-text">FLAG2: bravo tu as reussi le test
+</code></pre>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>Le challenge combine plusieurs étapes :</p>
+<ul>
+<li>Base64</li>
+<li>Fausse piste</li>
+<li>Chiffrement Caesar</li>
+</ul>
+<hr />
+<h2 id="indices">Indices</h2>
+<h3 id="indice-1">Indice 1</h3>
+<p>Tous les résultats ne sont pas forcément le flag.</p>
+<h3 id="indice-2">Indice 2</h3>
+<p>Une clé est fournie, elle n’est pas là par hasard.</p>
+<h3 id="indice-3">Indice 3</h3>
+<p>Le message final semble avoir subi un décalage.</p>
+<hr />
+<h2 id="topologie">Topologie</h2>
+<pre><code class="language-text">challenge2.txt
+        ↓
+Base64 decode
+        ↓
+Fausse piste + message chiffré
+
+key
+        ↓
+Base64 decode
+        ↓
+clé = 3
+
+Message chiffré
+        ↓
+Caesar -3
+        ↓
+FLAG2
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../challenge1/" class="btn btn-neutral float-left" title="Challenge 1 - Base64"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../challenge1/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
