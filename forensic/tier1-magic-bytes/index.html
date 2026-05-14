@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Tier 1 — Magic Bytes - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Tier 1 \u2014 Magic Bytes";
+        var mkdocs_page_input_path = "forensic\\tier1-magic-bytes.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Tier 1 — Magic Bytes</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#nom-du-flag">Nom du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-indices">IV - Indices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-duree-approximative">V - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-flag">VI - Flag</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Forensic</li>
+      <li class="breadcrumb-item active">Tier 1 — Magic Bytes</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-n1-magic-bytes">🚩 Flag n°1 — Magic Bytes</h1>
+<h2 id="nom-du-flag">Nom du Flag</h2>
+<p><strong>Magic Bytes — Document classifié</strong></p>
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p>Forensic / Initiation — Univers narratif <strong>Dossier Agent X</strong> (Zone 51, premier contact extraterrestre).</p>
+<hr />
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>Initier les participants au principe fondamental de l'analyse forensique : <strong>un fichier ne se définit pas par son extension mais par sa signature binaire</strong>. Beaucoup de challenges plus avancés (carving, polyglottes, exfiltration via faux types MIME) reposent sur ce réflexe. C'est aussi le tier d'échauffement qui doit donner confiance avant les défis plus techniques.</p>
+<hr />
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p>Une image PNG (900×600) est générée avec Pillow. Elle représente une scène stylisée <em>"DOCUMENT CLASSIFIÉ – ZONE 51"</em> (soucoupe volante + faisceau lumineux) sur laquelle est imprimé visuellement le flag <code>CryptAbyss{area51_premier_contact}</code>.</p>
+<p>Le fichier est ensuite <strong>renommé en <code>.pdf</code></strong> (<code>shutil.move</code>). Aucun lecteur PDF ne peut l'ouvrir puisque les 8 premiers octets sont <code>89 50 4E 47 0D 0A 1A 0A</code> (signature PNG canonique) et non <code>25 50 44 46 2D</code> (signature PDF).</p>
+<p>Le challenge est donc construit autour d'un <strong>mismatch volontaire entre extension et magic bytes</strong>.</p>
+<hr />
+<h2 id="iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</h2>
+<p><strong>Étape 1 — Identifier le vrai type via libmagic :</strong></p>
+<pre><code class="language-bash">$ file document_classifie.pdf
+document_classifie.pdf: PNG image data, 900 x 600, 8-bit/color RGB, non-interlaced
+</code></pre>
+<p><strong>Étape 2 — Vérifier en hexadécimal :</strong></p>
+<pre><code class="language-bash">$ xxd document_classifie.pdf | head -1
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+</code></pre>
+<p><strong>Étape 3 — Renommer et ouvrir :</strong></p>
+<pre><code class="language-bash">$ cp document_classifie.pdf document_classifie.png
+$ start document_classifie.png      # Windows
+$ xdg-open document_classifie.png   # Linux
+</code></pre>
+<p>L'image révèle visuellement le flag.</p>
+<p><strong>Outils utilisables :</strong> <code>file</code>, <code>xxd</code>, <code>hexdump</code>, HxD, Bless, 010 Editor, ImHex, ou la lib Python <code>filetype</code>/<code>python-magic</code>.</p>
+<hr />
+<h2 id="iv-indices">IV - Indices</h2>
+<ul>
+<li>
+<p><strong>Indice léger :</strong>
+  L'apparence peut être trompeuse. Rien ne garantit qu'une extension de fichier reflète son véritable format.</p>
+</li>
+<li>
+<p><strong>Indice intermédiaire :</strong>
+  Tout fichier commence par une « signature » sur ses premiers octets, imposée par son format réel. Plusieurs outils la révèlent immédiatement.</p>
+</li>
+<li>
+<p><strong>Indice final :</strong>
+  <code>file</code>, <code>xxd</code> ou un éditeur hexadécimal sont tes amis. Les octets <code>89 50 4E 47</code> sont la signature d'un format d'image très connu.</p>
+</li>
+</ul>
+<hr />
+<h2 id="v-duree-approximative">V - Durée approximative</h2>
+<p>~5 minutes. Difficulté ⭐ (initiation, 100 pts).</p>
+<hr />
+<h2 id="vi-flag">VI - Flag</h2>
+<p><code>CryptAbyss{area51_premier_contact}</code></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../.." class="btn btn-neutral float-left" title="Accueil"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tier2-file-carving/" class="btn btn-neutral float-right" title="Tier 2 — File Carving">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tier2-file-carving/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

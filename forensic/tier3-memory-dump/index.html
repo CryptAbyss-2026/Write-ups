@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Tier 3 — Memory Dump - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Tier 3 \u2014 Memory Dump";
+        var mkdocs_page_input_path = "forensic\\tier3-memory-dump.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Tier 3 — Memory Dump</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#nom-du-flag">Nom du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-indices">IV - Indices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-duree-approximative">V - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-flag">VI - Flag</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Forensic</li>
+      <li class="breadcrumb-item active">Tier 3 — Memory Dump</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-n3-memory-dump">🚩 Flag n°3 — Memory Dump</h1>
+<h2 id="nom-du-flag">Nom du Flag</h2>
+<p><strong>Dump mémoire Windows — Agent X</strong></p>
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p>Forensic / Avancé — Univers narratif <strong>Dossier Agent X</strong> (capture RAM du poste <code>WS-XFILES-01</code> quelques minutes avant interpellation).</p>
+<hr />
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>Sensibiliser à la <strong>forensique mémoire</strong> : un dump RAM contient des artefacts vivants qu'aucun autre support ne révèle (presse-papiers, historiques de console, processus running, clés de chiffrement en clair). Le challenge force à comprendre que <strong>les chaînes Windows ne sont pas toutes en ASCII</strong> — le clipboard et beaucoup de structures Win32 utilisent <strong>UTF-16 Little-Endian</strong>, et <code>strings</code> sans option les rate complètement. C'est un piège typique en forensique Windows.</p>
+<hr />
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p>Le fichier <code>memoire.raw</code> (64 MiB) est un dump synthétique imitant la structure d'une capture mémoire Windows. Il contient des régions plausibles disséminées dans du bruit type <em>heap</em> :</p>
+<ul>
+<li>En-tête <code>Win10_x64_MemoryDump</code>, table de processus factice (<code>lsass.exe</code>, <code>chrome.exe</code>, <code>VeraCrypt.exe</code>…)</li>
+<li>Variables d'environnement, miettes navigateur, registre paths</li>
+<li><strong>Zone clipboard</strong> au format Windows = <strong>UTF-16LE</strong>, contenant la <strong>partie 1 du flag</strong> : <code>CryptAbyss{contact_alien_</code></li>
+<li><strong>Zone historique PowerShell</strong> (<code>ConsoleHost_history.txt</code> style PSReadLine) en ASCII, contenant la <strong>partie 2</strong> : <code>wormhole_2026_confirmed}</code></li>
+</ul>
+<p>Le flag est <strong>scindé entre deux encodages différents</strong> dans deux artefacts système typiques. Il faut savoir les chercher tous les deux.</p>
+<hr />
+<h2 id="iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</h2>
+<p><strong>Étape 1 — Extraire les chaînes ASCII et UTF-16LE :</strong></p>
+<pre><code class="language-bash">$ strings -a -n 8 memoire.raw &gt; strings_ascii.txt
+$ strings -a -e l -n 8 memoire.raw &gt; strings_utf16le.txt
+</code></pre>
+<p>Le drapeau <code>-e l</code> = <strong>little-endian 16-bit</strong>, indispensable pour le clipboard Windows.</p>
+<p><strong>Étape 2 — Récupérer la partie 1 (clipboard, UTF-16LE) :</strong></p>
+<pre><code class="language-bash">$ grep -i &quot;CryptAbyss{&quot; strings_utf16le.txt
+N'oublie pas, debut du flag = CryptAbyss{contact_alien_
+</code></pre>
+<p><strong>Étape 3 — Récupérer la partie 2 (historique PowerShell, ASCII) :</strong></p>
+<pre><code class="language-bash">$ grep -iE &quot;history|echo&quot; strings_ascii.txt | head -20
+## ConsoleHost_history.txt (PSReadLine) ##
+...
+echo &quot;wormhole_2026_confirmed}&quot; | clip
+</code></pre>
+<p><strong>Étape 4 — Recomposer :</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Clipboard (UTF-16LE)</td>
+<td style="text-align: left;"><code>CryptAbyss{contact_alien_</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">PS history (ASCII)</td>
+<td style="text-align: left;"><code>wormhole_2026_confirmed}</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Concaténation</strong></td>
+<td style="text-align: left;"><code>CryptAbyss{contact_alien_wormhole_2026_confirmed}</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note Volatility :</strong> sur un dump réel acquis via WinPmem/DumpIt, on utiliserait <code>vol -f memoire.raw windows.clipboard</code> et <code>windows.cmdhistory</code>. Ici le dump est synthétique (pas de KPCR/DTB), Volatility ne décodera rien — les outils Unix standards suffisent.</p>
+<p><strong>Outils utilisables :</strong> <code>strings -e l</code>, <code>grep</code>, optionnellement Volatility 3.</p>
+<hr />
+<h2 id="iv-indices">IV - Indices</h2>
+<ul>
+<li>
+<p><strong>Indice léger :</strong>
+  Sur un dump mémoire, <code>strings</code> et <code>grep</code> permettent déjà beaucoup. Demande-toi <strong>où</strong> un utilisateur laisse des traces : que fait-il quand il copie du texte ? quand il tape des commandes ?</p>
+</li>
+<li>
+<p><strong>Indice intermédiaire :</strong>
+  En explorant la sortie de <code>strings</code>, regarde les zones « presse-papiers » et « historique de commandes ». Si tu tombes sur des séquences bizarres — caractères ASCII séparés par des octets nuls, espaces étranges entre chaque lettre — c'est qu'un autre <strong>encodage</strong> se cache là. <code>strings</code> a une option pour ça (voir <code>man</code>, drapeau <code>-e</code>).</p>
+</li>
+<li>
+<p><strong>Indice final :</strong></p>
+</li>
+<li><strong>Morceau A</strong> : zone presse-papiers → <code>strings -a -e l memoire.raw | grep CryptAbyss</code></li>
+<li><strong>Morceau B</strong> : historique PowerShell (ASCII) → <code>strings -a memoire.raw | grep -i history</code></li>
+<li>Concatène les deux dans l'ordre A puis B.</li>
+</ul>
+<hr />
+<h2 id="v-duree-approximative">V - Durée approximative</h2>
+<p>~30 minutes. Difficulté ⭐⭐⭐ (avancé, 350 pts).</p>
+<hr />
+<h2 id="vi-flag">VI - Flag</h2>
+<p><code>CryptAbyss{contact_alien_wormhole_2026_confirmed}</code></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../tier2-file-carving/" class="btn btn-neutral float-left" title="Tier 2 — File Carving"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tier4-disk-registre/" class="btn btn-neutral float-right" title="Tier 4 — Disk + Registre">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../tier2-file-carving/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tier4-disk-registre/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

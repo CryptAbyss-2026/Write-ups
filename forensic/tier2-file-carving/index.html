@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Tier 2 — File Carving - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Tier 2 \u2014 File Carving";
+        var mkdocs_page_input_path = "forensic\\tier2-file-carving.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Tier 2 — File Carving</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#nom-du-flag">Nom du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-indices">IV - Indices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-duree-approximative">V - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-flag">VI - Flag</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Forensic</li>
+      <li class="breadcrumb-item active">Tier 2 — File Carving</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-n2-file-carving">🚩 Flag n°2 — File Carving</h1>
+<h2 id="nom-du-flag">Nom du Flag</h2>
+<p><strong>Interception radio — File Carving</strong></p>
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p>Forensic / Intermédiaire — Univers narratif <strong>Dossier Agent X</strong> (transmission radio interceptée, fréquence H I 1420 MHz, Roswell 1947).</p>
+<hr />
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>Faire pratiquer la <strong>récupération de fichiers embarqués dans un conteneur binaire</strong> (file carving) — technique de base en forensique disque, en analyse de malwares (payloads cachés dans des images), et en steganographie. Les participants doivent enchaîner plusieurs couches : extraction → métadonnées → mot de passe → archive chiffrée → flag. Cette mécanique « poupées russes » est un grand classique CTF qu'il faut savoir détecter.</p>
+<hr />
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p>Un fichier <code>intercept_package.bin</code> (~85 Ko) est construit par concaténation :</p>
+<pre><code>[en-tête texte] + junk + [PNG indice] + junk + [ZIP AES] + junk + [marqueur fin]
+</code></pre>
+<ul>
+<li>Le <strong>PNG d'indice</strong> contient un message visible <em>"NOTE DE L'AGENT X"</em> qui évoque le film <em>Alien</em> (1979). Mais surtout, ses chunks <code>tEXt</code> (métadonnées PNG) renferment :
+  <code>Comment = "Password du ZIP chiffre : xenomorph"</code></li>
+<li>Le <strong>ZIP est chiffré en AES-256</strong> (via <code>pyzipper</code>) avec ce mot de passe <code>xenomorph</code> et contient <code>transmission_dechiffree.jpg</code> qui affiche le flag.</li>
+</ul>
+<p>Le challenge croise donc <strong>3 compétences</strong> : carving binaire, lecture de métadonnées, déchiffrement ZIP AES.</p>
+<hr />
+<h2 id="iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</h2>
+<p><strong>Étape 1 — Identifier les fichiers embarqués :</strong></p>
+<pre><code class="language-bash">$ binwalk intercept_package.bin
+2122    0x84A     PNG image, 600 x 400, 8-bit/color RGB
+34370   0x8642    Zip archive data, AES-encrypted
+</code></pre>
+<p><strong>Étape 2 — Extraire automatiquement :</strong></p>
+<pre><code class="language-bash">$ binwalk -e intercept_package.bin
+$ ls _intercept_package.bin.extracted/
+84A.png   8642.zip
+</code></pre>
+<p><strong>Étape 3 — Lire les métadonnées du PNG :</strong></p>
+<pre><code class="language-bash">$ exiftool 84A.png
+Author      : Agent X
+Comment     : Password du ZIP chiffre : xenomorph
+</code></pre>
+<p>Mot de passe : <strong><code>xenomorph</code></strong> (clin d'œil au film <em>Alien</em>, 1979).</p>
+<p><strong>Étape 4 — Ouvrir le ZIP AES (le <code>unzip</code> natif ne suffit pas, utiliser 7z) :</strong></p>
+<pre><code class="language-bash">$ 7z x -pxenomorph 8642.zip
+$ ls
+transmission_dechiffree.jpg
+</code></pre>
+<p><strong>Étape 5 — Lire le JPG :</strong> l'image affiche directement le flag.</p>
+<p><strong>Outils utilisables :</strong> <code>binwalk</code>, <code>foremost</code>, <code>scalpel</code> (carving) ; <code>exiftool</code>, <code>Pillow</code> (métadonnées) ; <code>7z</code>, <code>pyzipper</code> (ZIP AES).</p>
+<hr />
+<h2 id="iv-indices">IV - Indices</h2>
+<ul>
+<li>
+<p><strong>Indice léger :</strong>
+  Un fichier binaire peut en contenir d'autres, empilés « en oignon ». Regarde s'il n'y aurait pas des signatures de formats connus dissimulées à l'intérieur.</p>
+</li>
+<li>
+<p><strong>Indice intermédiaire :</strong>
+  Le métier de ce défi porte un nom : <strong>file carving</strong>. Des outils comme <code>binwalk</code> ou <code>foremost</code> détectent et extraient automatiquement tout ce qui ressemble à un fichier connu, à partir des signatures.</p>
+</li>
+<li>
+<p><strong>Indice final :</strong>
+  Deux fichiers sont embarqués. L'un est chiffré, l'autre ne l'est pas — mais il contient un secret qui permet d'ouvrir le premier. Analyse ses <strong>métadonnées</strong> (chunks PNG <code>tEXt</code>) avec <code>exiftool</code>. Pour le ZIP, attention au chiffrement <strong>AES</strong> (le <code>unzip</code> classique ne suffit pas, utiliser <code>7z</code>).</p>
+</li>
+</ul>
+<hr />
+<h2 id="v-duree-approximative">V - Durée approximative</h2>
+<p>~15-20 minutes. Difficulté ⭐⭐ (intermédiaire, 200 pts).</p>
+<hr />
+<h2 id="vi-flag">VI - Flag</h2>
+<p><code>CryptAbyss{signal_intercepte_roswell_1947}</code></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../tier1-magic-bytes/" class="btn btn-neutral float-left" title="Tier 1 — Magic Bytes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tier3-memory-dump/" class="btn btn-neutral float-right" title="Tier 3 — Memory Dump">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../tier1-magic-bytes/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tier3-memory-dump/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Tier 4 — Disk + Registre - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Tier 4 \u2014 Disk + Registre";
+        var mkdocs_page_input_path = "forensic\\tier4-disk-registre.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Tier 4 — Disk + Registre</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#nom-du-flag">Nom du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#partie-a-hive-ntuserdat">Partie A — Hive NTUSER.DAT</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#partie-b-image-disque">Partie B — Image disque</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#partie-c-recomposition">Partie C — Recomposition</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-indices">IV - Indices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-duree-approximative">V - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-flag">VI - Flag</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Forensic</li>
+      <li class="breadcrumb-item active">Tier 4 — Disk + Registre</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-n4-disk-image-registre-windows">🚩 Flag n°4 — Disk Image + Registre Windows</h1>
+<h2 id="nom-du-flag">Nom du Flag</h2>
+<p><strong>Clé USB Agent X — Disque &amp; Registre</strong></p>
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p>Forensic / Expert — Univers narratif <strong>Dossier Agent X</strong> (deux artefacts saisis : sa clé USB FAT32 et une copie de son hive registre <code>NTUSER.DAT</code>).</p>
+<hr />
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>Faire pratiquer <strong>deux piliers de la forensique Windows</strong> simultanément :</p>
+<ol>
+<li><strong>Analyse de hives registre</strong> (<code>NTUSER.DAT</code>, <code>SAM</code>, <code>SYSTEM</code>…) au format <code>regf</code> — qu'aucun éditeur de texte ne peut lire et qui demandent un parser dédié.</li>
+<li><strong>Récupération de fichiers supprimés</strong> sur un FS FAT — où l'octet <code>0xE5</code> qui marque la suppression ne détruit pas le contenu : les clusters restent intacts jusqu'à réutilisation.</li>
+</ol>
+<p>Le flag est <strong>scindé entre les deux artefacts</strong> pour forcer le joueur à exploiter les deux pistes — aucune des deux ne suffit isolément.</p>
+<hr />
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p><strong>Artefact 1 — <code>NTUSER.DAT</code></strong> (~8 KiB) : généré par PowerShell via <code>reg.exe save</code> sur une clé <code>HKCU</code> temporaire. C'est un <strong>vrai hive Windows</strong> (magic <code>regf</code>), avec arborescence thématique :
+- <code>\Software\Microsoft\Windows\CurrentVersion\Run</code> (clés Run plausibles + une suspecte <code>XenoBeacon</code>)
+- <code>\Software\VeraCrypt</code>, <code>\Software\SimonTatham\PuTTY\Sessions\roswell-bastion</code> (artefacts plausibles)
+- <code>\AlienContact\Observations\</code> → valeur <code>FlagPart_Registry = "verite_revelee_"</code> ← <strong>moitié A</strong></p>
+<p><strong>Artefact 2 — <code>cle_usb_agent_x.img</code></strong> (10 MiB) : image disque FAT32 brute construite manuellement (boot sector valide, signature <code>0x55AA</code>, deux FAT, root directory). Contient :
+- Fichiers actifs leurres (<code>readme.txt</code>, <code>liste_courses.txt</code>, <code>photo_hangar.jpg</code>…)
+- Une entrée de répertoire dont le 1er octet est <code>0xE5</code> (= supprimé) : <code>EVIDEN~1.TXT</code> → mais son <strong>contenu reste dans les clusters</strong> : un rapport d'observation HANGAR 18 incluant <code>xenomorph_parmi_nous}</code> ← <strong>moitié B</strong></p>
+<p><strong>Recomposition :</strong> <code>CryptAbyss{</code> + <code>verite_revelee_</code> + <code>xenomorph_parmi_nous}</code> = <code>CryptAbyss{verite_revelee_xenomorph_parmi_nous}</code>.</p>
+<hr />
+<h2 id="iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</h2>
+<h3 id="partie-a-hive-ntuserdat">Partie A — Hive <code>NTUSER.DAT</code></h3>
+<pre><code class="language-bash">$ xxd NTUSER.DAT | head -1
+00000000: 7265 6766 ...   regf...
+</code></pre>
+<p>Magic <code>regf</code> confirmé. Parser avec <strong>regipy</strong> :</p>
+<pre><code class="language-python">from regipy.registry import RegistryHive
+hive = RegistryHive(&quot;NTUSER.DAT&quot;)
+ac = hive.get_key(&quot;AlienContact&quot;)
+for sk in ac.iter_subkeys():
+    if sk.name == &quot;Observations&quot;:
+        for v in sk.get_values():
+            print(v.name, &quot;=&quot;, v.value)
+# FlagPart_Registry = verite_revelee_
+</code></pre>
+<p><strong>Moitié A : <code>verite_revelee_</code></strong></p>
+<h3 id="partie-b-image-disque">Partie B — Image disque</h3>
+<p><strong>Approche rapide :</strong></p>
+<pre><code class="language-bash">$ strings cle_usb_agent_x.img | grep -B2 -A 15 HANGAR
+%%CTF_EVIDENCE_FILE%%
+== RAPPORT D'OBSERVATION - HANGAR 18 ==
+...
+--- fragment ---
+  xenomorph_parmi_nous}
+</code></pre>
+<p><strong>Approche académique (parser FAT) :</strong></p>
+<pre><code class="language-bash">$ xxd -s 0x24000 -l 256 cle_usb_agent_x.img
+000240a0: e545 4944 454e 7e 31 54 58 54 ...   .EVIDEN~1TXT
+                                              ↑ 0xE5 = supprimé
+</code></pre>
+<p>On lit le first cluster + size dans l'entrée, on calcule l'offset, on extrait avec <code>dd</code>.</p>
+<p><strong>Approche carving :</strong> <code>photorec /log /d recovered/ cle_usb_agent_x.img</code> (cocher type <code>txt</code>).</p>
+<p><strong>Moitié B : <code>xenomorph_parmi_nous}</code></strong></p>
+<h3 id="partie-c-recomposition">Partie C — Recomposition</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Registre — <code>\AlienContact\Observations\FlagPart_Registry</code></td>
+<td style="text-align: left;"><code>verite_revelee_</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Fichier effacé — <code>evidence_hangar18.txt</code></td>
+<td style="text-align: left;"><code>xenomorph_parmi_nous}</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Concaténation</strong></td>
+<td style="text-align: left;"><code>CryptAbyss{verite_revelee_xenomorph_parmi_nous}</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outils utilisables :</strong> <code>regipy</code>, <code>RegRipper</code>, <code>Registry Explorer</code> (registre) ; <code>xxd</code>, <code>dd</code>, <code>photorec</code>, <code>foremost</code>, <code>sleuthkit</code> (disque).</p>
+<hr />
+<h2 id="iv-indices">IV - Indices</h2>
+<ul>
+<li>
+<p><strong>Indice léger :</strong>
+  Un hive Windows (<code>NTUSER.DAT</code>, <code>SAM</code>, <code>SYSTEM</code>...) est un fichier binaire au format <code>regf</code>. Il n'est pas lisible tel quel — il faut un <strong>parser dédié</strong>. Du côté de la clé USB, un fichier « effacé » en FAT n'est pas nécessairement détruit.</p>
+</li>
+<li>
+<p><strong>Indice intermédiaire :</strong></p>
+</li>
+<li><strong>Registre</strong> : outils standards → <code>regipy</code> (Python), <code>RegRipper</code>, ou <code>Registry Explorer</code> (Eric Zimmerman). Cherche une clé dont le nom colle au thème du CTF.</li>
+<li>
+<p><strong>Disque</strong> : en FAT, quand un fichier est supprimé, le <strong>premier octet</strong> de son entrée de répertoire passe à <code>0xE5</code> mais ses <strong>clusters de données</strong> restent intacts tant qu'ils ne sont pas réalloués. Le contenu est récupérable.</p>
+</li>
+<li>
+<p><strong>Indice final :</strong></p>
+</li>
+<li><strong>Moitié A (registre)</strong> : sous-clé <code>\AlienContact\Observations</code>, valeur <code>FlagPart_Registry</code>.</li>
+<li><strong>Moitié B (fichier effacé)</strong> : <code>photorec</code>, <code>foremost -t txt</code>, ou plus simplement <code>strings cle_usb_agent_x.img | grep -i hangar</code>.</li>
+<li><strong>Concaténation</strong> : <code>CryptAbyss{ moitié_A + moitié_B }</code>.</li>
+</ul>
+<hr />
+<h2 id="v-duree-approximative">V - Durée approximative</h2>
+<p>~60 minutes. Difficulté ⭐⭐⭐⭐⭐ (expert, 500 pts).</p>
+<hr />
+<h2 id="vi-flag">VI - Flag</h2>
+<p><code>CryptAbyss{verite_revelee_xenomorph_parmi_nous}</code></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../tier3-memory-dump/" class="btn btn-neutral float-left" title="Tier 3 — Memory Dump"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../tier3-memory-dump/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
