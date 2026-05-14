@@ -1,5 +1,10 @@
 site_name: CryptAbyss 2026
 nav:
   - Accueil: index.md
+  - Forensic:
+    - Tier 1 — Magic Bytes: forensic/tier1-magic-bytes.md
+    - Tier 2 — File Carving: forensic/tier2-file-carving.md
+    - Tier 3 — Memory Dump: forensic/tier3-memory-dump.md
+    - Tier 4 — Disk + Registre: forensic/tier4-disk-registre.md
 theme:
   name: readthedocs
