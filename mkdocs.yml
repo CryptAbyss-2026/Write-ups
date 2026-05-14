@@ -6,5 +6,9 @@ nav:
     - Tier 2 — File Carving: forensic/tier2-file-carving.md
     - Tier 3 — Memory Dump: forensic/tier3-memory-dump.md
     - Tier 4 — Disk + Registre: forensic/tier4-disk-registre.md
+  - Crypto:
+    - Challenge 1 - Base64: crypto/challenge1.md
+    - Challenge 2 - Multi-layer Caesar: crypto/challenge2.md
+
 theme:
   name: readthedocs
