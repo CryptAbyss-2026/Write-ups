@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>🛡️ Lab CTF Windows/AD — Guide complet - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\ud83d\udee1\ufe0f Lab CTF Windows/AD \u2014 Guide complet";
+        var mkdocs_page_input_path = "windows/GUIDE-COMPLET-LAB-CTF.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">🛡️ Lab CTF Windows/AD — Guide complet</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="lab-ctf-windowsad-guide-complet">🛡️ Lab CTF Windows/AD — Guide complet</h1>
+<blockquote>
+<p><strong>Environnement</strong> : VMware Workstation · Réseau isolé Host-only · 3 VMs<br />
+<strong>Domaine</strong> : <code>ctf.local</code><br />
+<strong>Flags</strong> : 7 challenges (8 flags au total avec Kerberos séparé)<br />
+<strong>Compte de départ joueur</strong> : <code>lowpriv</code> / <code>User@1234</code></p>
+</blockquote>
+<hr />
+<h2 id="table-des-matieres">Table des matières</h2>
+<ul>
+<li>[[#Architecture]]</li>
+<li>[[#Comptes et groupes]]</li>
+<li>[[#Ordre de déploiement global]]</li>
+<li>[[#Phase 0 — Infrastructure VMware]]</li>
+<li>[[#Phase 1 — Structure AD de base]]</li>
+<li>[[#Phase 2 — Jonction des postes au domaine]]</li>
+<li>[[#Phase 3 — Déplacer les machines dans lOU Workstations]]</li>
+<li>[[#Checklist de vérification finale]]</li>
+</ul>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<pre><code>┌──────────────────────────────────────────────────────┐
+│               VMnet2 — 192.168.10.0/24               │
+│                     Host-only                        │
+│                                                      │
+│  ┌─────────────┐   ┌──────────┐   ┌──────────────┐  │
+│  │    DC01     │   │   WS01   │   │     WS02     │  │
+│  │ WinSrv 2022 │   │ Win10/11 │   │  Win10/11    │  │
+│  │ AD DS + DNS │   │          │   │  + KeePass   │  │
+│  │ 10.10.10    │   │ 10.10.20 │   │  10.10.21    │  │
+│  └─────────────┘   └──────────┘   └──────────────┘  │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Machine</th>
+<th>OS</th>
+<th>Rôle</th>
+<th>IP statique</th>
+<th>DNS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DC01</td>
+<td>Windows Server 2022</td>
+<td>Contrôleur de domaine</td>
+<td>192.168.10.10</td>
+<td>127.0.0.1</td>
+</tr>
+<tr>
+<td>WS01</td>
+<td>Windows 10/11</td>
+<td>Poste utilisateur</td>
+<td>192.168.10.20</td>
+<td>192.168.10.10</td>
+</tr>
+<tr>
+<td>WS02</td>
+<td>Windows 10/11</td>
+<td>Poste utilisateur + KeePass</td>
+<td>192.168.10.21</td>
+<td>192.168.10.10</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="comptes-et-groupes">Comptes et groupes</h2>
+<h3 id="utilisateurs-ad">Utilisateurs AD</h3>
+<table>
+<thead>
+<tr>
+<th>Compte</th>
+<th>Mot de passe</th>
+<th>OU</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lowpriv</code></td>
+<td><code>User@1234</code></td>
+<td>Users</td>
+<td>Point d'entrée joueur</td>
+</tr>
+<tr>
+<td><code>helpdesk1</code></td>
+<td><code>Helpdesk@1234</code></td>
+<td>Users</td>
+<td>Pivot Flag 3</td>
+</tr>
+<tr>
+<td><code>svc-web</code></td>
+<td><code>Svc!Web2024</code></td>
+<td>Service Accounts</td>
+<td>Kerberoasting — Flag 7b</td>
+</tr>
+<tr>
+<td><code>svc-legacy</code></td>
+<td><code>Legacy123</code></td>
+<td>Service Accounts</td>
+<td>AS-REP Roasting — Flag 7b</td>
+</tr>
+<tr>
+<td><code>svc-backup</code></td>
+<td><code>Backup@Secure99</code></td>
+<td>Service Accounts</td>
+<td>Credentials exposés — Flag 3 &amp; 4</td>
+</tr>
+</tbody>
+</table>
+<h3 id="groupes-ad">Groupes AD</h3>
+<table>
+<thead>
+<tr>
+<th>Groupe</th>
+<th>Membres</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IT-Helpdesk</code></td>
+<td>helpdesk1</td>
+<td>Droits ACL AD — Flag 3</td>
+</tr>
+<tr>
+<td><code>CTF-Players</code></td>
+<td>lowpriv, helpdesk1</td>
+<td>Accès domaine de base</td>
+</tr>
+<tr>
+<td><code>LocalAdmins-WS01</code></td>
+<td>svc-web</td>
+<td>Admin local WS01 via GPO — Flag 3</td>
+</tr>
+<tr>
+<td>### Utilisateurs et mdp</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Compte</td>
+<td>Mot de passe</td>
+<td>Type</td>
+</tr>
+<tr>
+<td>-------------------</td>
+<td>-----------------</td>
+<td>-------------------</td>
+</tr>
+<tr>
+<td><code>CTF\Administrator</code></td>
+<td>lesbananes1350!</td>
+<td>Admin domaine</td>
+</tr>
+<tr>
+<td><code>CTF\lowpriv</code></td>
+<td><code>User@1234</code></td>
+<td>Utilisateur domaine</td>
+</tr>
+<tr>
+<td><code>CTF\helpdesk1</code></td>
+<td><code>Helpdesk@1234</code></td>
+<td>Utilisateur domaine</td>
+</tr>
+<tr>
+<td><code>CTF\svc-web</code></td>
+<td><code>Svc!Web2024</code></td>
+<td>Compte de service</td>
+</tr>
+<tr>
+<td><code>CTF\svc-legacy</code></td>
+<td><code>Legacy123</code></td>
+<td>Compte de service</td>
+</tr>
+<tr>
+<td><code>CTF\svc-backup</code></td>
+<td><code>Backup@Secure99</code></td>
+<td>Compte de service</td>
+</tr>
+<tr>
+<td><code>WS01\admin-local</code></td>
+<td><code>AdminLocal@WS01</code></td>
+<td>Admin local WS01</td>
+</tr>
+<tr>
+<td><code>WS02\admin-local</code></td>
+<td><code>AdminLocal@WS02</code></td>
+<td>Admin local WS02</td>
+</tr>
+<tr>
+<td>KeePass master</td>
+<td><code>keepass123</code></td>
+<td>Mot de passe base</td>
+</tr>
+<tr>
+<td>### Structure des OUs</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<pre><code>ctf.local
+└── CTF
+    ├── Users               ← lowpriv, helpdesk1
+    ├── Groups              ← IT-Helpdesk, CTF-Players, LocalAdmins-WS01
+    ├── Service Accounts    ← svc-web, svc-legacy, svc-backup
+    ├── Workstations        ← WS01, WS02
+    └── Servers
+</code></pre>
+<hr />
+<h2 id="ordre-de-deploiement-global">Ordre de déploiement global</h2>
+<pre><code>1.  DC01  → Setup-AD-Base.ps1
+2.  WS01  → Jonction domaine (manuel)
+3.  WS02  → Jonction domaine (manuel)
+4.  DC01  → Déplacer WS01 + WS02 dans OU=Workstations (manuel)
+5.  WS01  → Flag2-Tache-Planifiee.ps1
+6.  DC01  → Flag3-ACL-AD.ps1
+7.  WS01  → ⚠️ Connexion lowpriv une fois (manuel) puis Flag4-Historique-PS.ps1
+8.  DC01  → Flag5-SMB-Share.ps1
+9.  WS01  → Flag6-LLMNR.ps1
+10. WS02  → Flag6-LLMNR.ps1
+11. WS02  → Flag7-KeePass.ps1 puis étapes manuelles KeePass
+12. DC01  → Flag7b-Kerberos.ps1
+</code></pre>
+<blockquote>
+<p>[!tip] Avant chaque script PowerShell
+Ouvre PowerShell en <strong>Administrateur</strong> et tape :
+<code>powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force</code></p>
+</blockquote>
+<hr />
+<h2 id="phase-0-infrastructure-vmware">Phase 0 — Infrastructure VMware</h2>
+<blockquote>
+<p>[!check] Déjà effectué
+VMware installé, VMs créées, OS installés, domaine promu.</p>
+</blockquote>
+<h3 id="rappel-ip-statiques">Rappel IP statiques</h3>
+<p><strong>DC01</strong> :</p>
+<pre><code class="language-powershell">New-NetIPAddress -InterfaceAlias &quot;Ethernet0&quot; -IPAddress 192.168.10.10 -PrefixLength 24 -DefaultGateway 192.168.10.1
+Set-DnsClientServerAddress -InterfaceAlias &quot;Ethernet0&quot; -ServerAddresses 127.0.0.1
+</code></pre>
+<p><strong>WS01</strong> :</p>
+<pre><code class="language-powershell">New-NetIPAddress -InterfaceAlias &quot;Ethernet0&quot; -IPAddress 192.168.10.20 -PrefixLength 24 -DefaultGateway 192.168.10.1
+Set-DnsClientServerAddress -InterfaceAlias &quot;Ethernet0&quot; -ServerAddresses 192.168.10.10
+</code></pre>
+<p><strong>WS02</strong> :</p>
+<pre><code class="language-powershell">New-NetIPAddress -InterfaceAlias &quot;Ethernet0&quot; -IPAddress 192.168.10.21 -PrefixLength 24 -DefaultGateway 192.168.10.1
+Set-DnsClientServerAddress -InterfaceAlias &quot;Ethernet0&quot; -ServerAddresses 192.168.10.10
+</code></pre>
+<hr />
+<h2 id="phase-1-structure-ad-de-base">Phase 1 — Structure AD de base</h2>
+<p><strong>Machine :</strong> <code>DC01</code><br />
+<strong>Script :</strong> <code>Setup-AD-Base.ps1</code></p>
+<h3 id="ce-que-le-script-fait">Ce que le script fait</h3>
+<ul>
+<li>Crée les 6 OUs : <code>CTF</code>, <code>Users</code>, <code>Groups</code>, <code>Service Accounts</code>, <code>Workstations</code>, <code>Servers</code></li>
+<li>Crée les 5 comptes : <code>lowpriv</code>, <code>helpdesk1</code>, <code>svc-web</code>, <code>svc-legacy</code>, <code>svc-backup</code></li>
+<li>Crée les 3 groupes : <code>IT-Helpdesk</code>, <code>CTF-Players</code>, <code>LocalAdmins-WS01</code></li>
+</ul>
+<h3 id="script-setup-ad-baseps1">Script Setup-AD-Base.ps1</h3>
+<pre><code class="language-powershell"># =============================================================================
+# Setup-AD-Base.ps1
+# Machine : DC01
+# Rôle    : Crée toutes les OUs, utilisateurs et groupes nécessaires aux flags
+# À lancer EN PREMIER, avant tous les scripts de flags
+# =============================================================================
+#Requires -RunAsAdministrator
+Import-Module ActiveDirectory
+
+$DomainDN = &quot;DC=ctf,DC=local&quot;
+
+Write-Host &quot;`n[SETUP BASE] Création de la structure AD&quot; -ForegroundColor Cyan
+
+# =============================================================================
+# OUs
+# =============================================================================
+Write-Host &quot;`n[*] OUs...&quot; -ForegroundColor Yellow
+
+$OUs = @(
+    @{ Name = &quot;CTF&quot;;              Path = $DomainDN },
+    @{ Name = &quot;Users&quot;;            Path = &quot;OU=CTF,$DomainDN&quot; },
+    @{ Name = &quot;Groups&quot;;           Path = &quot;OU=CTF,$DomainDN&quot; },
+    @{ Name = &quot;Service Accounts&quot;; Path = &quot;OU=CTF,$DomainDN&quot; },
+    @{ Name = &quot;Workstations&quot;;     Path = &quot;OU=CTF,$DomainDN&quot; },
+    @{ Name = &quot;Servers&quot;;          Path = &quot;OU=CTF,$DomainDN&quot; }
+)
+
+foreach ($ou in $OUs) {
+    $dn = &quot;OU=$($ou.Name),$($ou.Path)&quot;
+    if (-not (Get-ADOrganizationalUnit -Filter &quot;DistinguishedName -eq '$dn'&quot; -ErrorAction SilentlyContinue)) {
+        New-ADOrganizationalUnit -Name $ou.Name -Path $ou.Path -ProtectedFromAccidentalDeletion $false
+        Write-Host &quot;  [+] OU créée : $($ou.Name)&quot; -ForegroundColor Green
+    } else {
+        Write-Host &quot;  [~] OU existante : $($ou.Name)&quot; -ForegroundColor Gray
+    }
+}
+
+# =============================================================================
+# UTILISATEURS
+# =============================================================================
+Write-Host &quot;`n[*] Utilisateurs...&quot; -ForegroundColor Yellow
+
+$UsersOU = &quot;OU=Users,OU=CTF,$DomainDN&quot;
+$SvcOU   = &quot;OU=Service Accounts,OU=CTF,$DomainDN&quot;
+
+$Users = @(
+    @{
+        Sam         = &quot;lowpriv&quot;
+        Name        = &quot;Low Privilege User&quot;
+        Password    = &quot;User@1234&quot;
+        OU          = $UsersOU
+        Description = &quot;Compte de départ CTF - bas privilèges&quot;
+        # Utilisé dans : Flag 1,2,3,4,5,6,7,8 (point d'entrée joueur)
+    },
+    @{
+        Sam         = &quot;helpdesk1&quot;
+        Name        = &quot;Helpdesk User 1&quot;
+        Password    = &quot;Helpdesk@1234&quot;
+        OU          = $UsersOU
+        Description = &quot;Compte helpdesk - droits AD délégués dangereux (Flag 3)&quot;
+        # Utilisé dans : Flag 3 (GenericAll sur LocalAdmins-WS01, ResetPassword sur svc-backup)
+    },
+    @{
+        Sam         = &quot;svc-web&quot;
+        Name        = &quot;Service Web&quot;
+        Password    = &quot;Svc!Web2024&quot;
+        OU          = $SvcOU
+        Description = &quot;Compte service web - SPN enregistré (Flag 8 Kerberoasting)&quot;
+        # Utilisé dans : Flag 8 (Kerberoasting via SPN HTTP/intranet.ctf.local)
+    },
+    @{
+        Sam         = &quot;svc-legacy&quot;
+        Name        = &quot;Service Legacy&quot;
+        Password    = &quot;Legacy123&quot;
+        OU          = $SvcOU
+        Description = &quot;Compte legacy - pré-auth Kerberos désactivée (Flag 8 AS-REP)&quot;
+        # Utilisé dans : Flag 8 (AS-REP Roasting)
+    },
+    @{
+        Sam         = &quot;svc-backup&quot;
+        Name        = &quot;Service Backup&quot;
+        Password    = &quot;Backup@Secure99&quot;
+        OU          = $SvcOU
+        Description = &quot;Compte service backup - credentials dans historique PS (Flag 4) et share SMB (Flag 5)&quot;
+        # Utilisé dans : Flag 4 (historique PS), Flag 5 (backup.ps1 dans le share)
+    }
+)
+
+foreach ($u in $Users) {
+    if (-not (Get-ADUser -Filter &quot;SamAccountName -eq '$($u.Sam)'&quot; -ErrorAction SilentlyContinue)) {
+        $pwd = ConvertTo-SecureString $u.Password -AsPlainText -Force
+        New-ADUser `
+            -SamAccountName      $u.Sam `
+            -Name                $u.Name `
+            -AccountPassword     $pwd `
+            -Enabled             $true `
+            -Path                $u.OU `
+            -Description         $u.Description `
+            -PasswordNeverExpires $true
+        Write-Host &quot;  [+] $($u.Sam) créé  (pwd: $($u.Password))&quot; -ForegroundColor Green
+    } else {
+        Write-Host &quot;  [~] $($u.Sam) déjà existant&quot; -ForegroundColor Gray
+    }
+}
+
+# =============================================================================
+# GROUPES
+# =============================================================================
+Write-Host &quot;`n[*] Groupes...&quot; -ForegroundColor Yellow
+
+$GroupsOU = &quot;OU=Groups,OU=CTF,$DomainDN&quot;
+
+$Groups = @(
+    @{
+        Name        = &quot;IT-Helpdesk&quot;
+        Description = &quot;Groupe helpdesk - droits délégués sur la GPO et objets AD (Flag 1, Flag 3)&quot;
+        Members     = @(&quot;helpdesk1&quot;)
+        # Flag 1 : droits d'édition sur GPO-Runner
+        # Flag 3 : GenericAll sur LocalAdmins-WS01
+    },
+    @{
+        Name        = &quot;CTF-Players&quot;
+        Description = &quot;Groupe des joueurs - accès de base au domaine&quot;
+        Members     = @(&quot;lowpriv&quot;, &quot;helpdesk1&quot;)
+        # Aucun flag direct, sert à donner un accès domaine minimal propre
+    },
+    @{
+        Name        = &quot;LocalAdmins-WS01&quot;
+        Description = &quot;Membres de ce groupe deviennent admins locaux sur WS01 via GPO (Flag 3)&quot;
+        Members     = @(&quot;svc-web&quot;)
+        # Flag 3 : helpdesk1 a GenericAll dessus -&gt; peut s'y ajouter -&gt; admin local WS01
+    }
+)
+
+foreach ($g in $Groups) {
+    if (-not (Get-ADGroup -Filter &quot;Name -eq '$($g.Name)'&quot; -ErrorAction SilentlyContinue)) {
+        New-ADGroup `
+            -Name          $g.Name `
+            -GroupScope    Global `
+            -GroupCategory Security `
+            -Path          $GroupsOU `
+            -Description   $g.Description
+        Write-Host &quot;  [+] Groupe créé : $($g.Name)&quot; -ForegroundColor Green
+    } else {
+        Write-Host &quot;  [~] Groupe existant : $($g.Name)&quot; -ForegroundColor Gray
+    }
+
+    foreach ($m in $g.Members) {
+        try {
+            Add-ADGroupMember -Identity $g.Name -Members $m -ErrorAction Stop
+            Write-Host &quot;      [+] $m -&gt; $($g.Name)&quot; -ForegroundColor Green
+        } catch {
+            Write-Host &quot;      [~] $m déjà membre de $($g.Name)&quot; -ForegroundColor Gray
+        }
+    }
+}
+
+# =============================================================================
+# RÉSUMÉ
+# =============================================================================
+Write-Host &quot;`n============================================================&quot; -ForegroundColor Cyan
+Write-Host &quot; SETUP BASE TERMINÉ&quot; -ForegroundColor Cyan
+Write-Host &quot;============================================================&quot; -ForegroundColor Cyan
+
+Write-Host &quot;`n UTILISATEURS :&quot; -ForegroundColor White
+Write-Host &quot;  lowpriv     / User@1234         OU=Users         -&gt; compte de départ joueur&quot; -ForegroundColor Gray
+Write-Host &quot;  helpdesk1   / Helpdesk@1234     OU=Users         -&gt; pivot Flag 1 et 3&quot; -ForegroundColor Gray
+Write-Host &quot;  svc-web     / Svc!Web2024       OU=Svc Accounts  -&gt; Kerberoasting Flag 8&quot; -ForegroundColor Gray
+Write-Host &quot;  svc-legacy  / Legacy123         OU=Svc Accounts  -&gt; AS-REP Roasting Flag 8&quot; -ForegroundColor Gray
+Write-Host &quot;  svc-backup  / Backup@Secure99   OU=Svc Accounts  -&gt; credentials Flag 4 et 5&quot; -ForegroundColor Gray
+
+Write-Host &quot;`n GROUPES :&quot; -ForegroundColor White
+Write-Host &quot;  IT-Helpdesk      -&gt; helpdesk1                  (droits GPO + ACL AD)&quot; -ForegroundColor Gray
+Write-Host &quot;  CTF-Players      -&gt; lowpriv, helpdesk1         (accès domaine de base)&quot; -ForegroundColor Gray
+Write-Host &quot;  LocalAdmins-WS01 -&gt; svc-web                    (admin local WS01 via GPO)&quot; -ForegroundColor Gray
+
+Write-Host &quot;`n PROCHAINE ÉTAPE : lancer les scripts de flags dans l'ordre du guide&quot; -ForegroundColor Yellow
+Write-Host &quot;&quot;
+</code></pre>
+<h3 id="lancement">Lancement</h3>
+<pre><code class="language-powershell">Set-ExecutionPolicy Bypass -Scope Process -Force
+.\Setup-AD-Base.ps1
+</code></pre>
+<h3 id="actions-manuelles">Actions manuelles</h3>
+<p>Aucune.</p>
+<h3 id="verification">Vérification</h3>
+<pre><code class="language-powershell">Get-ADUser -Filter * -SearchBase &quot;OU=Users,OU=CTF,DC=ctf,DC=local&quot; | Select Name, SamAccountName
+Get-ADGroup -Filter * -SearchBase &quot;OU=Groups,OU=CTF,DC=ctf,DC=local&quot; | Select Name
+</code></pre>
+<blockquote>
+<p>[!success] Snapshot DC01
+<strong><code>DC01 — Structure AD de base</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="phase-2-jonction-des-postes-au-domaine">Phase 2 — Jonction des postes au domaine</h2>
+<h3 id="ws01-powershell-admin">WS01 — PowerShell Admin</h3>
+<pre><code class="language-powershell"># Étape 1 — renommer
+Rename-Computer -NewName &quot;WS01&quot; -Force -Restart
+
+# Étape 2 — rejoindre le domaine (après redémarrage)
+Add-Computer -DomainName &quot;ctf.local&quot; -Credential (Get-Credential) -Restart
+# → Saisir : CTF\Administrator  /  P@ssw0rd!CTF2024
+</code></pre>
+<h3 id="ws02-powershell-admin">WS02 — PowerShell Admin</h3>
+<pre><code class="language-powershell">Rename-Computer -NewName &quot;WS02&quot; -Force -Restart
+
+Add-Computer -DomainName &quot;ctf.local&quot; -Credential (Get-Credential) -Restart
+# → Saisir : CTF\Administrator  /  P@ssw0rd!CTF2024
+</code></pre>
+<h3 id="actions-manuelles_1">Actions manuelles</h3>
+<p>Saisir les credentials <code>CTF\Administrator</code> quand demandé.</p>
+<blockquote>
+<p>[!success] Snapshots
+<strong><code>WS01 — Joint au domaine</code></strong><br />
+<strong><code>WS02 — Joint au domaine</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="phase-3-deplacer-les-machines-dans-lou-workstations">Phase 3 — Déplacer les machines dans l'OU Workstations</h2>
+<p><strong>Machine :</strong> <code>DC01</code></p>
+<pre><code class="language-powershell">Get-ADComputer WS01 | Move-ADObject -TargetPath &quot;OU=Workstations,OU=CTF,DC=ctf,DC=local&quot;
+Get-ADComputer WS02 | Move-ADObject -TargetPath &quot;OU=Workstations,OU=CTF,DC=ctf,DC=local&quot;
+
+# Vérification
+Get-ADComputer -Filter * -SearchBase &quot;OU=Workstations,OU=CTF,DC=ctf,DC=local&quot; | Select Name
+# Attendu : WS01, WS02
+</code></pre>
+<h2 id="checklist-de-verification-finale">Checklist de vérification finale</h2>
+<h3 id="dc01">DC01</h3>
+<pre><code class="language-powershell"># Structure AD
+Get-ADOrganizationalUnit -Filter * -SearchBase &quot;OU=CTF,DC=ctf,DC=local&quot; | Select Name
+Get-ADUser -Filter * -SearchBase &quot;OU=CTF,DC=ctf,DC=local&quot; -Properties Description | Select SamAccountName, Description
+Get-ADGroup -Filter * -SearchBase &quot;OU=CTF,DC=ctf,DC=local&quot; | Select Name
+
+# Flag 3 — ACL
+Get-Acl &quot;AD:\$(Get-ADGroup -Identity LocalAdmins-WS01 | Select -ExpandProperty DistinguishedName)&quot; | Select -ExpandProperty Access | Where-Object { $_.IdentityReference -match &quot;helpdesk&quot; }
+
+# Flag 5 — Shares
+Get-SmbShare | Select Name, Path
+
+# Flag 7b — SPNs et pre-auth
+Get-ADUser -Identity &quot;svc-web&quot; -Properties ServicePrincipalNames | Select -ExpandProperty ServicePrincipalNames
+Get-ADUser -Identity &quot;svc-legacy&quot; -Properties DoesNotRequirePreAuth | Select DoesNotRequirePreAuth
+</code></pre>
+<h3 id="ws01">WS01</h3>
+<pre><code class="language-powershell"># Flag 2 — Tâche planifiée
+Get-ScheduledTask -TaskName &quot;HighTask&quot; | Select TaskName, @{N=&quot;User&quot;;E={$_.Principal.UserId}}, State
+Start-ScheduledTask -TaskName &quot;HighTask&quot;
+Start-Sleep 5
+Get-Content C:\Users\Public\flag2.txt
+
+# Flag 4 — Historique PS
+Test-Path &quot;C:\Users\lowpriv\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt&quot;
+
+# Flag 6 — LLMNR
+Get-ItemProperty &quot;HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient&quot; -Name EnableMulticast
+</code></pre>
+<h3 id="ws02">WS02</h3>
+<pre><code class="language-powershell"># Flag 6 — LLMNR (même vérification)
+Get-ItemProperty &quot;HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient&quot; -Name EnableMulticast
+
+# Flag 7 — KeePass
+Test-Path &quot;C:\Users\lowpriv\Documents\KeePass\ctf.kdbx&quot;
+
+# Flag 7 — Page IIS
+Invoke-WebRequest http://intranet.ctf.local/flag7/ -UseBasicParsing | Select StatusCode
+# Attendu : 200
+</code></pre>
+<h3 id="snapshots-finaux">Snapshots finaux</h3>
+<blockquote>
+<p>[!success] Snapshots définitifs — prendre après toutes les vérifications
+<strong><code>DC01 — Lab CTF complet</code></strong><br />
+<strong><code>WS01 — Lab CTF complet</code></strong><br />
+<strong><code>WS02 — Lab CTF complet</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="recapitulatif-des-flags">Récapitulatif des flags</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Machine(s)</th>
+<th>Vulnérabilité</th>
+<th>Compte pivot</th>
+<th>Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>WS01</td>
+<td>Tâche planifiée SYSTEM</td>
+<td><code>lowpriv</code></td>
+<td><code>FLAG{scheduled_task_priv_esc}</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>DC01</td>
+<td>ACL AD — GenericAll / ResetPassword</td>
+<td><code>helpdesk1</code></td>
+<td><code>FLAG{ad_acl_delegation_abuse}</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>WS01</td>
+<td>Historique PSReadLine</td>
+<td><code>lowpriv</code></td>
+<td>via <code>\\DC01\Backups</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>DC01</td>
+<td>Share SMB sensible</td>
+<td><code>lowpriv</code></td>
+<td><code>FLAG{smb_sensitive_data_exposed}</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>WS01+WS02</td>
+<td>LLMNR Poisoning</td>
+<td><code>lowpriv</code></td>
+<td>Hash NTLMv2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>WS02</td>
+<td>KeePass Auto-Type</td>
+<td><code>lowpriv</code></td>
+<td><code>FLAG{keepass_autotype_credential_leak}</code></td>
+</tr>
+<tr>
+<td>7b-K</td>
+<td>DC01</td>
+<td>Kerberoasting</td>
+<td><code>lowpriv</code></td>
+<td><code>FLAG{kerberoasting_svc_account_cracked}</code></td>
+</tr>
+<tr>
+<td>7b-A</td>
+<td>DC01</td>
+<td>AS-REP Roasting</td>
+<td><code>lowpriv</code></td>
+<td><code>FLAG{asrep_roasting_no_preauth}</code></td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

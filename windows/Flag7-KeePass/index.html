@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flag 7 — KeePass Auto-Type - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flag 7 \u2014 KeePass Auto-Type";
+        var mkdocs_page_input_path = "windows/Flag7-KeePass.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Flag 7 — KeePass Auto-Type</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-7-keepass-auto-type">Flag 7 — KeePass Auto-Type</h1>
+<blockquote>
+<p><strong>Technique :</strong> KeePass Auto-Type credential extraction
+<strong>Machine de déploiement :</strong> WS02
+<strong>Machine d'exploitation :</strong> WS02
+<strong>Compte de départ :</strong> <code>CTF\lowpriv</code> / <code>User@1234</code>
+<strong>Difficulté :</strong> Facile / Intermédiaire</p>
+</blockquote>
+<hr />
+<h2 id="deploiement">Déploiement</h2>
+<h3 id="prerequis-transferer-keepass-sur-ws02-sans-internet">Prérequis — Transférer KeePass sur WS02 sans internet</h3>
+<blockquote>
+<p>[!warning] À faire sur ta machine hôte AVANT de lancer le script</p>
+</blockquote>
+<p><strong>Étape 1 — Télécharger KeePass sur ta machine hôte :</strong></p>
+<pre><code>https://keepass.info/download.html
+</code></pre>
+<p>Télécharger <strong>KeePass 2.x</strong> — fichier <code>KeePass-2.xx-Setup.exe</code>.</p>
+<p><strong>Étape 2 — Transférer vers WS02</strong> (choisir une méthode) :</p>
+<p><strong>Méthode A — Glisser-déposer VMware Tools :</strong>
+1. S'assurer que VMware Tools est installé sur WS02
+2. Glisser-déposer le fichier <code>.exe</code> directement dans la fenêtre VMware de WS02
+3. Placer le fichier dans <code>C:\Temp\</code> sur WS02</p>
+<p><strong>Méthode B — Via le share DC01 :</strong>
+1. Copier le fichier dans <code>C:\Shares\Sensitive\</code> sur DC01
+2. Depuis WS02 PowerShell Admin :</p>
+<pre><code class="language-powershell">net use S: \\DC01\Sensitive
+New-Item -ItemType Directory -Path C:\Temp -Force | Out-Null
+Copy-Item S:\KeePass-2.xx-Setup.exe C:\Temp\KeePass-Setup.exe
+net use S: /delete
+</code></pre>
+<p><strong>Méthode C — Dossier partagé VMware :</strong>
+1. <strong>VM → Settings → Options → Shared Folders → Add</strong>
+2. Partager le dossier contenant l'installeur
+3. Depuis WS02 :</p>
+<pre><code class="language-powershell">Copy-Item &quot;\\vmware-host\Shared Folders\KeePass-Setup.exe&quot; C:\Temp\KeePass-Setup.exe
+</code></pre>
+<hr />
+<h3 id="script-flag7-keepassps1">Script — Flag7-KeePass.ps1</h3>
+<blockquote>
+<p>[!warning] Lancer en PowerShell Admin sur WS02
+L'installeur KeePass doit être présent dans <code>C:\Temp\KeePass-Setup.exe</code> avant de lancer ce script</p>
+</blockquote>
+<pre><code class="language-powershell">#Requires -RunAsAdministrator
+
+Write-Host &quot;`n[FLAG 7] KeePass Auto-Type&quot; -ForegroundColor Cyan
+
+# --- 1. Verifier que l'installeur KeePass est present ---
+$keepassInstaller = &quot;C:\Temp\KeePass-Setup.exe&quot;
+if (-not (Test-Path $keepassInstaller)) {
+    Write-Host &quot;  [!] ERREUR : installeur KeePass introuvable.&quot; -ForegroundColor Red
+    Write-Host &quot;  [!] Placer l'installeur dans C:\Temp\KeePass-Setup.exe&quot; -ForegroundColor Red
+    Write-Host &quot;  [!] Voir section Prerequis du guide pour le transfert sans internet.&quot; -ForegroundColor Red
+    exit 1
+}
+
+# --- 2. Installer KeePass en silent ---
+Write-Host &quot;  [*] Installation de KeePass...&quot; -ForegroundColor Yellow
+Start-Process -FilePath $keepassInstaller -ArgumentList &quot;/SILENT /NORESTART&quot; -Wait
+Write-Host &quot;  [+] KeePass installe&quot; -ForegroundColor Green
+
+# --- 3. Installer IIS ---
+Write-Host &quot;  [*] Installation IIS...&quot; -ForegroundColor Yellow
+$features = @(
+    &quot;IIS-WebServerRole&quot;,
+    &quot;IIS-WebServer&quot;,
+    &quot;IIS-CommonHttpFeatures&quot;,
+    &quot;IIS-StaticContent&quot;,
+    &quot;IIS-DefaultDocument&quot;
+)
+foreach ($f in $features) {
+    Enable-WindowsOptionalFeature -Online -FeatureName $f -All -NoRestart `
+        -ErrorAction SilentlyContinue | Out-Null
+}
+Write-Host &quot;  [+] IIS installe&quot; -ForegroundColor Green
+
+# --- 4. Page de login intranet ---
+$wwwFlag7 = &quot;C:\inetpub\wwwroot\flag7&quot;
+New-Item -ItemType Directory -Path $wwwFlag7 -Force | Out-Null
+
+@'
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Intranet CTF&lt;/title&gt;
+    &lt;style&gt;
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#c9d1d9;
+             display:flex;justify-content:center;align-items:center;min-height:100vh}
+        .card{background:#161b22;border:1px solid #30363d;border-radius:10px;
+              padding:40px;width:360px}
+        h2{color:#58a6ff;margin-bottom:6px;font-size:1.4rem}
+        .sub{color:#8b949e;font-size:13px;margin-bottom:28px}
+        label{display:block;font-size:13px;color:#8b949e;margin-bottom:5px}
+        input{width:100%;padding:9px 12px;background:#0d1117;border:1px solid #30363d;
+              border-radius:6px;color:#c9d1d9;font-size:14px;margin-bottom:16px}
+        button{width:100%;padding:10px;background:#238636;color:#fff;border:none;
+               border-radius:6px;font-size:14px;cursor:pointer}
+        button:hover{background:#2ea043}
+        #result{margin-top:20px;padding:14px;background:#0d1117;border-radius:6px;
+                display:none;font-family:monospace;font-size:13px}
+        .ok{color:#3fb950;border:1px solid #238636}
+        .err{color:#f85149;border:1px solid #da3633}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;card&quot;&gt;
+    &lt;h2&gt;Intranet CTF&lt;/h2&gt;
+    &lt;p class=&quot;sub&quot;&gt;Portail d'administration interne&lt;/p&gt;
+    &lt;label&gt;Utilisateur&lt;/label&gt;
+    &lt;input type=&quot;text&quot; id=&quot;user&quot; autocomplete=&quot;off&quot;/&gt;
+    &lt;label&gt;Mot de passe&lt;/label&gt;
+    &lt;input type=&quot;password&quot; id=&quot;pass&quot;/&gt;
+    &lt;button onclick=&quot;tryLogin()&quot;&gt;Se connecter&lt;/button&gt;
+    &lt;div id=&quot;result&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;script&gt;
+function tryLogin(){
+    const u=document.getElementById('user').value;
+    const p=document.getElementById('pass').value;
+    const r=document.getElementById('result');
+    if(u==='admin'&amp;&amp;p==='FLAG{keepass_autotype_credential_leak}'){
+        r.className='ok';r.style.display='block';
+        r.innerHTML='Connexion reussie !&lt;br&gt;&lt;br&gt;&lt;b&gt;FLAG{keepass_autotype_credential_leak}&lt;/b&gt;';
+    }else{
+        r.className='err';r.style.display='block';
+        r.innerHTML='Identifiants incorrects.';
+    }
+}
+document.addEventListener('keydown',e=&gt;{if(e.key==='Enter')tryLogin();});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'@ | Set-Content &quot;$wwwFlag7\index.html&quot; -Encoding UTF8
+Write-Host &quot;  [+] Page intranet creee : http://intranet.ctf.local/flag7/&quot; -ForegroundColor Green
+
+# --- 5. Entree hosts ---
+$hostsFile = &quot;C:\Windows\System32\drivers\etc\hosts&quot;
+if ((Get-Content $hostsFile) -notmatch &quot;intranet\.ctf\.local&quot;) {
+    Add-Content $hostsFile &quot;`n127.0.0.1`tintranet.ctf.local&quot;
+    Write-Host &quot;  [+] hosts : intranet.ctf.local -&gt; 127.0.0.1&quot; -ForegroundColor Green
+} else {
+    Write-Host &quot;  [~] hosts : entree deja presente&quot; -ForegroundColor Gray
+}
+
+# --- 6. Fichier XML KeePass a importer ---
+# Le profil lowpriv doit exister (connexion prealable requise)
+if (-not (Test-Path &quot;C:\Users\lowpriv&quot;)) {
+    Write-Host &quot;  [!] ATTENTION : profil lowpriv inexistant.&quot; -ForegroundColor Magenta
+    Write-Host &quot;  [!] Connecte-toi une fois avec CTF\lowpriv, deconnecte-toi, puis relance.&quot; -ForegroundColor Magenta
+}
+
+$kpDir = &quot;C:\Users\lowpriv\Documents\KeePass&quot;
+New-Item -ItemType Directory -Path $kpDir -Force | Out-Null
+
+@&quot;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;KeePassFile&gt;
+    &lt;Meta&gt;&lt;DatabaseName&gt;CTF Passwords&lt;/DatabaseName&gt;&lt;/Meta&gt;
+    &lt;Root&gt;
+        &lt;Group&gt;
+            &lt;Name&gt;CTF&lt;/Name&gt;
+            &lt;Entry&gt;
+                &lt;String&gt;&lt;Key&gt;Title&lt;/Key&gt;    &lt;Value&gt;Intranet CTF&lt;/Value&gt;&lt;/String&gt;
+                &lt;String&gt;&lt;Key&gt;UserName&lt;/Key&gt; &lt;Value&gt;admin&lt;/Value&gt;&lt;/String&gt;
+                &lt;String&gt;&lt;Key&gt;Password&lt;/Key&gt; &lt;Value&gt;FLAG{keepass_autotype_credential_leak}&lt;/Value&gt;&lt;/String&gt;
+                &lt;String&gt;&lt;Key&gt;URL&lt;/Key&gt;      &lt;Value&gt;http://intranet.ctf.local/flag7&lt;/Value&gt;&lt;/String&gt;
+                &lt;String&gt;&lt;Key&gt;Notes&lt;/Key&gt;    &lt;Value&gt;Compte admin portail intranet&lt;/Value&gt;&lt;/String&gt;
+                &lt;AutoType&gt;
+                    &lt;Enabled&gt;True&lt;/Enabled&gt;
+                    &lt;DataTransferObfuscation&gt;0&lt;/DataTransferObfuscation&gt;
+                    &lt;DefaultSequence&gt;{USERNAME}{TAB}{PASSWORD}{ENTER}&lt;/DefaultSequence&gt;
+                &lt;/AutoType&gt;
+            &lt;/Entry&gt;
+        &lt;/Group&gt;
+    &lt;/Root&gt;
+&lt;/KeePassFile&gt;
+&quot;@ | Set-Content &quot;$kpDir\import.xml&quot; -Encoding UTF8
+Write-Host &quot;  [+] XML KeePass cree : $kpDir\import.xml&quot; -ForegroundColor Green
+
+# --- 7. Verifications ---
+Write-Host &quot;`n  [*] KeePass installe :&quot; -ForegroundColor Yellow
+Test-Path &quot;C:\Program Files\KeePass Password Safe 2\KeePass.exe&quot;
+
+Write-Host &quot;`n  [*] Test page IIS :&quot; -ForegroundColor Yellow
+try {
+    $r = Invoke-WebRequest http://intranet.ctf.local/flag7/ -UseBasicParsing
+    Write-Host &quot;  [+] Page accessible (HTTP $($r.StatusCode))&quot; -ForegroundColor Green
+} catch {
+    Write-Host &quot;  [!] Page inaccessible - verifier IIS&quot; -ForegroundColor Red
+}
+
+Write-Host &quot;`n  [*] Fichier XML :&quot; -ForegroundColor Yellow
+Test-Path $kpDir\import.xml
+
+Write-Host &quot;`n[FLAG 7] Script termine - Etapes manuelles requises (voir guide)&quot; -ForegroundColor Green
+Write-Host &quot;  SNAPSHOT apres etapes manuelles : WS02 - Flag7 deploye&quot; -ForegroundColor Yellow
+</code></pre>
+<hr />
+<h3 id="etapes-manuelles-dans-lordre">Étapes manuelles — dans l'ordre</h3>
+<blockquote>
+<p>[!warning] À faire APRÈS le script, sur WS02</p>
+</blockquote>
+<p><strong>Étape 1 — Se connecter en tant que <code>lowpriv</code></strong> sur WS02 (<code>CTF\lowpriv</code> / <code>User@1234</code>).</p>
+<p><strong>Étape 2 — Créer la base KeePass</strong> :</p>
+<ol>
+<li>Ouvrir KeePass (<code>C:\Program Files\KeePass Password Safe 2\KeePass.exe</code>)</li>
+<li><strong>File → New</strong></li>
+<li>Enregistrer sous : <code>C:\Users\lowpriv\Documents\KeePass\ctf.kdbx</code></li>
+<li>Mot de passe maître : <code>Inf0Sec&amp;Lab2024!</code></li>
+<li>Valider la création de la base</li>
+</ol>
+<p><strong>Étape 3 — Importer le XML</strong> :</p>
+<ol>
+<li><strong>File → Import → KeePass XML 2.x</strong></li>
+<li>Sélectionner : <code>C:\Users\lowpriv\Documents\KeePass\import.xml</code></li>
+<li>Confirmer l'import</li>
+<li><strong>Ctrl+S</strong> pour sauvegarder</li>
+</ol>
+<p><strong>Étape 4 — Supprimer le XML source</strong> (PowerShell Admin) :</p>
+<pre><code class="language-powershell">Remove-Item &quot;C:\Users\lowpriv\Documents\KeePass\import.xml&quot; -Force
+</code></pre>
+<p><strong>Étape 5 — Vérification finale</strong> :</p>
+<p>Ouvrir Microsoft Edge sur WS02 : <code>http://intranet.ctf.local/flag7/</code>
+La page de login doit s'afficher.</p>
+<blockquote>
+<p>[!success] Snapshot WS02
+<strong><code>WS02 — Flag7 déployé</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="write-up">Write-up</h2>
+<h3 id="contexte">Contexte</h3>
+<p>KeePass est un gestionnaire de mots de passe local. Sa fonction Auto-Type permet de saisir automatiquement les credentials dans la fenêtre active correspondant à une URL configurée. Un attaquant ayant accès à la session peut ouvrir la page cible et déclencher l'Auto-Type pour faire "taper" le mot de passe par KeePass — sans jamais voir le mot de passe directement dans la base.</p>
+<hr />
+<h3 id="reconnaissance">Reconnaissance</h3>
+<h4 id="etape-1-rechercher-une-base-keepass">Étape 1 — Rechercher une base KeePass</h4>
+<p>Connecté en <code>CTF\lowpriv</code> sur WS02 :</p>
+<pre><code class="language-powershell">Get-ChildItem C:\Users\lowpriv\Documents\ -Recurse -Filter &quot;*.kdbx&quot;
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Mode    Name
+----    ----
+-a----  ctf.kdbx
+</code></pre>
+<h4 id="etape-2-ouvrir-la-base-keepass">Étape 2 — Ouvrir la base KeePass</h4>
+<p>Ouvrir KeePass : <strong>File → Open</strong> → sélectionner <code>ctf.kdbx</code> → saisir le mot de passe maître <code>keepass123</code>.</p>
+<h4 id="etape-3-explorer-les-entrees">Étape 3 — Explorer les entrées</h4>
+<p>Dans KeePass, on voit l'entrée <strong>Intranet CTF</strong> avec :</p>
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Titre</td>
+<td>Intranet CTF</td>
+</tr>
+<tr>
+<td>Utilisateur</td>
+<td>admin</td>
+</tr>
+<tr>
+<td>URL</td>
+<td>http://intranet.ctf.local/flag7</td>
+</tr>
+<tr>
+<td>Mot de passe</td>
+<td><code>●●●●●●●●</code> (masqué)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="exploitation">Exploitation</h3>
+<h4 id="etape-4-ouvrir-la-page-cible-dans-le-navigateur">Étape 4 — Ouvrir la page cible dans le navigateur</h4>
+<p>Ouvrir Microsoft Edge sur WS02 :</p>
+<pre><code>http://intranet.ctf.local/flag7/
+</code></pre>
+<p>La page de login s'affiche. Cliquer dans le champ <strong>Utilisateur</strong> pour le mettre en focus.</p>
+<h4 id="etape-5-declencher-lauto-type">Étape 5 — Déclencher l'Auto-Type</h4>
+<p>Dans KeePass, avec l'entrée <strong>Intranet CTF</strong> sélectionnée :</p>
+<ul>
+<li>Clic droit → <strong>Perform Auto-Type</strong></li>
+<li>Ou raccourci global : <code>Ctrl+Alt+A</code> (la fenêtre active doit être la page de login)</li>
+</ul>
+<p>KeePass tape automatiquement :</p>
+<ol>
+<li><code>admin</code> dans le champ Utilisateur</li>
+<li><code>Tab</code> pour passer au champ Mot de passe</li>
+<li>Le flag comme mot de passe</li>
+<li><code>Entrée</code> pour valider</li>
+</ol>
+<p><strong>Résultat dans le navigateur :</strong></p>
+<pre><code>✅ Connexion réussie !
+FLAG{keepass_autotype_credential_leak}
+</code></pre>
+<hr />
+<h3 id="recuperation-du-flag">Récupération du flag</h3>
+<pre><code>FLAG{keepass_autotype_credential_leak}
+</code></pre>
+<hr />
+<h3 id="aller-plus-loin">Aller plus loin</h3>
+<p>On peut aussi lire le mot de passe directement depuis KeePass sans passer par l'Auto-Type :</p>
+<pre><code>Clic droit sur l'entrée → Copy Password → coller dans un éditeur de texte
+</code></pre>
+<p>Ou afficher le mot de passe en clair :</p>
+<pre><code>Clic sur l'icône œil dans le champ mot de passe de l'entrée
+</code></pre>
+<hr />
+<h3 id="remediation">Remédiation</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base KeePass accessible sans verrouillage de session</td>
+<td>Activer le verrouillage automatique de KeePass après inactivité (<code>Tools → Options → Security</code>)</td>
+</tr>
+<tr>
+<td>Auto-Type sans confirmation</td>
+<td>Activer la confirmation avant Auto-Type dans les options KeePass</td>
+</tr>
+<tr>
+<td>Session Windows non verrouillée</td>
+<td>Politique de verrouillage d'écran automatique via GPO</td>
+</tr>
+<tr>
+<td>Base KeePass sans protection supplémentaire</td>
+<td>Utiliser un fichier clé en plus du mot de passe maître</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</h3>
+<pre><code>lowpriv
+  └─→ Get-ChildItem → ctf.kdbx trouvé
+        └─→ KeePass → File → Open → mot de passe maître : keepass123
+              └─→ entrée &quot;Intranet CTF&quot; → URL : http://intranet.ctf.local/flag7
+                    └─→ navigateur → http://intranet.ctf.local/flag7/
+                          └─→ focus sur champ Utilisateur
+                                └─→ KeePass → Perform Auto-Type (Ctrl+Alt+A)
+                                      └─→ FLAG{keepass_autotype_credential_leak}
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

