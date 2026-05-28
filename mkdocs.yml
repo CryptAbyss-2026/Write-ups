@@ -9,6 +9,14 @@ nav:
   - Crypto:
     - Challenge 1 - Base64: crypto/challenge1.md
     - Challenge 2 - Multi-layer Caesar: crypto/challenge2.md
+    - Double encryption: crypto/Double_Encryption_0142.md
+    - Myrox Infiltration: crypto/Myrox_Infiltration_0143.md
+  - osint:
+    - Atterrisage Urgence: osint/Atterissage_Urgence_0145.md
+  - Stegano:
+    - Transmission Alien: steganographie/Transmission_Alien_0141.md
+  - autre:
+    - Destruction Vaisseau: autre/Destruction_Vaisseau_0144.md
 
 theme:
   name: readthedocs
