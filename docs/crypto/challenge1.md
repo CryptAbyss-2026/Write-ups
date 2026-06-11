@@ -6,14 +6,21 @@ Easy
 ---
 
 ## Description
+``` Bienvenue
 
-Un message encodé est fourni dans le fichier `challenge1.txt`.
+Un message a été encodé dans le fichier challenge1.txt
+Retrouvez le flag.
 
+Indication: 
+C’est un encodage très connu
+
+bonne chance!!!!
+```
 ---
 
 ## Fichier fourni
 
-- `challenge1.txt`
+- ```challenge1.txt```
 
 ---
 
@@ -22,7 +29,7 @@ Un message encodé est fourni dans le fichier `challenge1.txt`.
 ### 1. Observer le contenu
 
 ```text
-RkxBRzE6IENURntUdSBhcyByZXVzc2kgbGUgdGVzdH0=
+Q3J5cHRBYnlzc3tkQzBkM19CQHMzNjRfZkBjMWwzfQ==
 ```
 
 ---
@@ -44,7 +51,7 @@ base64 -d challenge1.txt
 ### 4. Résultat
 
 ```text
-FLAG1: CTF{Tu as reussi le test}
+CryptAbyss{dC0d3_B@s364_f@c1l3}
 ```
 
 ---
@@ -75,5 +82,5 @@ challenge1.txt
         ↓
 Base64 decode
         ↓
-FLAG1
+CryptAbyss{dC0d3_B@s364_f@c1l3}
 ```
