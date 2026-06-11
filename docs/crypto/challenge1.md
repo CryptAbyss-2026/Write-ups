@@ -6,9 +6,16 @@ Easy
 ---
 
 ## Description
+```` Bienvenue
 
-Un message encodé est fourni dans le fichier `challenge1.txt`.
+Un message a été encodé dans le fichier challenge1.txt
+Retrouvez le flag.
 
+Indication: 
+C’est un encodage très connu
+
+bonne chance!!!!
+```
 ---
 
 ## Fichier fourni
