@@ -44,7 +44,7 @@ base64 -d challenge1.txt
 ### 4. Résultat
 
 ```text
-FLAG1: CTF{Tu as reussi le test}
+CryptAbyss{dC0d3_B@s364_f@c1l3}
 ```
 
 ---
