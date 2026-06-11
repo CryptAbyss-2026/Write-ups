@@ -15,6 +15,10 @@ nav:
     - Atterrisage Urgence: osint/Atterissage_Urgence_0145.md
   - Stegano:
     - Transmission Alien: steganographie/Transmission_Alien_0141.md
+  - Reverse:
+    - Strings on binary: reverse/strings-0084.md
+    - Binary analyze: reverse/binary-analyze-0083.md
+    - Binary patching: reverse/patch-xxxx.md
   - autre:
     - Destruction Vaisseau: autre/Destruction_Vaisseau_0144.md
 
