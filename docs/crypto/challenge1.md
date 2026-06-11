@@ -22,7 +22,7 @@ Un message encodé est fourni dans le fichier `challenge1.txt`.
 ### 1. Observer le contenu
 
 ```text
-RkxBRzE6IENURntUdSBhcyByZXVzc2kgbGUgdGVzdH0=
+Q3J5cHRBYnlzc3tkQzBkM19CQHMzNjRfZkBjMWwzfQ==
 ```
 
 ---
