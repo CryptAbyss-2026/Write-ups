@@ -70,8 +70,6 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-decodage-du-fichier-principal">1. Décodage du fichier principal</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-analyse-de-la-cle">2. Analyse de la clé</a>
-    </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-dechiffrement-caesar">3. Déchiffrement Caesar</a>
     </li>
         </ul>
@@ -166,28 +164,35 @@
 <p>Résultat :</p>
 <pre><code class="language-text">Fausse piste : la clé est indispensable.
 
-IODJ2: eudyr wx dv uhxvvl oh whvw
+FubswDebvv{gF0g3_F3v@u_+E@v364}
 
-Tu es proche... mais pas encore.
-</code></pre>
-<p>Le premier message est une fausse piste.</p>
-<hr />
-<h3 id="2-analyse-de-la-cle">2. Analyse de la clé</h3>
-<pre><code class="language-bash">base64 -d key
+Tu es proche... mais pas encore.```
+
+Le premier message est une fausse piste.
+
+---
+
+### 2. Analyse de la clé
+
+```bash
+base64 -d key
 </code></pre>
 <p>Résultat :</p>
-<pre><code class="language-text">clé = 3
-essaye de deviner le chiffrement utiliser dans le contenu de challenge2.txt pour trouver le flag caché
+<pre><code class="language-text">Essaye de deviner le chiffrement utiliser dans le contenu de challenge.txt pour trouver le flag caché. clé = 3
+
 </code></pre>
 <p>La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.</p>
 <hr />
 <h3 id="3-dechiffrement-caesar">3. Déchiffrement Caesar</h3>
 <p>Message à traiter :</p>
-<pre><code class="language-text">IODJ2: eudyr wx dv uhxvvl oh whvw
-</code></pre>
-<p>Appliquer un décalage de <code>-3</code>.</p>
-<p>Résultat :</p>
-<pre><code class="language-text">FLAG2: bravo tu as reussi le test
+<pre><code class="language-text">RXNzYXllIGRlIGRldmluZXIgbGUgY2hpZmZyZW1lbnQgdXRpbGlzZXIgZGFucyBsZSBjb250ZW51IGRlIGNoYWxsZW5nZS50eHQgcG91ciB0cm91dmVyIGxlIGZsYWcgY2FjaMOpLiBjbMOpID0gMwo=```
+
+Appliquer un décalage de `-3`.
+
+Résultat :
+
+```text
+CryptAbyss{dC0d3_C3s@r_+B@s364}
 </code></pre>
 <hr />
 <h2 id="conclusion">Conclusion</h2>
