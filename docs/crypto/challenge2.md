@@ -33,10 +33,9 @@ Résultat :
 ```text
 Fausse piste : la clé est indispensable.
 
-IODJ2: eudyr wx dv uhxvvl oh whvw
+FubswDebvv{gF0g3_F3v@u_+E@v364}
 
-Tu es proche... mais pas encore.
-```
+Tu es proche... mais pas encore.```
 
 Le premier message est une fausse piste.
 
@@ -51,8 +50,8 @@ base64 -d key
 Résultat :
 
 ```text
-clé = 3
-essaye de deviner le chiffrement utiliser dans le contenu de challenge2.txt pour trouver le flag caché
+Essaye de deviner le chiffrement utiliser dans le contenu de challenge.txt pour trouver le flag caché. clé = 3
+
 ```
 
 La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.
@@ -64,15 +63,14 @@ La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.
 Message à traiter :
 
 ```text
-IODJ2: eudyr wx dv uhxvvl oh whvw
-```
+RXNzYXllIGRlIGRldmluZXIgbGUgY2hpZmZyZW1lbnQgdXRpbGlzZXIgZGFucyBsZSBjb250ZW51IGRlIGNoYWxsZW5nZS50eHQgcG91ciB0cm91dmVyIGxlIGZsYWcgY2FjaMOpLiBjbMOpID0gMwo=```
 
 Appliquer un décalage de `-3`.
 
 Résultat :
 
 ```text
-FLAG2: bravo tu as reussi le test
+CryptAbyss{dC0d3_C3s@r_+B@s364}
 ```
 
 ---
