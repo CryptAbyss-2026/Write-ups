@@ -30,12 +30,13 @@ base64 -d challenge2.txt
 
 Résultat :
 
-```text
+```
 Fausse piste : la clé est indispensable.
 
 FubswDebvv{gF0g3_F3v@u_+E@v364}
 
-Tu es proche... mais pas encore.```
+Tu es proche... mais pas encore.
+```
 
 Le premier message est une fausse piste.
 
@@ -51,7 +52,6 @@ Résultat :
 
 ```text
 Essaye de deviner le chiffrement utiliser dans le contenu de challenge.txt pour trouver le flag caché. clé = 3
-
 ```
 
 La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.
@@ -63,7 +63,8 @@ La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.
 Message à traiter :
 
 ```text
-RXNzYXllIGRlIGRldmluZXIgbGUgY2hpZmZyZW1lbnQgdXRpbGlzZXIgZGFucyBsZSBjb250ZW51IGRlIGNoYWxsZW5nZS50eHQgcG91ciB0cm91dmVyIGxlIGZsYWcgY2FjaMOpLiBjbMOpID0gMwo=```
+RXNzYXllIGRlIGRldmluZXIgbGUgY2hpZmZyZW1lbnQgdXRpbGlzZXIgZGFucyBsZSBjb250ZW51IGRlIGNoYWxsZW5nZS50eHQgcG91ciB0cm91dmVyIGxlIGZsYWcgY2FjaMOpLiBjbMOpID0gMwo=
+```
 
 Appliquer un décalage de `-3`.
 
@@ -117,5 +118,5 @@ Message chiffré
         ↓
 Caesar -3
         ↓
-FLAG2
+CryptAbyss{dC0d3_C3s@r_+B@s364}
 ```
