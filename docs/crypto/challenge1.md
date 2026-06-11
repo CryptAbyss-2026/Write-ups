@@ -6,7 +6,7 @@ Easy
 ---
 
 ## Description
-```` Bienvenue
+``` Bienvenue
 
 Un message a été encodé dans le fichier challenge1.txt
 Retrouvez le flag.
@@ -20,7 +20,7 @@ bonne chance!!!!
 
 ## Fichier fourni
 
-- `challenge1.txt`
+- ```challenge1.txt```
 
 ---
 
@@ -82,5 +82,5 @@ challenge1.txt
         ↓
 Base64 decode
         ↓
-FLAG1
+CryptAbyss{dC0d3_B@s364_f@c1l3}
 ```
