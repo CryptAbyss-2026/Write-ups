@@ -61,7 +61,13 @@
     <li class="toctree-l2"><a class="reference internal" href="#difficulte">Difficulté</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#fichier-fourni">Fichier fourni</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#etapes-de-resolution">Étapes de résolution</a>
         <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-observer-le-contenu">1. Observer le contenu</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-identifier-lencodage">2. Identifier l’encodage</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-decoder-le-contenu">3. Décoder le contenu</a>
@@ -146,26 +152,24 @@
 <p>Easy</p>
 <hr />
 <h2 id="description">Description</h2>
-<p>```` Bienvenue</p>
-<p>Un message a été encodé dans le fichier challenge1.txt
-Retrouvez le flag.</p>
-<p>Indication: 
-C’est un encodage très connu</p>
-<p>bonne chance!!!!</p>
-<pre><code>---
+<pre><code class="language-Bienvenue">
+Un message a été encodé dans le fichier challenge1.txt
+Retrouvez le flag.
 
-## Fichier fourni
+Indication: 
+C’est un encodage très connu
 
-- `challenge1.txt`
-
----
-
-## Étapes de résolution
-
-### 1. Observer le contenu
-
-```text
-Q3J5cHRBYnlzc3tkQzBkM19CQHMzNjRfZkBjMWwzfQ==
+bonne chance!!!!
+</code></pre>
+<hr />
+<h2 id="fichier-fourni">Fichier fourni</h2>
+<ul>
+<li><code>challenge1.txt</code></li>
+</ul>
+<hr />
+<h2 id="etapes-de-resolution">Étapes de résolution</h2>
+<h3 id="1-observer-le-contenu">1. Observer le contenu</h3>
+<pre><code class="language-text">Q3J5cHRBYnlzc3tkQzBkM19CQHMzNjRfZkBjMWwzfQ==
 </code></pre>
 <hr />
 <h3 id="2-identifier-lencodage">2. Identifier l’encodage</h3>
@@ -195,7 +199,7 @@ Q3J5cHRBYnlzc3tkQzBkM19CQHMzNjRfZkBjMWwzfQ==
         ↓
 Base64 decode
         ↓
-FLAG1
+CryptAbyss{dC0d3_B@s364_f@c1l3}
 </code></pre>
               
             </div>
