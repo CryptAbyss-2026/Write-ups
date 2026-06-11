@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Challenge 2 - Multi-layer Caesar - CryptAbyss 2026</title>
+    <title>Atterrisage Urgence - CryptAbyss 2026</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Challenge 2 - Multi-layer Caesar";
-        var mkdocs_page_input_path = "crypto\\challenge2.md";
+        var mkdocs_page_name = "Atterrisage Urgence";
+        var mkdocs_page_input_path = "osint\\Atterissage_Urgence_0145.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -55,51 +55,37 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Crypto</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../challenge1/">Challenge 1 - Base64</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Challenge 2 - Multi-layer Caesar</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#difficulte">Difficulté</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#fichiers-fournis">Fichiers fournis</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#etapes-de-resolution">Étapes de résolution</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-decodage-du-fichier-principal">1. Décodage du fichier principal</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-analyse-de-la-cle">2. Analyse de la clé</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#3-dechiffrement-caesar">3. Déchiffrement Caesar</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#indices">Indices</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#indice-1">Indice 1</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#indice-2">Indice 2</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#indice-3">Indice 3</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#topologie">Topologie</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Double_Encryption_0142/">Double encryption</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">osint</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Atterrisage Urgence</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#atterrissage-durgence">Atterrissage d'urgence</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-indices">IV - Indices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-duree-approximative">V - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-flag">VI - Flag</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Stegano</span></p>
@@ -135,8 +121,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Crypto</li>
-      <li class="breadcrumb-item active">Challenge 2 - Multi-layer Caesar</li>
+          <li class="breadcrumb-item">osint</li>
+      <li class="breadcrumb-item active">Atterrisage Urgence</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -145,92 +131,55 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="challenge-2-multi-layer-caesar">Challenge 2 — Multi-layer + Caesar</h1>
-<h2 id="difficulte">Difficulté</h2>
-<p>Medium</p>
+                <h1 id="flag-n0145">🚩 Flag n°0145</h1>
+<h2 id="atterrissage-durgence">Atterrissage d'urgence</h2>
+<p>En continuant l’exploration du profil de Myrox, un nouveau rapport de mission apparaît dans le fil d’actualité.
+Les extraterrestres semblent avoir laissé une position réelle cachée dans leurs communications précédentes.
+Votre mission : retrouver les trois mots-clés et localiser la balise.</p>
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p>OSINT</p>
 <hr />
-<h2 id="description">Description</h2>
-<p>Un message codé est présent dans le fichier <code>challenge2.txt</code>.</p>
-<p>Une clé encodée est fournie dans le fichier <code>key</code>.</p>
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>L’objectif de ce challenge est d’amener les participants à réutiliser des informations obtenues dans un défi précédent afin de résoudre une énigme OSINT. Il pousse les joueurs à faire le lien entre plusieurs flags, à utiliser un service externe de géolocalisation et à se déplacer physiquement pour récupérer le flag final.</p>
 <hr />
-<h2 id="fichiers-fournis">Fichiers fournis</h2>
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p>Le flag a été construit à partir du site what3words. Un emplacement précis devant l’UPJV a été sélectionné manuellement, puis les trois mots associés à cette position ont été récupérés (redoux.juger.adjoint). Ces mots ont ensuite été intégrés dans le challenge précédent (flag n°0142 Double Encryption) afin d’obliger les participants à les retrouver avant de pouvoir localiser la balise physique contenant le flag.</p>
+<hr />
+<h2 id="iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</h2>
+<p>Dans le défi précédent flag n°0142 Double Encryption, trois mots ont été obtenus après déchiffrement :
+- redoux
+- juger
+- adjoint
+Le rapport indique explicitement l’utilisation du site what3words. Le site https://what3words.com permet de localiser précisément un point du globe grâce à trois mots uniques. En entrant les trois mots : redoux.juger.adjoint. Une localisation précise apparaît sur la carte. Cette position correspond à un emplacement réel situé devant l’UPJV, où le flag est écrit et caché dans un ballon (un ballon par équipe).
+Les participants doivent alors se rendre physiquement sur place pour récupérer l'information finale.</p>
+<hr />
+<h2 id="iv-indices">IV - Indices</h2>
 <ul>
-<li><code>challenge2.txt</code></li>
-<li><code>key</code></li>
+<li>
+<p><strong>Indice léger :</strong><br />
+  Déchiffre d’abord le rapport sur le profil de Myrox.</p>
+</li>
+<li>
+<p><strong>Indice intermédiaire :</strong><br />
+  Trois mots ont été obtenus lors d’un défi précédent.</p>
+</li>
+<li>
+<p><strong>Indice final :</strong><br />
+  Essayez d’utiliser ces trois mots sur un service de localisation basé sur trois mots.</p>
+</li>
 </ul>
 <hr />
-<h2 id="etapes-de-resolution">Étapes de résolution</h2>
-<h3 id="1-decodage-du-fichier-principal">1. Décodage du fichier principal</h3>
-<pre><code class="language-bash">base64 -d challenge2.txt
-</code></pre>
-<p>Résultat :</p>
-<pre><code class="language-text">Fausse piste : la clé est indispensable.
-
-IODJ2: eudyr wx dv uhxvvl oh whvw
-
-Tu es proche... mais pas encore.
-</code></pre>
-<p>Le premier message est une fausse piste.</p>
+<h2 id="v-duree-approximative">V - Durée approximative</h2>
+<p>20 à 30 minutes.</p>
 <hr />
-<h3 id="2-analyse-de-la-cle">2. Analyse de la clé</h3>
-<pre><code class="language-bash">base64 -d key
-</code></pre>
-<p>Résultat :</p>
-<pre><code class="language-text">clé = 3
-essaye de deviner le chiffrement utiliser dans le contenu de challenge2.txt pour trouver le flag caché
-</code></pre>
-<p>La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.</p>
-<hr />
-<h3 id="3-dechiffrement-caesar">3. Déchiffrement Caesar</h3>
-<p>Message à traiter :</p>
-<pre><code class="language-text">IODJ2: eudyr wx dv uhxvvl oh whvw
-</code></pre>
-<p>Appliquer un décalage de <code>-3</code>.</p>
-<p>Résultat :</p>
-<pre><code class="language-text">FLAG2: bravo tu as reussi le test
-</code></pre>
-<hr />
-<h2 id="conclusion">Conclusion</h2>
-<p>Le challenge combine plusieurs étapes :</p>
-<ul>
-<li>Base64</li>
-<li>Fausse piste</li>
-<li>Chiffrement Caesar</li>
-</ul>
-<hr />
-<h2 id="indices">Indices</h2>
-<h3 id="indice-1">Indice 1</h3>
-<p>Tous les résultats ne sont pas forcément le flag.</p>
-<h3 id="indice-2">Indice 2</h3>
-<p>Une clé est fournie, elle n’est pas là par hasard.</p>
-<h3 id="indice-3">Indice 3</h3>
-<p>Le message final semble avoir subi un décalage.</p>
-<hr />
-<h2 id="topologie">Topologie</h2>
-<pre><code class="language-text">challenge2.txt
-        ↓
-Base64 decode
-        ↓
-Fausse piste + message chiffré
-
-key
-        ↓
-Base64 decode
-        ↓
-clé = 3
-
-Message chiffré
-        ↓
-Caesar -3
-        ↓
-FLAG2
-</code></pre>
+<h2 id="vi-flag">VI - Flag</h2>
+<p>CryptAbyss{B4l1s3_D3t3ct3d}</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../challenge1/" class="btn btn-neutral float-left" title="Challenge 1 - Base64"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../Double_Encryption_0142/" class="btn btn-neutral float-right" title="Double encryption">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../crypto/Myrox_Infiltration_0143/" class="btn btn-neutral float-left" title="Myrox Infiltration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../steganographie/Transmission_Alien_0141/" class="btn btn-neutral float-right" title="Transmission Alien">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -253,10 +202,10 @@ FLAG2
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../challenge1/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../crypto/Myrox_Infiltration_0143/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../Double_Encryption_0142/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../steganographie/Transmission_Alien_0141/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

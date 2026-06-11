@@ -13,7 +13,7 @@
       <script>
         // Current page data
         var mkdocs_page_name = "Challenge 1 - Base64";
-        var mkdocs_page_input_path = "crypto/challenge1.md";
+        var mkdocs_page_input_path = "crypto\\challenge1.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -61,13 +61,7 @@
     <li class="toctree-l2"><a class="reference internal" href="#difficulte">Difficulté</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#fichier-fourni">Fichier fourni</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#etapes-de-resolution">Étapes de résolution</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-observer-le-contenu">1. Observer le contenu</a>
-    </li>
     <li class="toctree-l3"><a class="reference internal" href="#2-identifier-lencodage">2. Identifier l’encodage</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-decoder-le-contenu">3. Décoder le contenu</a>
@@ -93,6 +87,34 @@
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/binary-analyze-0083/">Binary analyze</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">autre</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
                   </li>
               </ul>
       </div>
@@ -124,16 +146,26 @@
 <p>Easy</p>
 <hr />
 <h2 id="description">Description</h2>
-<p>Un message encodé est fourni dans le fichier <code>challenge1.txt</code>.</p>
-<hr />
-<h2 id="fichier-fourni">Fichier fourni</h2>
-<ul>
-<li><code>challenge1.txt</code></li>
-</ul>
-<hr />
-<h2 id="etapes-de-resolution">Étapes de résolution</h2>
-<h3 id="1-observer-le-contenu">1. Observer le contenu</h3>
-<pre><code class="language-text">RkxBRzE6IENURntUdSBhcyByZXVzc2kgbGUgdGVzdH0=
+<p>```` Bienvenue</p>
+<p>Un message a été encodé dans le fichier challenge1.txt
+Retrouvez le flag.</p>
+<p>Indication: 
+C’est un encodage très connu</p>
+<p>bonne chance!!!!</p>
+<pre><code>---
+
+## Fichier fourni
+
+- `challenge1.txt`
+
+---
+
+## Étapes de résolution
+
+### 1. Observer le contenu
+
+```text
+Q3J5cHRBYnlzc3tkQzBkM19CQHMzNjRfZkBjMWwzfQ==
 </code></pre>
 <hr />
 <h3 id="2-identifier-lencodage">2. Identifier l’encodage</h3>
@@ -144,7 +176,7 @@
 </code></pre>
 <hr />
 <h3 id="4-resultat">4. Résultat</h3>
-<pre><code class="language-text">FLAG1: CTF{Tu as reussi le test}
+<pre><code class="language-text">CryptAbyss{dC0d3_B@s364_f@c1l3}
 </code></pre>
 <hr />
 <h2 id="conclusion">Conclusion</h2>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Binary analyze - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Binary analyze";
+        var mkdocs_page_input_path = "reverse\\binary-analyze-0083.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Binary analyze</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#access-forbidden">Access Forbidden</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solution-detaillee">III - Solution détaillée</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-1-executer-le-programme">Étape 1 — Exécuter le programme</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-2-analyser-le-binaire-avec-ghidra">Étape 2 — Analyser le binaire avec Ghidra</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-3-fournir-les-bons-arguments">Étape 3 — Fournir les bons arguments</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-4-verifier-les-privileges-obtenus">Étape 4 — Vérifier les privilèges obtenus</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-5-recuperer-le-flag">Étape 5 — Récupérer le flag</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-recuperation-du-flag">IV - Récupération du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-indices">V - Indices</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-leger">Indice léger</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-intermediaire">Indice intermédiaire</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-final">Indice final</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-ce-quil-fallait-apprendre">VI - Ce qu'il fallait apprendre</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vii-duree-approximative">VII - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#viii-resume-de-la-resolution">VIII - Résumé de la résolution</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../patch-xxxx/">Binary patching</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">autre</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reverse</li>
+      <li class="breadcrumb-item active">Binary analyze</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-n0083">🚩 Flag n°0083</h1>
+<h2 id="access-forbidden">Access Forbidden</h2>
+<p>Un binaire Linux nommé <code>chall</code> est fourni. Lors de son exécution, il affiche simplement un message :</p>
+<pre><code class="language-text">Access forbidden.
+</code></pre>
+<p>Le challenge consiste à comprendre pourquoi l'accès est refusé et quelles conditions doivent être remplies pour obtenir un comportement différent.</p>
+<hr />
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p><strong>Reverse Engineering — Analyse de logique et arguments de programme</strong></p>
+<hr />
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>L'objectif de ce challenge est d'initier les participants à l'analyse statique d'un binaire avec un décompilateur.</p>
+<p>Contrairement au challenge précédent (0084) où le flag était directement visible avec <code>strings</code>, celui-ci nécessite de comprendre la logique du programme afin d'identifier les arguments attendus.</p>
+<p>Le participant apprend à :</p>
+<ul>
+<li>Utiliser un outil de reverse engineering comme Ghidra.</li>
+<li>Lire un pseudo-code décompilé.</li>
+<li>Identifier des comparaisons de chaînes.</li>
+<li>Comprendre le comportement conditionnel d'un programme.</li>
+</ul>
+<hr />
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p>Le programme vérifie les arguments passés sur la ligne de commande.</p>
+<p>Si les deux arguments attendus sont présents et correspondent exactement aux chaînes définies dans le code, le programme exécute un shell Bash avec les privilèges du binaire.</p>
+<p>Dans le cas contraire, il affiche simplement :</p>
+<pre><code class="language-text">Access forbidden.
+</code></pre>
+<p>L'analyse du code permet de découvrir que les arguments attendus sont :</p>
+<pre><code class="language-text">printf
+main
+</code></pre>
+<p>Une fois ces arguments fournis dans le bon ordre, le programme lance :</p>
+<pre><code class="language-c">execv(&quot;/bin/bash&quot;, ...)
+</code></pre>
+<p>et donne accès à un shell.</p>
+<hr />
+<h2 id="iii-solution-detaillee">III - Solution détaillée</h2>
+<h3 id="etape-1-executer-le-programme">Étape 1 — Exécuter le programme</h3>
+<pre><code class="language-bash">chmod +x chall
+./chall
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code class="language-text">Access forbidden.
+</code></pre>
+<p>Le programme refuse l'accès sans fournir davantage d'informations.</p>
+<hr />
+<h3 id="etape-2-analyser-le-binaire-avec-ghidra">Étape 2 — Analyser le binaire avec Ghidra</h3>
+<p>Importer le binaire dans Ghidra puis ouvrir la fonction <code>main</code>.</p>
+<p>Le pseudo-code obtenu ressemble à ceci :</p>
+<pre><code class="language-c">if (((2 &lt; argc) &amp;&amp;
+    (strcmp(argv[1],&quot;printf&quot;) == 0)) &amp;&amp;
+    (strcmp(argv[2],&quot;main&quot;) == 0))
+{
+    execv(&quot;/bin/bash&quot;, ...);
+}
+
+puts(&quot;Access forbidden.&quot;);
+</code></pre>
+<p>On remarque immédiatement plusieurs éléments intéressants :</p>
+<ul>
+<li>Le programme vérifie le nombre d'arguments.</li>
+<li>Le premier argument doit être <code>printf</code>.</li>
+<li>Le second argument doit être <code>main</code>.</li>
+<li>Si ces conditions sont remplies, un shell Bash est lancé.</li>
+</ul>
+<p>Note : les arguments sont des mots communs pour éviter de les repérer via <code>strings</code>. </p>
+<hr />
+<h3 id="etape-3-fournir-les-bons-arguments">Étape 3 — Fournir les bons arguments</h3>
+<p>Exécuter le programme avec les valeurs découvertes lors de l'analyse :</p>
+<pre><code class="language-bash">./chall printf main
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code class="language-text">bash-5.2#
+</code></pre>
+<p>Le programme ouvre alors un shell.</p>
+<hr />
+<h3 id="etape-4-verifier-les-privileges-obtenus">Étape 4 — Vérifier les privilèges obtenus</h3>
+<pre><code class="language-bash">whoami
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code class="language-text">root
+</code></pre>
+<p>Le shell obtenu possède les privilèges root.</p>
+<hr />
+<h3 id="etape-5-recuperer-le-flag">Étape 5 — Récupérer le flag</h3>
+<p>Une fois dans le shell, il suffit de lire le fichier contenant le flag.</p>
+<pre><code class="language-bash">cat /root/flag.txt
+</code></pre>
+<p><strong>Résultat :</strong></p>
+<pre><code class="language-text">CryptAbyss{H0w_h4ve_yUo_d0n€_th1s??}
+</code></pre>
+<hr />
+<h2 id="iv-recuperation-du-flag">IV - Récupération du flag</h2>
+<pre><code class="language-text">CryptAbyss{H0w_h4ve_yUo_d0n€_th1s??}
+</code></pre>
+<hr />
+<h2 id="v-indices">V - Indices</h2>
+<h3 id="indice-leger">Indice léger</h3>
+<p>Le message <em>"Access forbidden"</em> laisse penser que le programme attend quelque chose.</p>
+<h3 id="indice-intermediaire">Indice intermédiaire</h3>
+<p>Le programme vérifie des paramètres passés en ligne de commande.</p>
+<h3 id="indice-final">Indice final</h3>
+<p>Deux arguments précis doivent être fournis pour déclencher une fonction cachée.</p>
+<hr />
+<h2 id="vi-ce-quil-fallait-apprendre">VI - Ce qu'il fallait apprendre</h2>
+<ul>
+<li>Utiliser Ghidra pour analyser un exécutable.</li>
+<li>Lire un pseudo-code décompilé.</li>
+<li>Identifier des appels à <code>strcmp()</code>.</li>
+<li>Comprendre le rôle des arguments (<code>argv</code>).</li>
+<li>Repérer un appel à <code>execv()</code> permettant d'exécuter un programme externe.</li>
+</ul>
+<hr />
+<h2 id="vii-duree-approximative">VII - Durée approximative</h2>
+<p><strong>10 à 15 minutes</strong></p>
+<hr />
+<h2 id="viii-resume-de-la-resolution">VIII - Résumé de la résolution</h2>
+<pre><code class="language-text">Exécution du programme
+        │
+        ▼
+&quot;Access forbidden.&quot;
+        │
+        ▼
+Analyse avec Ghidra
+        │
+        ▼
+Découverte des comparaisons strcmp()
+        │
+        ▼
+Arguments requis :
+printf main
+        │
+        ▼
+./chall printf main
+        │
+        ▼
+execv(&quot;/bin/bash&quot;)
+        │
+        ▼
+Shell root
+        │
+        ▼
+Lecture du flag
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../strings-0084/" class="btn btn-neutral float-left" title="Strings on binary"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../patch-xxxx/" class="btn btn-neutral float-right" title="Binary patching">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../strings-0084/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../patch-xxxx/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
