@@ -35,7 +35,7 @@ description: Write-up moderne du challenge réseau basé sur l’analyse d’une
 
 ---
 
-## Vue d’ensemble
+## I - Vue d’ensemble
 
 Le challenge repose sur l’analyse d’un trafic réseau contenant une attaque de type **Malvertising**.
 
@@ -47,33 +47,9 @@ Cette empreinte MD5 devient le mot de passe permettant d’extraire une archive 
 
 ---
 
-## Nom du Flag
-
-**Chronologie d'une Compromission — L'Archive Malveillante**
 
 ---
 
-## I - Pourquoi ce flag ?
-
-L’objectif de ce challenge est de faire pratiquer l’analyse complète d’une chaîne d’infection dans un trafic réseau.
-
-Le participant ne doit pas seulement trouver un paquet suspect. Il doit reconstruire toute la progression de l’attaque, étape par étape.
-
-Ce challenge permet de travailler plusieurs compétences :
-
-| Compétence | Objectif |
-|---|---|
-| **Analyse chronologique** | Reconstituer l’ordre exact des événements réseau |
-| **HTTP** | Identifier les requêtes GET, POST et les redirections |
-| **DNS** | Repérer la résolution d’un domaine malveillant |
-| **Malware Traffic Analysis** | Identifier un téléchargement suspect |
-| **C2** | Repérer une communication Command & Control |
-| **Hash MD5** | Générer un mot de passe à partir d’une séquence |
-
-!!! note "Idée principale"
-    L’archive `.7z` ne peut pas être ouverte simplement avec les numéros de paquets.
-
-    Il faut d’abord comprendre la chronologie, construire la séquence, puis générer son empreinte MD5.
 
 ---
 
@@ -324,18 +300,14 @@ Les paquets trouvés dans l’ordre chronologique sont :
 596
 ```
 
-Ils doivent être concaténés avec des `_`.
+Ils doivent être collés.
 
-La séquence finale est donc :
+La séquence finale et correcte est donc :
 
 ```text
 8169175568596
 ```
 
-!!! success "Séquence correcte"
-    ```text
-    8169175568596
-    ```
 
 ---
 
@@ -354,13 +326,13 @@ echo -n "8169175568596" | md5sum
 Résultat :
 
 ```text
-27e2b1b3e8e19df2d6a5c1a7c5b1c0a0
+2a8f23a79d2d667f846caa98d3b3ebc8
 ```
 
 Le mot de passe de l’archive est donc :
 
 ```text
-27e2b1b3e8e19df2d6a5c1a7c5b1c0a0
+2a8f23a79d2d667f846caa98d3b3ebc8
 ```
 
 !!! important "Attention"
@@ -375,7 +347,7 @@ Le mot de passe de l’archive est donc :
 Une fois le mot de passe obtenu, on peut extraire l’archive :
 
 ```bash
-7z x -p"27e2b1b3e8e19df2d6a5c1a7c5b1c0a0" archive_flag114.7z
+7z x -p"2a8f23a79d2d667f846caa98d3b3ebc8" archive_flag114.7z
 ```
 
 Après extraction, le contenu de l’archive permet de récupérer le flag.
@@ -391,21 +363,6 @@ Après extraction, le contenu de l’archive permet de récupérer le flag.
 
 ---
 
-## V - Indices
-
-### Indice léger
-
-La chronologie est la clé.  
-Isolez les paquets qui marquent les transitions majeures de l’attaque.
-
-### Indice intermédiaire
-
-Utilisez les filtres Wireshark pour isoler les méthodes HTTP, les redirections, les requêtes DNS et le type de contenu `application/x-msdownload`.
-
-### Indice final
-
-Ne tapez pas les numéros en clair dans 7zip.  
-Le mot de passe est l’empreinte MD5 de la chaîne obtenue, sans saut de ligne.
 
 ---
 
@@ -508,14 +465,7 @@ echo -n "8169175568596" | md5sum
 
 ---
 
-## X - À retenir
 
-!!! quote "Idée clé"
-    Dans ce challenge, la solution ne dépend pas seulement d’un paquet isolé.
-
-    Il fallait reconstruire toute la chronologie de l’attaque pour obtenir la bonne séquence.
-
----
 
 ## Vue finale
 

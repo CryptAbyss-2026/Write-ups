@@ -2,9 +2,9 @@ site_name: CryptAbyss 2026
 nav:
   - Accueil: index.md
   - Reseau:
-    - Exfiltration_mot de passe: Reseaux/Flag60-Exfiltration_mot de passe
-    - cap-forensic: Reseaux/Flag114-pcap-forensic.md
-    # - Packet-tracer: Reseaux/Flag146-Packet-tracer.md
+    - Analyse_capture_réseau: Reseaux/Flag060-Analyse_capture_réseau.md
+    - cap-forensic-mot de passe d'un archive: Reseaux/Flag114-pcap-forensic.md
+    #- Packet-tracer: Reseaux/Flag146-Packet-tracer.md
   - Forensic:
     - Tier 1 — Magic Bytes: forensic/tier1-magic-bytes.md
     - Tier 2 — File Carving: forensic/tier2-file-carving.md
