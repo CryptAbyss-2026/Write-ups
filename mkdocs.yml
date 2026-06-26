@@ -10,11 +10,12 @@ nav:
     - Tier 2 — File Carving: forensic/tier2-file-carving.md
     - Tier 3 — Memory Dump: forensic/tier3-memory-dump.md
     - Tier 4 — Disk + Registre: forensic/tier4-disk-registre.md
-  - Crypto:
+  - Cryptographie:
     - Challenge 1 - Base64: crypto/challenge1.md
     - Challenge 2 - Multi-layer Caesar: crypto/challenge2.md
     - Double encryption: crypto/Double_Encryption_0142.md
     - Myrox Infiltration: crypto/Myrox_Infiltration_0143.md
+    - Falsification : crypto/writeup_falsification.md
   - osint:
     - Atterrisage Urgence: osint/Atterissage_Urgence_0145.md
   - Stegano:
@@ -23,7 +24,12 @@ nav:
     - Strings on binary: reverse/strings-0084.md
     - Binary analyze: reverse/binary-analyze-0083.md
     - Binary patching: reverse/patch-xxxx.md
-  - autre:
+    - ReverseEngineering: reverse/writeup_reverseEngineering.md
+  - Logiciel:
+    - Blocs Compressés: logiciel/writeup_blocsCompresse.md
+    - Obfuscation: logiciel/writeup_obfuscation.md
+    - Polygotte: logiciel/writeup_polygotte.md
+  - Misc:
     - Destruction Vaisseau: autre/Destruction_Vaisseau_0144.md
 
 theme:
