@@ -1,25 +1,22 @@
 
 ---
-Flag n°0060 — Exfiltration mot de passe
-description: Write-up du challenge réseau basé sur un canal caché ICMP, l’extraction du champ IP ID et un déchiffrement XOR.
+title: Flag n°0060 —Analyse_capture_réseau
+description: Write-up du challenge réseau basé sur l’analyse d’un PCAP, un canal caché dans le champ IP ID et un déchiffrement XOR.
 ---
 
 # 🚩 Flag n°0060
 
-## Exfiltration mot de passe — Canal caché ICMP + XOR
-
+## Signal intercepté
 
 Un fichier PCAP nommé `EnqueteSurMoi.pcap` est fourni aux participants.
 
-À première vue, le trafic réseau semble contenir de simples paquets ICMP. Cependant, certains champs des en-têtes IP sont utilisés pour cacher une information sensible.
+Une capture réseau a été récupérée après l’observation de signaux suspects dans le réseau. À première vue, le trafic semble ordinaire. Pourtant, certains échanges contiennent une information dissimulée qui ne se révèle pas immédiatement.
 
-Le challenge consiste à analyser le trafic réseau, identifier le canal caché, extraire les valeurs utiles, retrouver la clé XOR, puis reconstruire le flag.
+Le challenge consiste à analyser la capture, identifier les paquets réellement intéressants, extraire les valeurs utiles, retrouver la logique de dissimulation, puis reconstruire le flag.
 
 ---
 
-## Thème du Flag
 
-**Network Forensics — Covert Channel — ICMP — XOR — Known Plaintext Attack**
 
 ---
 
@@ -28,7 +25,7 @@ Le challenge consiste à analyser le trafic réseau, identifier le canal caché,
 | Élément | Détail |
 |---|---|
 | **Catégorie** | Réseaux |
-| **Nom du challenge** | Exfiltration mot de passe |
+| **Nom du challenge** |Analyse_capture_réseau|
 | **Numéro** | Flag n°0060 |
 | **Fichier fourni** | `EnqueteSurMoi.pcap` |
 | **Outils recommandés** | Wireshark, tshark, Python |
@@ -41,23 +38,11 @@ Le challenge consiste à analyser le trafic réseau, identifier le canal caché,
 
 ## I - Pourquoi ce flag ?
 
-L’objectif de ce challenge est d’apprendre aux participants à analyser un fichier PCAP en allant plus loin que le contenu visible des paquets.
+L’objectif de ce challenge est d’apprendre aux participants à analyser un fichier PCAP en allant plus loin que ce qui est immédiatement visible.
 
-Dans beaucoup d’analyses réseau, on regarde d’abord le payload. Ici, le flag n’est pas directement caché dans les données visibles, mais dans un champ de l’en-tête IP : le champ **Identification**, aussi appelé **IP ID**.
+Dans beaucoup d’analyses réseau, on regarde d’abord le contenu des paquets. Ici, le flag n’est pas directement écrit dans le payload. Il est dissimulé dans un champ de l’en-tête IP : le champ **Identification**, aussi appelé **IP ID**.
 
-Ce challenge permet donc de travailler plusieurs compétences importantes :
 
-- utiliser Wireshark pour analyser du trafic ICMP ;
-- comprendre qu’un champ réseau peut être détourné ;
-- repérer une anomalie dans les en-têtes IP ;
-- extraire un champ précis avec `tshark` ;
-- comprendre le principe du chiffrement XOR ;
-- retrouver une clé grâce à un début de flag connu ;
-- reconstruire un flag à partir de valeurs chiffrées.
-
-!!! note "Idée principale"
-
-    Le trafic semble normal au départ, mais les valeurs du champ **IP ID** cachent en réalité les caractères du flag.
 
 ---
 
@@ -65,13 +50,13 @@ Ce challenge permet donc de travailler plusieurs compétences importantes :
 
 Le fichier `EnqueteSurMoi.pcap` contient du trafic ICMP.
 
-Lorsqu’on ouvre le fichier dans Wireshark, les paquets ressemblent à de simples échanges de type ping. Pourtant, certains paquets contiennent une chaîne suspecte dans les données ICMP :
+Lorsqu’on ouvre la capture dans Wireshark, les paquets ressemblent à de simples échanges réseau. Pourtant, certains paquets contiennent une chaîne suspecte dans les données :
 
 ```text
 chk_user:sysadmin
 ```
 
-Cette chaîne sert de première piste. Elle indique que le trafic ICMP doit être analysé plus attentivement.
+Cette chaîne sert de première piste. Elle indique que certains paquets doivent être analysés plus attentivement.
 
 En observant les paquets concernés, on remarque que les valeurs du champ **Identification (IP ID)** ne sont pas normales. Elles ne suivent pas une progression classique et semblent choisies volontairement.
 
@@ -115,20 +100,17 @@ Reconstruction du flag
 ```
 
 !!! important "Point important"
+    Le début du flag est connu : `CryptAbyss{`.
 
-    Le début du flag est connu : `CryptAbyss{`  
     Cela permet de retrouver la clé XOR grâce à une attaque par texte clair connu, appelée **Known Plaintext Attack**.
 
 ---
 
 ## III - Solution détaillée
 
-### Étape 1 — Accéder au challenge
+### Étape 1 — Récupérer le fichier PCAP
 
-
-Le participant récupère le fichier PCAP fourni pour l’analyse.
-
-Fichier à analyser :
+Le participant récupère le fichier fourni pour l’analyse :
 
 ```text
 EnqueteSurMoi.pcap
@@ -136,7 +118,7 @@ EnqueteSurMoi.pcap
 
 ---
 
-### Étape 2 — Ouvrir le fichier PCAP
+### Étape 2 — Ouvrir la capture dans Wireshark
 
 Ouvrir le fichier avec Wireshark :
 
@@ -150,17 +132,16 @@ Appliquer ensuite un filtre pour afficher uniquement le trafic ICMP :
 icmp
 ```
 
-Dans certains paquets ICMP, on remarque la présence de la chaîne suivante :
+Dans certains paquets, on remarque la présence de la chaîne suivante :
 
 ```text
 chk_user:sysadmin
 ```
 
-Cette information montre que le trafic ICMP n’est probablement pas anodin.
+Cette information indique que le trafic mérite une analyse plus précise.
 
 !!! tip "Première piste"
-
-    Le payload donne une indication, mais le flag n’est pas directement écrit dans le contenu visible des paquets.
+    Le contenu visible donne une indication, mais le flag n’est pas écrit directement dans le payload.
 
 ---
 
@@ -185,7 +166,7 @@ Les valeurs de ce champ semblent anormales :
 - elles ne sont pas séquentielles ;
 - elles ne ressemblent pas à des valeurs générées naturellement ;
 - elles changent d’une manière volontaire ;
-- elles apparaissent dans des paquets ICMP spécifiques.
+- elles apparaissent dans des paquets spécifiques.
 
 Cela indique que le champ **IP ID** est utilisé comme canal caché.
 
@@ -269,7 +250,6 @@ La clé XOR utilisée est donc :
 ```
 
 !!! success "Clé retrouvée"
-
     La clé XOR est `42`.
 
 Cette étape est possible car on connaît le début du flag.  
@@ -317,17 +297,17 @@ CryptAbyss{7d9528af9e327e7c0fae2588a5dcdcce2ea8bf6aea4813ba37039da18d9514ad}
 
 ## V - Indices
 
-### Indice léger
+### Indice léger — Signal discret
 
-Les paquets ICMP ne contiennent pas forcément l’information uniquement dans leur payload.
+Tout semble normal au premier regard, mais certains paquets méritent une observation plus attentive.
 
-### Indice intermédiaire
+### Indice intermédiaire — Mauvais endroit
 
-Certains champs de l’en-tête IP peuvent être utilisés pour cacher des données. Le champ **Identification** mérite d’être observé.
+Le contenu visible n’est pas forcément l’endroit le plus intéressant dans une capture réseau.
 
-### Indice final
+### Indice final — Valeurs étranges
 
-Le flag est caché dans les valeurs du champ `ip.id`. Le début connu `CryptAbyss{` permet de retrouver la clé XOR.
+Certaines valeurs dans les champs réseau ne suivent pas un comportement habituel. Comparez-les entre plusieurs paquets similaires.
 
 ---
 
@@ -362,9 +342,6 @@ La durée peut varier selon le niveau du participant en :
 ## VIII - Résumé de la résolution
 
 ```text
-Accès au challenge local
-        │
-        ▼
 Ouverture du fichier PCAP
         │
         ▼
