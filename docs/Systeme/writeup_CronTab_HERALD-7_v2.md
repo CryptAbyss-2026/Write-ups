@@ -1,4 +1,4 @@
-# Write-up — Herald's Downfall
+# Write-up — Herald-7
 **CryptAbyss CTF 2026 | Categorie : Linux Privilege Escalation**
 
 ---
@@ -7,7 +7,7 @@
 
 | Champ | Detail |
 |---|---|
-| Nom | Herald's Downfall |
+| Nom | Herald-7 |
 | Vaisseau | HERALD-7 |
 | Technique | Crontab — Pivot utilisateur + Script writable par groupe |
 | CVSS | N/A — Mauvaise configuration |
@@ -86,17 +86,6 @@ run_as       = root
 CONF
 chown root:operative /opt/.herald/system.conf
 chmod 640 /opt/.herald/system.conf
-
-# Script vulnerable avec flag intermediaire 2
-# Appartient a root:herald — writable uniquement par le groupe herald
-mkdir -p /opt/.scripts
-cat > /opt/.scripts/patrol.sh << 'SH'
-#!/bin/bash
-# CryptAbyss{SCR1PT_3XP053D_W41T1NG_F0R_1NJ3CT10N}
-echo "HERALD-7 patrol cycle complete" >> /var/herald/schedules/patrol_log.txt
-SH
-chown root:herald /opt/.scripts/patrol.sh
-chmod 770 /opt/.scripts/patrol.sh
 
 # Entree crontab
 echo "* * * * * root /opt/.scripts/patrol.sh" >> /etc/crontab
@@ -240,15 +229,6 @@ ls -la /opt/.scripts/patrol.sh
 
 Le script est execute **chaque minute par root** et est **modifiable par le groupe herald** — dont fait partie `scheduler`. C'est la faille.
 
-On lit le contenu du script et y trouve le flag intermediaire 2 :
-
-```bash
-cat /opt/.scripts/patrol.sh
-# #!/bin/bash
-# CryptAbyss{SCR1PT_3XP053D_W41T1NG_F0R_1NJ3CT10N}
-# echo "HERALD-7 patrol cycle complete" >> /var/herald/schedules/patrol_log.txt
-```
-
 ### etape 5 — Comprehension de la vulnerabilite
 
 Le script `/opt/.scripts/patrol.sh` appartient a `root` et est lance automatiquement par root via le crontab système. Ses permissions `770` avec le groupe `herald` permettent a tout membre de ce groupe de le modifier. En injectant une commande, elle sera executee avec les droits root au prochain cycle.
@@ -328,7 +308,6 @@ history -c && rm ~/.bash_history
 | Flag | Valeur | Forme déposée sur le disque |
 |---|---|---|
 | Intermediaire 1 | `CryptAbyss{SCH3DUL3R_L0C4T3D_T1M3R_4CT1V3}` | Chiffré AES-256-CBC dans `/var/herald/schedules/.patrol_flag.txt` ; clé `trustno1` hachée en MD5 dans `/var/herald/schedules/.patrol_key.txt` (crackable via John/Hashcat) |
-| Intermediaire 2 | `CryptAbyss{SCR1PT_3XP053D_W41T1NG_F0R_1NJ3CT10N}` | En clair dans `/opt/.scripts/patrol.sh` |
 | Final | `CryptAbyss{CR0N_S4CR1F1C3_H3R4LD_D35TR0Y3D}` | En clair dans `/root/flag.txt` |
 
 ---
