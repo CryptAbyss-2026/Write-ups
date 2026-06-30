@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Atterrisage Urgence - CryptAbyss 2026</title>
+    <title>Polygotte - CryptAbyss 2026</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Atterrisage Urgence";
-        var mkdocs_page_input_path = "osint\\Atterissage_Urgence_0145.md";
+        var mkdocs_page_name = "Polygotte";
+        var mkdocs_page_input_path = "logiciel\\writeup_polygotte.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -75,26 +75,8 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">osint</span></p>
-              <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Atterrisage Urgence</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#atterrissage-durgence">Atterrissage d'urgence</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#iv-indices">IV - Indices</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#v-duree-approximative">V - Durée approximative</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#vi-flag">VI - Flag</a>
-    </li>
-    </ul>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Stegano</span></p>
@@ -114,12 +96,22 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Logiciel</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_blocsCompresse/">Blocs Compressés</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_obfuscation/">Obfuscation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Polygotte</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#analyse">Analyse</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#resolution">Résolution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#commandes">Commandes</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Systeme</span></p>
@@ -154,8 +146,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">osint</li>
-      <li class="breadcrumb-item active">Atterrisage Urgence</li>
+          <li class="breadcrumb-item">Logiciel</li>
+      <li class="breadcrumb-item active">Polygotte</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -164,55 +156,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="flag-n0145">🚩 Flag n°0145</h1>
-<h2 id="atterrissage-durgence">Atterrissage d'urgence</h2>
-<p>En continuant l’exploration du profil de Myrox, un nouveau rapport de mission apparaît dans le fil d’actualité.
-Les extraterrestres semblent avoir laissé une position réelle cachée dans leurs communications précédentes.
-Votre mission : retrouver les trois mots-clés et localiser la balise.</p>
-<h2 id="theme-du-flag">Thème du Flag</h2>
-<p>OSINT</p>
-<hr />
-<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
-<p>L’objectif de ce challenge est d’amener les participants à réutiliser des informations obtenues dans un défi précédent afin de résoudre une énigme OSINT. Il pousse les joueurs à faire le lien entre plusieurs flags, à utiliser un service externe de géolocalisation et à se déplacer physiquement pour récupérer le flag final.</p>
-<hr />
-<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
-<p>Le flag a été construit à partir du site what3words. Un emplacement précis devant l’UPJV a été sélectionné manuellement, puis les trois mots associés à cette position ont été récupérés (redoux.juger.adjoint). Ces mots ont ensuite été intégrés dans le challenge précédent (flag n°0142 Double Encryption) afin d’obliger les participants à les retrouver avant de pouvoir localiser la balise physique contenant le flag.</p>
-<hr />
-<h2 id="iii-solutions-pour-resoudre-le-flag">III - Solutions pour résoudre le flag</h2>
-<p>Dans le défi précédent flag n°0142 Double Encryption, trois mots ont été obtenus après déchiffrement :
-- redoux
-- juger
-- adjoint
-Le rapport indique explicitement l’utilisation du site what3words. Le site https://what3words.com permet de localiser précisément un point du globe grâce à trois mots uniques. En entrant les trois mots : redoux.juger.adjoint. Une localisation précise apparaît sur la carte. Cette position correspond à un emplacement réel situé devant l’UPJV, où le flag est écrit et caché dans un ballon (un ballon par équipe).
-Les participants doivent alors se rendre physiquement sur place pour récupérer l'information finale.</p>
-<hr />
-<h2 id="iv-indices">IV - Indices</h2>
-<ul>
-<li>
-<p><strong>Indice léger :</strong><br />
-  Déchiffre d’abord le rapport sur le profil de Myrox.</p>
-</li>
-<li>
-<p><strong>Indice intermédiaire :</strong><br />
-  Trois mots ont été obtenus lors d’un défi précédent.</p>
-</li>
-<li>
-<p><strong>Indice final :</strong><br />
-  Essayez d’utiliser ces trois mots sur un service de localisation basé sur trois mots.</p>
-</li>
-</ul>
-<hr />
-<h2 id="v-duree-approximative">V - Durée approximative</h2>
-<p>20 à 30 minutes.</p>
-<hr />
-<h2 id="vi-flag">VI - Flag</h2>
-<p>CryptAbyss{B4l1s3_D3t3ct3d}</p>
+                <h1 id="write-up-polyglotte-jpeg-zip">Write-up : Polyglotte JPEG-ZIP</h1>
+<h2 id="description">Description</h2>
+<p>Une image JPEG contient une archive ZIP cachée après le marqueur de fin de fichier (EOF).</p>
+<h2 id="analyse">Analyse</h2>
+<ol>
+<li><strong>Métadonnées</strong> : L'analyse EXIF révèle un commentaire caché.</li>
+<li><strong>Structure</strong> : <code>binwalk</code> confirme la présence d'une structure ZIP en fin de fichier.</li>
+</ol>
+<h2 id="resolution">Résolution</h2>
+<ol>
+<li>Extraire le mot de passe des métadonnées EXIF.</li>
+<li>Extraire le contenu ZIP de l'image.</li>
+<li>Utiliser le mot de passe pour ouvrir le fichier <code>flag.txt</code>.</li>
+</ol>
+<h2 id="commandes">Commandes</h2>
+<pre><code class="language-bash"># Lecture du mot de passe
+exiftool alien_challenge.jpg | grep &quot;mdp&quot;
+
+# Extraction de l'archive
+unzip alien_challenge.jpg
+# Saisir le mot de passe : GilUtardNegDiffAll
+
+# Lecture du flag
+cat flag.txt
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../crypto/writeup_falsification/" class="btn btn-neutral float-left" title="Falsification"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../steganographie/Transmission_Alien_0141/" class="btn btn-neutral float-right" title="Transmission Alien">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../writeup_obfuscation/" class="btn btn-neutral float-left" title="Obfuscation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../Systeme/writeup_SUID_XENON-1/" class="btn btn-neutral float-right" title="XENON-1">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -235,10 +209,10 @@ Les participants doivent alors se rendre physiquement sur place pour récupérer
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../crypto/writeup_falsification/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../writeup_obfuscation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../steganographie/Transmission_Alien_0141/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../Systeme/writeup_SUID_XENON-1/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

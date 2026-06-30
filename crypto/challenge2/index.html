@@ -43,6 +43,13 @@
                 <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
                 </li>
               </ul>
+              <p class="caption"><span class="caption-text">Reseau</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag060-Analyse_capture_r%C3%A9seau/">Analyse_capture_réseau</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
+                  </li>
+              </ul>
               <p class="caption"><span class="caption-text">Forensic</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
@@ -54,7 +61,7 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Crypto</span></p>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../challenge1/">Challenge 1 - Base64</a>
                   </li>
@@ -69,6 +76,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#etapes-de-resolution">Étapes de résolution</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#1-decodage-du-fichier-principal">1. Décodage du fichier principal</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-analyse-de-la-cle">2. Analyse de la clé</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#3-dechiffrement-caesar">3. Déchiffrement Caesar</a>
     </li>
@@ -94,6 +103,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Myrox_Infiltration_0143/">Myrox Infiltration</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup_falsification/">Falsification</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">osint</span></p>
               <ul>
@@ -113,8 +124,32 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/writeup_reverseEngineering/">ReverseEngineering</a>
+                  </li>
               </ul>
-              <p class="caption"><span class="caption-text">autre</span></p>
+              <p class="caption"><span class="caption-text">Logiciel</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_SUID_XENON-1/">XENON-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_CronTab_HERALD-7_v2/">HERALD-7</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2/">PROMETHEUS_9</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
                   </li>
@@ -133,7 +168,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Crypto</li>
+          <li class="breadcrumb-item">Cryptographie</li>
       <li class="breadcrumb-item active">Challenge 2 - Multi-layer Caesar</li>
     <li class="wy-breadcrumbs-aside">
     </li>
@@ -143,7 +178,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="challenge-2-multi-layer-caesar">Challenge 2 — Multi-layer + Caesar</h1>
+                <h1 id="challenge-2-false-trail">Challenge 2 — False Trail</h1>
 <h2 id="difficulte">Difficulté</h2>
 <p>Medium</p>
 <hr />
@@ -162,37 +197,29 @@
 <pre><code class="language-bash">base64 -d challenge2.txt
 </code></pre>
 <p>Résultat :</p>
-<pre><code class="language-text">Fausse piste : la clé est indispensable.
+<pre><code>Fausse piste : la clé est indispensable.
 
 FubswDebvv{gF0g3_F3v@u_+E@v364}
 
-Tu es proche... mais pas encore.```
-
-Le premier message est une fausse piste.
-
----
-
-### 2. Analyse de la clé
-
-```bash
-base64 -d key
+Tu es proche... mais pas encore.
+</code></pre>
+<p>Le premier message est une fausse piste.</p>
+<hr />
+<h3 id="2-analyse-de-la-cle">2. Analyse de la clé</h3>
+<pre><code class="language-bash">base64 -d key
 </code></pre>
 <p>Résultat :</p>
 <pre><code class="language-text">Essaye de deviner le chiffrement utiliser dans le contenu de challenge.txt pour trouver le flag caché. clé = 3
-
 </code></pre>
 <p>La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.</p>
 <hr />
 <h3 id="3-dechiffrement-caesar">3. Déchiffrement Caesar</h3>
 <p>Message à traiter :</p>
-<pre><code class="language-text">RXNzYXllIGRlIGRldmluZXIgbGUgY2hpZmZyZW1lbnQgdXRpbGlzZXIgZGFucyBsZSBjb250ZW51IGRlIGNoYWxsZW5nZS50eHQgcG91ciB0cm91dmVyIGxlIGZsYWcgY2FjaMOpLiBjbMOpID0gMwo=```
-
-Appliquer un décalage de `-3`.
-
-Résultat :
-
-```text
-CryptAbyss{dC0d3_C3s@r_+B@s364}
+<pre><code class="language-text">RXNzYXllIGRlIGRldmluZXIgbGUgY2hpZmZyZW1lbnQgdXRpbGlzZXIgZGFucyBsZSBjb250ZW51IGRlIGNoYWxsZW5nZS50eHQgcG91ciB0cm91dmVyIGxlIGZsYWcgY2FjaMOpLiBjbMOpID0gMwo=
+</code></pre>
+<p>Appliquer un décalage de <code>-3</code>.</p>
+<p>Résultat :</p>
+<pre><code class="language-text">CryptAbyss{dC0d3_C3s@r_+B@s364}
 </code></pre>
 <hr />
 <h2 id="conclusion">Conclusion</h2>
@@ -228,7 +255,7 @@ Message chiffré
         ↓
 Caesar -3
         ↓
-FLAG2
+CryptAbyss{dC0d3_C3s@r_+B@s364}
 </code></pre>
               
             </div>

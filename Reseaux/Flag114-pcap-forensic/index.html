@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>cap-forensic-mot de passe d'un archive - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "cap-forensic-mot de passe d\u0027un archive";
+        var mkdocs_page_input_path = "Reseaux\\Flag114-pcap-forensic.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reseau</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag060-Analyse_capture_r%C3%A9seau/">Analyse_capture_réseau</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">cap-forensic-mot de passe d'un archive</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#sequence-dattaque-et-archive-7z">Séquence d'attaque et archive 7z</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vue-rapide-du-challenge">Vue rapide du challenge</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-vue-densemble">I - Vue d’ensemble</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#fonctionnement-du-challenge">Fonctionnement du challenge</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solution-detaillee">III - Solution détaillée</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-1-comprendre-la-methodologie-kill-chain">Étape 1 — Comprendre la méthodologie Kill Chain</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-2-identifier-le-point-dentree">Étape 2 — Identifier le point d’entrée</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-3-identifier-la-redirection">Étape 3 — Identifier la redirection</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-4-identifier-la-resolution-dns">Étape 4 — Identifier la résolution DNS</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-5-identifier-le-telechargement-du-binaire">Étape 5 — Identifier le téléchargement du binaire</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-6-identifier-la-connexion-c2">Étape 6 — Identifier la connexion C2</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vue-chronologique-de-lattaque">Vue chronologique de l’attaque</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#recapitulatif-des-paquets-cles">Récapitulatif des paquets clés</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-7-construire-la-sequence-finale">Étape 7 — Construire la séquence finale</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-8-generer-le-mot-de-passe-md5">Étape 8 — Générer le mot de passe MD5</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-9-extraire-larchive-7z">Étape 9 — Extraire l’archive 7z</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-recuperation-du-flag">IV - Récupération du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-ce-quil-fallait-apprendre">VI - Ce qu’il fallait apprendre</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vii-duree-approximative">VII - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#viii-resume-de-la-resolution">VIII - Résumé de la résolution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ix-commandes-utiles">IX - Commandes utiles</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#filtrer-les-requetes-get">Filtrer les requêtes GET</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#filtrer-les-redirections-http">Filtrer les redirections HTTP</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#filtrer-les-requetes-dns">Filtrer les requêtes DNS</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#filtrer-le-telechargement-du-binaire">Filtrer le téléchargement du binaire</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#filtrer-les-requetes-post">Filtrer les requêtes POST</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#generer-le-hash-md5">Générer le hash MD5</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#extraire-larchive">Extraire l’archive</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vue-finale">Vue finale</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/writeup_falsification/">Falsification</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/binary-analyze-0083/">Binary analyze</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/writeup_reverseEngineering/">ReverseEngineering</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Logiciel</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_SUID_XENON-1/">XENON-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_CronTab_HERALD-7_v2/">HERALD-7</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2/">PROMETHEUS_9</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reseau</li>
+      <li class="breadcrumb-item active">cap-forensic-mot de passe d'un archive</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <hr />
+<p>Flag n°0114 — Séquence d'attaque et archive 7z
+description: Write-up moderne du challenge réseau basé sur l’analyse d’une chaîne d’infection, la reconstruction chronologique des paquets et le déverrouillage d’une archive 7z avec un hash MD5.</p>
+<hr />
+<h1 id="flag-n0114">🚩 Flag n°0114</h1>
+<h2 id="sequence-dattaque-et-archive-7z">Séquence d'attaque et archive 7z</h2>
+<hr />
+<h2 id="vue-rapide-du-challenge">Vue rapide du challenge</h2>
+<table>
+<thead>
+<tr>
+<th>Élément</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Catégorie</strong></td>
+<td>Réseaux / Network Forensics</td>
+</tr>
+<tr>
+<td><strong>Nom du challenge</strong></td>
+<td>Chronologie d'une Compromission — L'Archive Malveillante</td>
+</tr>
+<tr>
+<td><strong>Type d’analyse</strong></td>
+<td>Analyse PCAP</td>
+</tr>
+<tr>
+<td><strong>Type d’attaque</strong></td>
+<td>Malvertising</td>
+</tr>
+<tr>
+<td><strong>Objectif principal</strong></td>
+<td>Reconstruire la chronologie d’une compromission</td>
+</tr>
+<tr>
+<td><strong>Archive</strong></td>
+<td><code>archive_flag114.7z</code></td>
+</tr>
+<tr>
+<td><strong>Protection</strong></td>
+<td>Mot de passe basé sur un hash MD5</td>
+</tr>
+<tr>
+<td><strong>Difficulté</strong></td>
+<td>⭐⭐⭐ Moyen</td>
+</tr>
+<tr>
+<td><strong>Points</strong></td>
+<td>300 pts</td>
+</tr>
+<tr>
+<td><strong>Durée estimée</strong></td>
+<td>Environ 60 minutes</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p>!!! abstract "Thème principal"
+    <strong>Network Forensics — Malware Traffic Analysis — Analyse d’une infection de bout en bout</strong></p>
+<hr />
+<h2 id="i-vue-densemble">I - Vue d’ensemble</h2>
+<p>Le challenge repose sur l’analyse d’un trafic réseau contenant une attaque de type <strong>Malvertising</strong>.</p>
+<p>Le participant doit retrouver les étapes importantes de l’attaque dans le bon ordre chronologique.</p>
+<p>Les numéros des paquets clés doivent ensuite être concaténés avec des <code>_</code>, puis transformés en empreinte <strong>MD5</strong>.</p>
+<p>Cette empreinte MD5 devient le mot de passe permettant d’extraire une archive <code>.7z</code>.</p>
+<hr />
+<hr />
+<hr />
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p>Le trafic contient une attaque de type <strong>Malvertising</strong>.</p>
+<p>Dans ce scénario, la victime passe par plusieurs étapes avant la compromission complète :</p>
+<ol>
+<li>accès à un domaine publicitaire suspect ;</li>
+<li>redirection vers une ressource malveillante ;</li>
+<li>résolution DNS du domaine malveillant ;</li>
+<li>téléchargement d’un binaire ;</li>
+<li>communication avec un serveur C2.</li>
+</ol>
+<p>Ces étapes sont représentées par cinq paquets clés.</p>
+<p>La séquence des numéros de paquets est ensuite concaténée avec des <code>_</code>.</p>
+<p>Cette chaîne est ensuite hachée avec <strong>MD5</strong>.</p>
+<p>Le hash obtenu constitue le mot de passe de l’archive <code>.7z</code>.</p>
+<hr />
+<h2 id="fonctionnement-du-challenge">Fonctionnement du challenge</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[Trafic réseau PCAP] --&gt; B[Analyse chronologique]
+    B --&gt; C[Identification du point d'entrée]
+    C --&gt; D[Détection de la redirection]
+    D --&gt; E[Résolution DNS du domaine malveillant]
+    E --&gt; F[Téléchargement du binaire]
+    F --&gt; G[Connexion vers le C2]
+    G --&gt; H[Construction de la séquence]
+    H --&gt; I[Hash MD5]
+    I --&gt; J[Mot de passe de l'archive 7z]
+    J --&gt; K[Extraction de l'archive]
+    K --&gt; L[Récupération du flag]
+</code></pre>
+<p>!!! important "Point important"
+    La difficulté du challenge n’est pas seulement technique.</p>
+<pre><code>Le participant doit surtout retrouver le bon **ordre chronologique** des événements.
+</code></pre>
+<hr />
+<h2 id="iii-solution-detaillee">III - Solution détaillée</h2>
+<h3 id="etape-1-comprendre-la-methodologie-kill-chain">Étape 1 — Comprendre la méthodologie Kill Chain</h3>
+<p>Le participant doit analyser le trafic comme une chaîne d’infection.</p>
+<p>L’objectif est de retrouver les transitions majeures de l’attaque :</p>
+<pre><code class="language-text">Entrée
+  │
+  ▼
+Redirection
+  │
+  ▼
+Résolution DNS
+  │
+  ▼
+Téléchargement du binaire
+  │
+  ▼
+Connexion C2
+</code></pre>
+<p>Chaque étape correspond à un paquet précis.</p>
+<hr />
+<h3 id="etape-2-identifier-le-point-dentree">Étape 2 — Identifier le point d’entrée</h3>
+<p>Le premier paquet important correspond au point d’entrée de l’attaque.</p>
+<p>Filtre Wireshark :</p>
+<pre><code class="language-text">http.request.method == &quot;GET&quot;
+</code></pre>
+<p>On observe une requête HTTP vers un domaine publicitaire suspect :</p>
+<pre><code class="language-text">bigadnet.com
+</code></pre>
+<p>Le paquet correspondant est :</p>
+<pre><code class="language-text">8
+</code></pre>
+<p>!!! tip "Interprétation"
+    Ce paquet représente l’entrée de la victime dans la chaîne d’infection.</p>
+<hr />
+<h3 id="etape-3-identifier-la-redirection">Étape 3 — Identifier la redirection</h3>
+<p>Après le point d’entrée, il faut rechercher une redirection HTTP.</p>
+<p>Filtre Wireshark :</p>
+<pre><code class="language-text">http.response.code == 302
+</code></pre>
+<p>Le code HTTP <code>302</code> indique une redirection.</p>
+<p>Il faut ensuite analyser le champ :</p>
+<pre><code class="language-text">Location
+</code></pre>
+<p>Le paquet correspondant est :</p>
+<pre><code class="language-text">169
+</code></pre>
+<p>!!! warning "Élément suspect"
+    Une redirection dans une attaque de type Malvertising peut conduire la victime vers un domaine contrôlé par l’attaquant.</p>
+<hr />
+<h3 id="etape-4-identifier-la-resolution-dns">Étape 4 — Identifier la résolution DNS</h3>
+<p>Après la redirection, le navigateur ou le système doit résoudre le domaine malveillant.</p>
+<p>Filtre Wireshark :</p>
+<pre><code class="language-text">dns.flags.response == 0
+</code></pre>
+<p>Ce filtre permet d’afficher les requêtes DNS.</p>
+<p>Le domaine malveillant résolu est :</p>
+<pre><code class="language-text">adsitelo.com
+</code></pre>
+<p>Le paquet correspondant est :</p>
+<pre><code class="language-text">175
+</code></pre>
+<p>!!! note "Rôle du DNS"
+    Cette étape confirme que la machine tente de contacter un nouveau domaine lié à la chaîne d’infection.</p>
+<hr />
+<h3 id="etape-5-identifier-le-telechargement-du-binaire">Étape 5 — Identifier le téléchargement du binaire</h3>
+<p>L’étape suivante correspond au téléchargement du binaire malveillant.</p>
+<p>Filtre Wireshark :</p>
+<pre><code class="language-text">http.content_type == &quot;application/x-msdownload&quot;
+</code></pre>
+<p>Ce type de contenu est généralement associé à un exécutable Windows.</p>
+<p>Le paquet correspondant est :</p>
+<pre><code class="language-text">568
+</code></pre>
+<p>!!! danger "Téléchargement malveillant"
+    Le type <code>application/x-msdownload</code> est un indicateur fort de téléchargement d’un binaire exécutable.</p>
+<hr />
+<h3 id="etape-6-identifier-la-connexion-c2">Étape 6 — Identifier la connexion C2</h3>
+<p>Après le téléchargement, on cherche une communication vers un serveur de Command &amp; Control.</p>
+<p>Filtre Wireshark :</p>
+<pre><code class="language-text">http.request.method == &quot;POST&quot;
+</code></pre>
+<p>Une requête <code>POST</code> peut indiquer un envoi de données vers un serveur distant.</p>
+<p>Le paquet correspondant est :</p>
+<pre><code class="language-text">596
+</code></pre>
+<p>!!! bug "Activité C2"
+    Cette étape correspond à la communication avec l’infrastructure de l’attaquant.</p>
+<hr />
+<h2 id="vue-chronologique-de-lattaque">Vue chronologique de l’attaque</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Victime
+    participant Publicite as bigadnet.com
+    participant Malveillant as adsitelo.com
+    participant C2 as Serveur C2
+
+    Victime-&gt;&gt;Publicite: Paquet 8 — GET vers domaine publicitaire
+    Publicite--&gt;&gt;Victime: Paquet 169 — Redirection HTTP 302
+    Victime-&gt;&gt;Malveillant: Paquet 175 — Requête DNS adsitelo.com
+    Malveillant--&gt;&gt;Victime: Paquet 568 — Téléchargement binaire
+    Victime-&gt;&gt;C2: Paquet 596 — POST vers Command &amp; Control
+</code></pre>
+<hr />
+<h2 id="recapitulatif-des-paquets-cles">Récapitulatif des paquets clés</h2>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th style="text-align: right;">Paquet</th>
+<th>Filtre Wireshark</th>
+<th>Élément observé</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Point d’entrée</td>
+<td style="text-align: right;"><code>8</code></td>
+<td><code>http.request.method == "GET"</code></td>
+<td>Domaine <code>bigadnet.com</code></td>
+</tr>
+<tr>
+<td>Redirection</td>
+<td style="text-align: right;"><code>169</code></td>
+<td><code>http.response.code == 302</code></td>
+<td>Champ <code>Location</code></td>
+</tr>
+<tr>
+<td>DNS</td>
+<td style="text-align: right;"><code>175</code></td>
+<td><code>dns.flags.response == 0</code></td>
+<td>Domaine <code>adsitelo.com</code></td>
+</tr>
+<tr>
+<td>Téléchargement</td>
+<td style="text-align: right;"><code>568</code></td>
+<td><code>http.content_type == "application/x-msdownload"</code></td>
+<td>Binaire Windows</td>
+</tr>
+<tr>
+<td>Connexion C2</td>
+<td style="text-align: right;"><code>596</code></td>
+<td><code>http.request.method == "POST"</code></td>
+<td>Activité Command &amp; Control</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="etape-7-construire-la-sequence-finale">Étape 7 — Construire la séquence finale</h3>
+<p>Les paquets trouvés dans l’ordre chronologique sont :</p>
+<pre><code class="language-text">8
+169
+175
+568
+596
+</code></pre>
+<p>Ils doivent être collés.</p>
+<p>La séquence finale et correcte est donc :</p>
+<pre><code class="language-text">8169175568596
+</code></pre>
+<hr />
+<h3 id="etape-8-generer-le-mot-de-passe-md5">Étape 8 — Générer le mot de passe MD5</h3>
+<p>Le mot de passe de l’archive n’est pas la séquence directement.</p>
+<p>Il faut calculer le hash MD5 de la chaîne obtenue, sans saut de ligne.</p>
+<p>Commande Bash :</p>
+<pre><code class="language-bash">echo -n &quot;8169175568596&quot; | md5sum
+</code></pre>
+<p>Résultat :</p>
+<pre><code class="language-text">2a8f23a79d2d667f846caa98d3b3ebc8
+</code></pre>
+<p>Le mot de passe de l’archive est donc :</p>
+<pre><code class="language-text">2a8f23a79d2d667f846caa98d3b3ebc8
+</code></pre>
+<p>!!! important "Attention"
+    L’option <code>-n</code> avec <code>echo</code> est importante.</p>
+<pre><code>Elle évite d’ajouter un saut de ligne à la fin de la chaîne avant le calcul du hash.
+</code></pre>
+<hr />
+<h3 id="etape-9-extraire-larchive-7z">Étape 9 — Extraire l’archive 7z</h3>
+<p>Une fois le mot de passe obtenu, on peut extraire l’archive :</p>
+<pre><code class="language-bash">7z x -p&quot;2a8f23a79d2d667f846caa98d3b3ebc8&quot; archive_flag114.7z
+</code></pre>
+<p>Après extraction, le contenu de l’archive permet de récupérer le flag.</p>
+<hr />
+<h2 id="iv-recuperation-du-flag">IV - Récupération du flag</h2>
+<p>!!! success "Flag récupéré"
+    <code>text
+    CryptAbyss{1e6df7f44bf94df75de303c2723bfc4b3b756330e521ff7a1ef207822a9ffee5}</code></p>
+<hr />
+<hr />
+<h2 id="vi-ce-quil-fallait-apprendre">VI - Ce qu’il fallait apprendre</h2>
+<table>
+<thead>
+<tr>
+<th>Notion</th>
+<th>Ce qu’il fallait comprendre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kill Chain</strong></td>
+<td>Reconstruire une attaque étape par étape</td>
+</tr>
+<tr>
+<td><strong>HTTP</strong></td>
+<td>Identifier les requêtes GET, POST et les redirections 302</td>
+</tr>
+<tr>
+<td><strong>DNS</strong></td>
+<td>Repérer la résolution d’un domaine malveillant</td>
+</tr>
+<tr>
+<td><strong>Malware Traffic Analysis</strong></td>
+<td>Détecter le téléchargement d’un binaire suspect</td>
+</tr>
+<tr>
+<td><strong>C2</strong></td>
+<td>Identifier une communication Command &amp; Control</td>
+</tr>
+<tr>
+<td><strong>MD5</strong></td>
+<td>Générer un mot de passe à partir d’une séquence</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vii-duree-approximative">VII - Durée approximative</h2>
+<p>!!! clock "Temps estimé"
+    <strong>Environ 60 minutes</strong></p>
+<table>
+<thead>
+<tr>
+<th>Niveau du participant</th>
+<th style="text-align: right;">Durée estimée</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Débutant en analyse réseau</td>
+<td style="text-align: right;">60 à 75 minutes</td>
+</tr>
+<tr>
+<td>Niveau intermédiaire</td>
+<td style="text-align: right;">45 à 60 minutes</td>
+</tr>
+<tr>
+<td>Habitué aux analyses PCAP</td>
+<td style="text-align: right;">30 à 45 minutes</td>
+</tr>
+</tbody>
+</table>
+<p>Difficulté :</p>
+<pre><code class="language-text">⭐⭐⭐ Moyen — 300 points
+</code></pre>
+<hr />
+<h2 id="viii-resume-de-la-resolution">VIII - Résumé de la résolution</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[Ouverture du PCAP] --&gt; B[Analyse chronologique]
+    B --&gt; C[Paquet 8 : GET vers bigadnet.com]
+    C --&gt; D[Paquet 169 : Redirection HTTP 302]
+    D --&gt; E[Paquet 175 : DNS vers adsitelo.com]
+    E --&gt; F[Paquet 568 : Téléchargement du binaire]
+    F --&gt; G[Paquet 596 : POST vers C2]
+    G --&gt; H[Construction de la séquence]
+    H --&gt; I[8169175568596]
+    I --&gt; J[Calcul du hash MD5]
+    J --&gt; K[Mot de passe archive 7z]
+    K --&gt; L[Extraction de archive_flag114.7z]
+    L --&gt; M[Récupération du flag]
+
+</code></pre>
+<hr />
+<h2 id="ix-commandes-utiles">IX - Commandes utiles</h2>
+<h3 id="filtrer-les-requetes-get">Filtrer les requêtes GET</h3>
+<pre><code class="language-text">http.request.method == &quot;GET&quot;
+</code></pre>
+<h3 id="filtrer-les-redirections-http">Filtrer les redirections HTTP</h3>
+<pre><code class="language-text">http.response.code == 302
+</code></pre>
+<h3 id="filtrer-les-requetes-dns">Filtrer les requêtes DNS</h3>
+<pre><code class="language-text">dns.flags.response == 0
+</code></pre>
+<h3 id="filtrer-le-telechargement-du-binaire">Filtrer le téléchargement du binaire</h3>
+<pre><code class="language-text">http.content_type == &quot;application/x-msdownload&quot;
+</code></pre>
+<h3 id="filtrer-les-requetes-post">Filtrer les requêtes POST</h3>
+<pre><code class="language-text">http.request.method == &quot;POST&quot;
+</code></pre>
+<h3 id="generer-le-hash-md5">Générer le hash MD5</h3>
+<pre><code class="language-bash">echo -n &quot;8169175568596&quot; | md5sum
+</code></pre>
+<h3 id="extraire-larchive">Extraire l’archive</h3>
+<pre><code class="language-bash">7z x -p&quot;2a8f23a79d2d667f846caa98d3b3ebc8&quot; archive_flag114.7z
+</code></pre>
+<hr />
+<h2 id="vue-finale">Vue finale</h2>
+<table>
+<thead>
+<tr>
+<th>Élément final</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Séquence finale</strong></td>
+<td><code>8169175568596</code></td>
+</tr>
+<tr>
+<td><strong>Hash MD5</strong></td>
+<td><code>27e2b1b3e8e19df2d6a5c1a7c5b1c0a0</code></td>
+</tr>
+<tr>
+<td><strong>Archive</strong></td>
+<td><code>archive_flag114.7z</code></td>
+</tr>
+<tr>
+<td><strong>Flag final</strong></td>
+<td><code>CryptAbyss{1e6df7f44bf94df75de303c2723bfc4b3b756330e521ff7a1ef207822a9ffee5}</code></td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../Flag060-Analyse_capture_r%C3%A9seau/" class="btn btn-neutral float-left" title="Analyse_capture_réseau"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../forensic/tier1-magic-bytes/" class="btn btn-neutral float-right" title="Tier 1 — Magic Bytes">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../Flag060-Analyse_capture_r%C3%A9seau/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../forensic/tier1-magic-bytes/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

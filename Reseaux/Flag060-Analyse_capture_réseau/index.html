@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Analyse_capture_réseau - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Analyse_capture_r\u00e9seau";
+        var mkdocs_page_input_path = "Reseaux\\Flag060-Analyse_capture_r\u00e9seau.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reseau</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Analyse_capture_réseau</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#signal-intercepte">Signal intercepté</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vue-rapide-du-challenge">Vue rapide du challenge</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-explication-du-flag">II - Explication du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#schema-de-fonctionnement">Schéma de fonctionnement</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-solution-detaillee">III - Solution détaillée</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-1-recuperer-le-fichier-pcap">Étape 1 — Récupérer le fichier PCAP</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-2-ouvrir-la-capture-dans-wireshark">Étape 2 — Ouvrir la capture dans Wireshark</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-3-reperer-le-canal-cache">Étape 3 — Repérer le canal caché</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-4-extraire-les-valeurs-ip-id">Étape 4 — Extraire les valeurs IP ID</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-5-retrouver-la-cle-xor">Étape 5 — Retrouver la clé XOR</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-6-dechiffrer-les-valeurs-extraites">Étape 6 — Déchiffrer les valeurs extraites</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-recuperation-du-flag">IV - Récupération du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-indices">V - Indices</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-leger-signal-discret">Indice léger — Signal discret</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-intermediaire-mauvais-endroit">Indice intermédiaire — Mauvais endroit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#indice-final-valeurs-etranges">Indice final — Valeurs étranges</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-ce-quil-fallait-apprendre">VI - Ce qu’il fallait apprendre</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vii-duree-approximative">VII - Durée approximative</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#viii-resume-de-la-resolution">VIII - Résumé de la résolution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ix-commandes-utiles">IX - Commandes utiles</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#filtrer-les-paquets-icmp-dans-wireshark">Filtrer les paquets ICMP dans Wireshark</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#extraire-les-valeurs-ip-id-avec-tshark">Extraire les valeurs IP ID avec tshark</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#retrouver-la-cle-xor">Retrouver la clé XOR</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#dechiffrer-le-flag">Déchiffrer le flag</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/writeup_falsification/">Falsification</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/binary-analyze-0083/">Binary analyze</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/writeup_reverseEngineering/">ReverseEngineering</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Logiciel</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_SUID_XENON-1/">XENON-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_CronTab_HERALD-7_v2/">HERALD-7</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2/">PROMETHEUS_9</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Reseau</li>
+      <li class="breadcrumb-item active">Analyse_capture_réseau</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <hr />
+<p>title: Flag n°0060 —Analyse_capture_réseau
+description: Write-up du challenge réseau basé sur l’analyse d’un PCAP, un canal caché dans le champ IP ID et un déchiffrement XOR.</p>
+<hr />
+<h1 id="flag-n0060">🚩 Flag n°0060</h1>
+<h2 id="signal-intercepte">Signal intercepté</h2>
+<p>Un fichier PCAP nommé <code>EnqueteSurMoi.pcap</code> est fourni aux participants.</p>
+<p>Une capture réseau a été récupérée après l’observation de signaux suspects dans le réseau. À première vue, le trafic semble ordinaire. Pourtant, certains échanges contiennent une information dissimulée qui ne se révèle pas immédiatement.</p>
+<p>Le challenge consiste à analyser la capture, identifier les paquets réellement intéressants, extraire les valeurs utiles, retrouver la logique de dissimulation, puis reconstruire le flag.</p>
+<hr />
+<hr />
+<h2 id="vue-rapide-du-challenge">Vue rapide du challenge</h2>
+<table>
+<thead>
+<tr>
+<th>Élément</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Catégorie</strong></td>
+<td>Réseaux</td>
+</tr>
+<tr>
+<td><strong>Nom du challenge</strong></td>
+<td>Analyse_capture_réseau</td>
+</tr>
+<tr>
+<td><strong>Numéro</strong></td>
+<td>Flag n°0060</td>
+</tr>
+<tr>
+<td><strong>Fichier fourni</strong></td>
+<td><code>EnqueteSurMoi.pcap</code></td>
+</tr>
+<tr>
+<td><strong>Outils recommandés</strong></td>
+<td>Wireshark, tshark, Python</td>
+</tr>
+<tr>
+<td><strong>Technique principale</strong></td>
+<td>Canal caché dans le champ IP ID</td>
+</tr>
+<tr>
+<td><strong>Méthode utilisée</strong></td>
+<td>XOR</td>
+</tr>
+<tr>
+<td><strong>Difficulté</strong></td>
+<td>⭐⭐ Moyen</td>
+</tr>
+<tr>
+<td><strong>Durée estimée</strong></td>
+<td>20 à 30 minutes</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>L’objectif de ce challenge est d’apprendre aux participants à analyser un fichier PCAP en allant plus loin que ce qui est immédiatement visible.</p>
+<p>Dans beaucoup d’analyses réseau, on regarde d’abord le contenu des paquets. Ici, le flag n’est pas directement écrit dans le payload. Il est dissimulé dans un champ de l’en-tête IP : le champ <strong>Identification</strong>, aussi appelé <strong>IP ID</strong>.</p>
+<hr />
+<h2 id="ii-explication-du-flag">II - Explication du flag</h2>
+<p>Le fichier <code>EnqueteSurMoi.pcap</code> contient du trafic ICMP.</p>
+<p>Lorsqu’on ouvre la capture dans Wireshark, les paquets ressemblent à de simples échanges réseau. Pourtant, certains paquets contiennent une chaîne suspecte dans les données :</p>
+<pre><code class="language-text">chk_user:sysadmin
+</code></pre>
+<p>Cette chaîne sert de première piste. Elle indique que certains paquets doivent être analysés plus attentivement.</p>
+<p>En observant les paquets concernés, on remarque que les valeurs du champ <strong>Identification (IP ID)</strong> ne sont pas normales. Elles ne suivent pas une progression classique et semblent choisies volontairement.</p>
+<p>Le champ <strong>IP ID</strong> a donc été utilisé comme canal caché.</p>
+<hr />
+<h2 id="schema-de-fonctionnement">Schéma de fonctionnement</h2>
+<p>Le flag a été caché selon cette logique :</p>
+<pre><code class="language-text">Flag en clair
+        │
+        ▼
+Conversion des caractères en ASCII
+        │
+        ▼
+Chiffrement avec XOR
+        │
+        ▼
+Insertion des valeurs chiffrées dans le champ IP ID
+        │
+        ▼
+Génération du fichier PCAP
+</code></pre>
+<p>Pour résoudre le challenge, il faut faire l’opération inverse :</p>
+<pre><code class="language-text">Extraction des valeurs IP ID
+        │
+        ▼
+Récupération de la clé XOR
+        │
+        ▼
+Déchiffrement des valeurs
+        │
+        ▼
+Reconstruction du flag
+</code></pre>
+<p>!!! important "Point important"
+    Le début du flag est connu : <code>CryptAbyss{</code>.</p>
+<pre><code>Cela permet de retrouver la clé XOR grâce à une attaque par texte clair connu, appelée **Known Plaintext Attack**.
+</code></pre>
+<hr />
+<h2 id="iii-solution-detaillee">III - Solution détaillée</h2>
+<h3 id="etape-1-recuperer-le-fichier-pcap">Étape 1 — Récupérer le fichier PCAP</h3>
+<p>Le participant récupère le fichier fourni pour l’analyse :</p>
+<pre><code class="language-text">EnqueteSurMoi.pcap
+</code></pre>
+<hr />
+<h3 id="etape-2-ouvrir-la-capture-dans-wireshark">Étape 2 — Ouvrir la capture dans Wireshark</h3>
+<p>Ouvrir le fichier avec Wireshark :</p>
+<pre><code class="language-text">EnqueteSurMoi.pcap
+</code></pre>
+<p>Appliquer ensuite un filtre pour afficher uniquement le trafic ICMP :</p>
+<pre><code class="language-text">icmp
+</code></pre>
+<p>Dans certains paquets, on remarque la présence de la chaîne suivante :</p>
+<pre><code class="language-text">chk_user:sysadmin
+</code></pre>
+<p>Cette information indique que le trafic mérite une analyse plus précise.</p>
+<p>!!! tip "Première piste"
+    Le contenu visible donne une indication, mais le flag n’est pas écrit directement dans le payload.</p>
+<hr />
+<h3 id="etape-3-reperer-le-canal-cache">Étape 3 — Repérer le canal caché</h3>
+<p>En observant les paquets ICMP plus en détail, il faut regarder les champs de l’en-tête IP.</p>
+<p>Le champ intéressant est :</p>
+<pre><code class="language-text">Identification
+</code></pre>
+<p>Dans Wireshark ou <code>tshark</code>, ce champ correspond à :</p>
+<pre><code class="language-text">ip.id
+</code></pre>
+<p>Les valeurs de ce champ semblent anormales :</p>
+<ul>
+<li>elles ne sont pas séquentielles ;</li>
+<li>elles ne ressemblent pas à des valeurs générées naturellement ;</li>
+<li>elles changent d’une manière volontaire ;</li>
+<li>elles apparaissent dans des paquets spécifiques.</li>
+</ul>
+<p>Cela indique que le champ <strong>IP ID</strong> est utilisé comme canal caché.</p>
+<table>
+<thead>
+<tr>
+<th>Élément observé</th>
+<th>Interprétation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paquets ICMP</td>
+<td>Trafic qui semble normal</td>
+</tr>
+<tr>
+<td>Payload</td>
+<td>Présence d’une chaîne suspecte</td>
+</tr>
+<tr>
+<td>Champ IP ID</td>
+<td>Valeurs anormales</td>
+</tr>
+<tr>
+<td>Valeurs non séquentielles</td>
+<td>Possible canal caché</td>
+</tr>
+<tr>
+<td>Objectif</td>
+<td>Extraire et déchiffrer les valeurs</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="etape-4-extraire-les-valeurs-ip-id">Étape 4 — Extraire les valeurs IP ID</h3>
+<p>Pour extraire les valeurs utiles, on peut utiliser <code>tshark</code>.</p>
+<pre><code class="language-bash">tshark -r EnqueteSurMoi.pcap \
+-Y 'icmp and data.data contains &quot;echo_request_routine&quot;' \
+-T fields -e ip.id
+</code></pre>
+<p>Explication de la commande :</p>
+<table>
+<thead>
+<tr>
+<th>Élément</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-r EnqueteSurMoi.pcap</code></td>
+<td>Lit le fichier PCAP</td>
+</tr>
+<tr>
+<td><code>-Y</code></td>
+<td>Applique un filtre d’affichage</td>
+</tr>
+<tr>
+<td><code>icmp</code></td>
+<td>Garde uniquement les paquets ICMP</td>
+</tr>
+<tr>
+<td><code>data.data contains "echo_request_routine"</code></td>
+<td>Sélectionne les paquets utiles</td>
+</tr>
+<tr>
+<td><code>-T fields</code></td>
+<td>Affiche seulement les champs demandés</td>
+</tr>
+<tr>
+<td><code>-e ip.id</code></td>
+<td>Extrait le champ IP ID</td>
+</tr>
+</tbody>
+</table>
+<p>Les valeurs obtenues correspondent aux caractères chiffrés du flag.</p>
+<hr />
+<h3 id="etape-5-retrouver-la-cle-xor">Étape 5 — Retrouver la clé XOR</h3>
+<p>Le flag commence par :</p>
+<pre><code class="language-text">CryptAbyss{
+</code></pre>
+<p>La première lettre du flag est donc :</p>
+<pre><code class="language-text">C
+</code></pre>
+<p>La valeur ASCII de <code>C</code> est :</p>
+<pre><code class="language-text">67
+</code></pre>
+<p>La première valeur extraite du champ IP ID est :</p>
+<pre><code class="language-text">105
+</code></pre>
+<p>Pour retrouver la clé XOR, on effectue :</p>
+<pre><code class="language-python">67 ^ 105
+</code></pre>
+<p>Résultat :</p>
+<pre><code class="language-text">42
+</code></pre>
+<p>La clé XOR utilisée est donc :</p>
+<pre><code class="language-text">42
+</code></pre>
+<p>!!! success "Clé retrouvée"
+    La clé XOR est <code>42</code>.</p>
+<p>Cette étape est possible car on connaît le début du flag.<br />
+C’est le principe de la <strong>Known Plaintext Attack</strong>.</p>
+<hr />
+<h3 id="etape-6-dechiffrer-les-valeurs-extraites">Étape 6 — Déchiffrer les valeurs extraites</h3>
+<p>On utilise ensuite un script Python pour appliquer l’opération XOR inverse sur toutes les valeurs IP ID extraites.</p>
+<pre><code class="language-python">valeurs = [
+    105, 88, 83, 90, 94, 107, 72, 83, 89, 89, 81, 29, 78, 19, 31, 24, 18,
+    75, 76, 19, 79, 25, 24, 29, 79, 29, 73, 26, 76, 75, 79, 24, 31, 18,
+    18, 75, 31, 78, 73, 78, 73, 73, 79, 24, 79, 75, 18, 72, 76, 28, 75,
+    79, 75, 30, 18, 27, 25, 72, 75, 25, 29, 26, 25, 19, 78, 75, 27, 18,
+    78, 19, 31, 27, 30, 75, 78, 87
+]
+
+cle = 42
+
+flag = &quot;&quot;.join(chr(v ^ cle) for v in valeurs)
+
+print(flag)
+</code></pre>
+<p>Résultat obtenu :</p>
+<pre><code class="language-text">CryptAbyss{7d9528af9e327e7c0fae2588a5dcdcce2ea8bf6aea4813ba37039da18d9514ad}
+</code></pre>
+<hr />
+<h2 id="iv-recuperation-du-flag">IV - Récupération du flag</h2>
+<p>Le flag récupéré est :</p>
+<pre><code class="language-text">CryptAbyss{7d9528af9e327e7c0fae2588a5dcdcce2ea8bf6aea4813ba37039da18d9514ad}
+</code></pre>
+<hr />
+<h2 id="v-indices">V - Indices</h2>
+<h3 id="indice-leger-signal-discret">Indice léger — Signal discret</h3>
+<p>Tout semble normal au premier regard, mais certains paquets méritent une observation plus attentive.</p>
+<h3 id="indice-intermediaire-mauvais-endroit">Indice intermédiaire — Mauvais endroit</h3>
+<p>Le contenu visible n’est pas forcément l’endroit le plus intéressant dans une capture réseau.</p>
+<h3 id="indice-final-valeurs-etranges">Indice final — Valeurs étranges</h3>
+<p>Certaines valeurs dans les champs réseau ne suivent pas un comportement habituel. Comparez-les entre plusieurs paquets similaires.</p>
+<hr />
+<h2 id="vi-ce-quil-fallait-apprendre">VI - Ce qu’il fallait apprendre</h2>
+<p>À travers ce challenge, le participant devait apprendre à :</p>
+<ul>
+<li>analyser un fichier PCAP avec Wireshark ;</li>
+<li>utiliser des filtres ICMP ;</li>
+<li>comprendre le rôle du champ IP ID ;</li>
+<li>détecter un canal caché dans un en-tête réseau ;</li>
+<li>extraire des champs précis avec <code>tshark</code> ;</li>
+<li>comprendre le principe du XOR ;</li>
+<li>utiliser une attaque par texte clair connu ;</li>
+<li>écrire un script Python pour reconstruire le flag.</li>
+</ul>
+<hr />
+<h2 id="vii-duree-approximative">VII - Durée approximative</h2>
+<p><strong>20 à 30 minutes</strong></p>
+<p>La durée peut varier selon le niveau du participant en :</p>
+<ul>
+<li>analyse réseau ;</li>
+<li>utilisation de Wireshark ;</li>
+<li>extraction avec <code>tshark</code> ;</li>
+<li>compréhension du chiffrement XOR.</li>
+</ul>
+<hr />
+<h2 id="viii-resume-de-la-resolution">VIII - Résumé de la résolution</h2>
+<pre><code class="language-text">Ouverture du fichier PCAP
+        │
+        ▼
+Filtrage du trafic ICMP
+        │
+        ▼
+Observation de la chaîne chk_user:sysadmin
+        │
+        ▼
+Analyse des en-têtes IP
+        │
+        ▼
+Détection d’anomalies dans le champ IP ID
+        │
+        ▼
+Extraction des valeurs ip.id avec tshark
+        │
+        ▼
+Récupération de la clé XOR avec CryptAbyss{
+        │
+        ▼
+Déchiffrement avec Python
+        │
+        ▼
+Récupération du flag
+</code></pre>
+<hr />
+<h2 id="ix-commandes-utiles">IX - Commandes utiles</h2>
+<h3 id="filtrer-les-paquets-icmp-dans-wireshark">Filtrer les paquets ICMP dans Wireshark</h3>
+<pre><code class="language-text">icmp
+</code></pre>
+<h3 id="extraire-les-valeurs-ip-id-avec-tshark">Extraire les valeurs IP ID avec tshark</h3>
+<pre><code class="language-bash">tshark -r EnqueteSurMoi.pcap \
+-Y 'icmp and data.data contains &quot;echo_request_routine&quot;' \
+-T fields -e ip.id
+</code></pre>
+<h3 id="retrouver-la-cle-xor">Retrouver la clé XOR</h3>
+<pre><code class="language-python">ord(&quot;C&quot;) ^ 105
+</code></pre>
+<h3 id="dechiffrer-le-flag">Déchiffrer le flag</h3>
+<pre><code class="language-python">valeurs = [
+    105, 88, 83, 90, 94, 107, 72, 83, 89, 89, 81, 29, 78, 19, 31, 24, 18,
+    75, 76, 19, 79, 25, 24, 29, 79, 29, 73, 26, 76, 75, 79, 24, 31, 18,
+    18, 75, 31, 78, 73, 78, 73, 73, 79, 24, 79, 75, 18, 72, 76, 28, 75,
+    79, 75, 30, 18, 27, 25, 72, 75, 25, 29, 26, 25, 19, 78, 75, 27, 18,
+    78, 19, 31, 27, 30, 75, 78, 87
+]
+
+cle = ord(&quot;C&quot;) ^ valeurs[0]
+
+flag = &quot;&quot;.join(chr(v ^ cle) for v in valeurs)
+
+print(flag)
+</code></pre>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../.." class="btn btn-neutral float-left" title="Accueil"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../Flag114-pcap-forensic/" class="btn btn-neutral float-right" title="cap-forensic-mot de passe d'un archive">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../Flag114-pcap-forensic/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
