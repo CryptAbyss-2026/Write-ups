@@ -29,6 +29,12 @@ nav:
     - Blocs Compressés: logiciel/writeup_blocsCompresse.md
     - Obfuscation: logiciel/writeup_obfuscation.md
     - Polygotte: logiciel/writeup_polygotte.md
+  - Systeme:
+    - XENON-1: Systeme/writeup_SUID_XENON-1.md
+    - HERALD-7: Systeme/writeup_CronTab_HERALD-7_v2.md
+    - PROMETHEUS_9: Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2.md
+    - SHADOW-5: Systeme/writeup_PwnKit_SHADOW-5.md
+    - PHANTOM-4: Systeme/writeup_PHANTOM-4.md
   - Misc:
     - Destruction Vaisseau: autre/Destruction_Vaisseau_0144.md
 
