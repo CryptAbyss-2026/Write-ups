@@ -1,4 +1,4 @@
-# Challenge 1 — Base64
+# Challenge 1 — The Beginning
 
 ## Difficulté
 Easy

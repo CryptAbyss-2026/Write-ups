@@ -1,0 +1,220 @@
+# Write-up — Emoji Jail
+
+## Description
+
+Le challenge est un jail qui demande au joueur d’envoyer une seule ligne de code. Cette ligne est écrite dans un fichier C temporaire, compilée avec `gcc`, puis exécutée si la compilation réussit. Le service réseau écoute sur le port `50001` via `socat`.
+Le but est de réussir à exécuter du code malgré une blacklist très restrictive, puis de récupérer le flag présent dans le conteneur.
+
+## Analyse du jail
+
+Le programme commence par lire une seule ligne :
+
+```python
+code = input(">>> ")
+```
+
+Ensuite, il applique une blacklist :
+
+```python
+banned_char_regex = r"""[\w\s_?&!|$'"<>^:/^/-]"""
+```
+
+Cette regex bloque notamment :
+
+* les lettres ;
+* les chiffres ;
+* les espaces ;
+* les underscores ;
+* les guillemets ;
+* `/`, `-`, `<`, `>`, `:`, etc.
+
+En pratique, il est donc impossible d’écrire du C classique avec des noms de variables ASCII, des constantes numériques, des chaînes de caractères ou des chemins comme `/bin/sh`.
+
+Si le code passe le filtre, il est compilé avec :
+
+```bash
+gcc -B/usr/bin -Wl,--entry=😀 -static -nostartfiles -w -nostdlib -O0 -o compiled source.c
+```
+
+Les options importantes sont :
+
+* `-Wl,--entry=😀` : le point d’entrée du binaire est forcé sur la fonction `😀` ;
+* `-nostartfiles` : pas de code de démarrage standard ;
+* `-nostdlib` : pas de libc ;
+* `-static` : binaire statique ;
+* `-w` : les warnings sont masqués.
+
+## Première observation
+
+La blacklist bloque `\w`, mais les emojis ne sont pas considérés comme des caractères `\w` par cette regex. On peut donc utiliser des emojis comme identifiants C.
+
+Par exemple, ce genre de construction passe le filtre :
+
+```c
+😀(){}
+```
+
+Le point d’entrée étant `😀`, cette fonction sera appelée directement au lancement du binaire.
+
+## Deuxième observation : le vieux C aide beaucoup
+
+Le payload exploite plusieurs comportements tolérés par GCC, notamment :
+
+```c
+💀;
+💩;
+🤓;
+🥺();
+😀(){}
+```
+
+Même sans type explicite, GCC peut interpréter ces déclarations comme des `int` ou des fonctions retournant `int`.
+
+Cela permet de déclarer :
+
+* des variables globales ;
+* des fonctions ;
+* des pointeurs de fonctions ;
+* une fonction d’entrée `😀`.
+
+Toutes les variables globales non initialisées sont placées en `.bss` et valent `0` au départ.
+
+## Problème des nombres
+
+Les chiffres sont interdits. Il faut donc créer les constantes à partir de zéro.
+
+La solution utilise des incréments répétés :
+
+```c
+💩++;
+💩++;
+💩++;
+```
+
+Puis elle construit les chiffres de `0` à `10` avec des additions :
+
+```c
+😇++;
+🟧=🙏+😇;
+🟨=🟧+😇;
+🟩=🟨+😇;
+🟦=🟩+😇;
+🟪=🟦+😇;
+🟫=🟪+😇;
+👍=🟫+😇;
+👀=👍+😇;
+💥=👀+😇;
+💯=💥+😇;
+```
+
+Ici :
+
+```text
+🙏 = 0
+😇 = 1
+🟧 = 1
+🟨 = 2
+🟩 = 3
+🟦 = 4
+🟪 = 5
+🟫 = 6
+👍 = 7
+👀 = 8
+💥 = 9
+💯 = 10
+```
+
+Ensuite, on peut construire de grands entiers en base 10 uniquement avec `+=` et `*=`.
+
+## Construction de `/bin/sh`
+
+Comme les chaînes de caractères sont interdites, il faut écrire la chaîne `/bin/sh` autrement.
+
+La solution construit deux entiers correspondant aux blocs little-endian :
+
+```text
+"/bin" -> 0x6e69622f
+"/sh\0" -> 0x0068732f
+```
+
+Ces valeurs sont écrites dans des variables globales consécutives de la `.bss`.
+
+Dans le payload, ces deux valeurs sont construites avec des additions et des multiplications par `10`, sans jamais écrire de chiffre directement.
+
+Exemple conceptuel :
+
+```c
+🚩 = 1852400175; // "/bin"
+🏁 = 6845231;    // "/sh\0"
+```
+
+La source réelle ne contient pas ces nombres directement, car les chiffres sont interdits.
+
+## Appel système
+
+Le binaire est compilé sans libc. Il faut donc appeler un syscall directement.
+
+L’objectif est d’obtenir l’équivalent de :
+
+```c
+execve("/bin/sh", 0, 0);
+```
+
+Sous Linux x86_64, le syscall `execve` vaut `59`.
+
+Le payload construit donc aussi la valeur `59` avec des incréments répétés :
+
+```c
+💀++;
+💀++;
+...
+```
+
+La solution fournie prépare ensuite un appel indirect via des pointeurs de fonctions :
+
+```c
+(*🤯)();
+(*🤨)();
+```
+
+Puis elle calcule des adresses à partir des fonctions générées par le compilateur :
+
+```c
+🤯=🤡;
+🤯+=💩;
+
+🤨=🥸;
+🤨+=💩;
+```
+
+L’idée est d’utiliser les instructions générées dans le binaire comme des gadgets. Le payload saute à des offsets précis dans le code généré par GCC, puis utilise les conventions d’appel x86_64 pour placer les bons registres avant d’atteindre l’instruction utile.
+
+La solution envoyée au service contient donc un très long payload C composé uniquement :
+
+* d’emojis ;
+* de parenthèses ;
+* d’accolades ;
+* de `+`, `*`, `=`, `;`, `,`.
+
+Le script d’exploitation utilise `pwntools` pour se connecter au service, envoyer le payload, puis passer en mode interactif.
+
+## Exploit
+
+Le script de résolution suit cette structure :
+
+```python
+from pwn import context, remote
+
+context.log_level = "critical"
+
+payload = """..."""
+
+io = remote("0", 50001)
+print(io.recvline())
+io.sendline(payload.encode())
+io.interactive()
+```
+
+Le payload envoyé est une ligne unique de C obfusqué avec des emojis. Il passe la blacklist, compile correctement dans l’environnement du challenge, puis exécute un shell.
+
+Une fois le shell obtenu, il suffit de lire le flag dans le conteneur.
