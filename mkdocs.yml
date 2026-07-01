@@ -4,9 +4,7 @@ nav:
   - Reseau:
     - Analyse_capture_réseau: Reseaux/Flag060-Analyse_capture_réseau.md
     - cap-forensic-mot de passe d'un archive: Reseaux/Flag114-pcap-forensic.md
-    - Packet-tracer: Reseaux/Flag146-Packet-tracer.md
-
-
+    #- Packet-tracer: Reseaux/Flag146-Packet-tracer.md
   - Forensic:
     - PDF metadata: forensic/pdf-metadata.md
     - Tier 1 — Magic Bytes: forensic/tier1-magic-bytes.md
@@ -32,12 +30,22 @@ nav:
     - Blocs Compressés: logiciel/writeup_blocsCompresse.md
     - Obfuscation: logiciel/writeup_obfuscation.md
     - Polygotte: logiciel/writeup_polygotte.md
-  - Systeme:
+    - Emoji_jail: logiciel/emoji_jail.md
+  - Système Linux:
     - XENON-1: Systeme/writeup_SUID_XENON-1.md
     - HERALD-7: Systeme/writeup_CronTab_HERALD-7_v2.md
     - PROMETHEUS_9: Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2.md
     - SHADOW-5: Systeme/writeup_PwnKit_SHADOW-5.md
     - PHANTOM-4: Systeme/writeup_PHANTOM-4.md
+  - Système Windows:
+    - Flag 2 — Tâche planifiée élevée: windows/Flag 2 — Tâche planifiée élevée.md
+    - Flag 3 — ACL Active Directory: windows/Flag3-ACL-AD.md
+    - Flag 4 — Historique PowerShell: windows/Flag4-Historique-PS.md
+    - Flag 5 — SMB Share: windows/Flag5-SMB-Share.md
+    - Flag 6 — LLMNR: windows/Flag6-LLMNR.md
+    - Flag 7 — KeePass: windows/Flag7-KeePass.md
+    - Flag 7b — Kerberos: windows/Flag7b-Kerberos.md
+    - LAB-CTF: windows/GUIDE-COMPLET-LAB-CTF.md
   - Misc:
     - Destruction Vaisseau: autre/Destruction_Vaisseau_0144.md
 
