@@ -4,7 +4,7 @@ nav:
   - Reseau:
     - Analyse_capture_réseau: Reseaux/Flag060-Analyse_capture_réseau.md
     - cap-forensic-mot de passe d'un archive: Reseaux/Flag114-pcap-forensic.md
-    #- Packet-tracer: Reseaux/Flag146-Packet-tracer.md
+    - Packet-tracer: Reseaux/Flag146-Packet-tracer.md
   - Forensic:
     - PDF metadata: forensic/pdf-metadata.md
     - Tier 1 — Magic Bytes: forensic/tier1-magic-bytes.md
