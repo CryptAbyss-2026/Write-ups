@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>PDF metadata - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "PDF metadata";
+        var mkdocs_page_input_path = "forensic/pdf-metadata.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reseau</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag060-Analyse_capture_r%C3%A9seau/">Analyse_capture_réseau</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag146-Packet-tracer/">Packet-tracer</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">PDF metadata</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#propagande-alien">Propagande Alien</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#theme-du-flag">Thème du Flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i-pourquoi-ce-flag">I - Pourquoi ce flag ?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ii-analyse-initiale">II - Analyse initiale</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iii-observation-importante">III - Observation importante</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#iv-reconstruction-du-flag">IV - Reconstruction du flag</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v-deuxieme-etape-cesar">V - Deuxième étape : César</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vi-resolution-du-chiffrement">VI - Résolution du chiffrement</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vii-flag-final">VII - Flag final</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#viii-methodologie-de-resolution">VIII - Méthodologie de résolution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ix-indices">IX - Indices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#x-ce-quil-fallait-apprendre">X - Ce qu’il fallait apprendre</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#xi-difficulte">XI - Difficulté</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#xii-resume">XII - Résumé</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/writeup_falsification/">Falsification</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/binary-analyze-0083/">Binary analyze</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/writeup_reverseEngineering/">ReverseEngineering</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Logiciel</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/emoji_jail/">Emoji_jail</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Système Linux</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_SUID_XENON-1/">XENON-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_CronTab_HERALD-7_v2/">HERALD-7</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2/">PROMETHEUS_9</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Système Windows</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag%202%20%E2%80%94%20T%C3%A2che%20planifi%C3%A9e%20%C3%A9lev%C3%A9e/">Flag 2 — Tâche planifiée élevée</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag3-ACL-AD/">Flag 3 — ACL Active Directory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag4-Historique-PS/">Flag 4 — Historique PowerShell</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag5-SMB-Share/">Flag 5 — SMB Share</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag6-LLMNR/">Flag 6 — LLMNR</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7-KeePass/">Flag 7 — KeePass</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7b-Kerberos/">Flag 7b — Kerberos</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/GUIDE-COMPLET-LAB-CTF/">LAB-CTF</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Forensic</li>
+      <li class="breadcrumb-item active">PDF metadata</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flag-n00xx">🚩 Flag n°00XX</h1>
+<h2 id="propagande-alien">Propagande Alien</h2>
+<p>Un fichier PDF nommé <code>propagande_alien.pdf</code> est fourni. À première vue, il ne contient qu’une page de texte étrange et une mise en page volontairement incompréhensible.</p>
+<p>L’objectif du challenge est de comprendre comment les informations sont dissimulées dans le document et de reconstruire le flag final.</p>
+<hr />
+<h2 id="theme-du-flag">Thème du Flag</h2>
+<p>Forensics / PDF Analysis — Métadonnées + chiffrement simple</p>
+<hr />
+<h2 id="i-pourquoi-ce-flag">I - Pourquoi ce flag ?</h2>
+<p>Ce challenge introduit une approche classique en forensics : les métadonnées PDF comme point d’entrée.</p>
+<p>Contrairement à un simple document lisible, ici l’information utile n’est pas dans le contenu visible, mais dans les propriétés internes du fichier.</p>
+<p>Le joueur doit :
+- Inspecter les métadonnées du PDF
+- Identifier une structure de flag partiellement encodée
+- Comprendre qu’une étape de chiffrement supplémentaire est nécessaire</p>
+<hr />
+<h2 id="ii-analyse-initiale">II - Analyse initiale</h2>
+<p>Commande utilisée :</p>
+<p>exiftool propagande_alien.pdf</p>
+<p>Résultat :</p>
+<p>ExifTool Version Number         : 13.25<br />
+File Name                       : propagande_alien.pdf<br />
+Directory                       : .<br />
+File Size                       : 5.5 MB<br />
+File Type                       : PDF<br />
+PDF Version                     : 1.4<br />
+Page Count                      : 1<br />
+Tagged PDF                      : Yes<br />
+Language                        : fr<br />
+XMP Toolkit                     : Image::ExifTool 13.25<br />
+Subject                         : Alien Communication<br />
+Title                           : Transmission 07<br />
+Author                          : Unknown<br />
+Producer                        : Skia/PDF m151 Google Docs Renderer<br />
+Keywords                        : CryptAbyss{mot13_mot45_mot8}, puis, decodage_caesar  </p>
+<hr />
+<h2 id="iii-observation-importante">III - Observation importante</h2>
+<p>Le champ Keywords contient une information cruciale :</p>
+<p>CryptAbyss{mot13_mot45_mot8}, puis, decodage_caesar  </p>
+<p>On en déduit :
+- Le flag est fragmenté (mot13, mot45, mot8)
+- Une étape de reconstruction est nécessaire
+- Un chiffrement César doit être appliqué ensuite</p>
+<hr />
+<h2 id="iv-reconstruction-du-flag">IV - Reconstruction du flag</h2>
+<p>En analysant le contenu du PDF, les éléments sont remis dans l’ordre logique.</p>
+<p>On obtient :</p>
+<p>moru_shor_vaïm  </p>
+<p>Donc le flag intermédiaire est :</p>
+<p>CryptAbyss{moru_shor_vaïm}</p>
+<hr />
+<h2 id="v-deuxieme-etape-cesar">V - Deuxième étape : César</h2>
+<p>L’indice indique clairement :</p>
+<p>decodage_caesar  </p>
+<p>On teste un bruteforce classique (0 à 25).</p>
+<p>Le bon décalage est :</p>
+<p>16  </p>
+<hr />
+<h2 id="vi-resolution-du-chiffrement">VI - Résolution du chiffrement</h2>
+<p>Application du César (+16) sur :</p>
+<p>moru_shor_vaïm  </p>
+<p>Résultat :</p>
+<p>cehk_ixeh_lqyc  </p>
+<hr />
+<h2 id="vii-flag-final">VII - Flag final</h2>
+<p>CryptAbyss{cehk_ixeh_lqyc}</p>
+<hr />
+<h2 id="viii-methodologie-de-resolution">VIII - Méthodologie de résolution</h2>
+<p>Étape 1 — Analyse des métadonnées<br />
+exiftool propagande_alien.pdf  </p>
+<p>↓</p>
+<p>Découverte :
+CryptAbyss{mot13_mot45_mot8}</p>
+<hr />
+<p>Étape 2 — Extraction du contenu PDF<br />
+moru_shor_vaïm  </p>
+<hr />
+<p>Étape 3 — Test César<br />
+shift = 16  </p>
+<hr />
+<p>Étape 4 — Flag final<br />
+CryptAbyss{cehk_ixeh_lqyc}</p>
+<hr />
+<h2 id="ix-indices">IX - Indices</h2>
+<p>Indice léger :
+Les métadonnées contiennent plus que des informations classiques</p>
+<p>Indice intermédiaire :
+Le flag doit être reconstruit</p>
+<p>Indice final :
+Une substitution César est nécessaire</p>
+<hr />
+<h2 id="x-ce-quil-fallait-apprendre">X - Ce qu’il fallait apprendre</h2>
+<ul>
+<li>Analyse de métadonnées avec exiftool  </li>
+<li>Extraction d’information cachée dans un PDF  </li>
+<li>Reconstruction de flag  </li>
+<li>Attaque par chiffrement César  </li>
+<li>Bruteforce de décalage  </li>
+</ul>
+<hr />
+<h2 id="xi-difficulte">XI - Difficulté</h2>
+<p>Facile → Moyen</p>
+<hr />
+<h2 id="xii-resume">XII - Résumé</h2>
+<p>PDF<br />
+↓<br />
+exiftool<br />
+↓<br />
+Keywords : CryptAbyss{mot13_mot45_mot8}<br />
+↓<br />
+Extraction contenu PDF<br />
+↓<br />
+moru_shor_vaïm<br />
+↓<br />
+César (shift 16)<br />
+↓<br />
+cehk_ixeh_lqyc<br />
+↓<br />
+FLAG FINAL<br />
+CryptAbyss{cehk_ixeh_lqyc}</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../Reseaux/Flag146-Packet-tracer/" class="btn btn-neutral float-left" title="Packet-tracer"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tier1-magic-bytes/" class="btn btn-neutral float-right" title="Tier 1 — Magic Bytes">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../Reseaux/Flag146-Packet-tracer/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tier1-magic-bytes/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

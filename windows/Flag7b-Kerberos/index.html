@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Flag 7b — Kerberoasting et AS-REP Roasting - CryptAbyss 2026</title>
+    <title>Flag 7b — Kerberos - CryptAbyss 2026</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Flag 7b \u2014 Kerberoasting et AS-REP Roasting";
-        var mkdocs_page_input_path = "windows\\Flag7b-Kerberos.md";
+        var mkdocs_page_name = "Flag 7b \u2014 Kerberos";
+        var mkdocs_page_input_path = "windows/Flag7b-Kerberos.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -49,9 +49,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag146-Packet-tracer/">Packet-tracer</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Forensic</span></p>
               <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/pdf-metadata/">PDF metadata</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
@@ -103,8 +107,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/emoji_jail/">Emoji_jail</a>
+                  </li>
               </ul>
-              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <p class="caption"><span class="caption-text">Système Linux</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_SUID_XENON-1/">XENON-1</a>
                   </li>
@@ -115,6 +121,87 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../Systeme/writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Système Windows</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag%202%20%E2%80%94%20T%C3%A2che%20planifi%C3%A9e%20%C3%A9lev%C3%A9e/">Flag 2 — Tâche planifiée élevée</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag3-ACL-AD/">Flag 3 — ACL Active Directory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag4-Historique-PS/">Flag 4 — Historique PowerShell</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag5-SMB-Share/">Flag 5 — SMB Share</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag6-LLMNR/">Flag 6 — LLMNR</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Flag7-KeePass/">Flag 7 — KeePass</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Flag 7b — Kerberos</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#deploiement">Déploiement</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#script-flag7b-kerberosps1">Script — Flag7b-Kerberos.ps1</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#verification-du-deploiement">Vérification du déploiement</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#write-up-kerberoasting">Write-up — Kerberoasting</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#contexte">Contexte</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reconnaissance">Reconnaissance</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-1-lister-les-comptes-avec-spn">Étape 1 — Lister les comptes avec SPN</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#exploitation">Exploitation</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-2-extraire-le-ticket-tgs">Étape 2 — Extraire le ticket TGS</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-3-cracker-le-hash-hors-ligne">Étape 3 — Cracker le hash hors ligne</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-4-acceder-au-share-avec-les-credentials-crackes">Étape 4 — Accéder au share avec les credentials crackés</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#recuperation-du-flag-kerberoasting">Récupération du flag — Kerberoasting</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#write-up-as-rep-roasting">Write-up — AS-REP Roasting</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#contexte_1">Contexte</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reconnaissance_1">Reconnaissance</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-1-identifier-les-comptes-sans-pre-auth">Étape 1 — Identifier les comptes sans pré-auth</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#exploitation_1">Exploitation</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-2-extraire-le-hash-as-rep">Étape 2 — Extraire le hash AS-REP</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-3-cracker-le-hash">Étape 3 — Cracker le hash</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#etape-4-acceder-au-share">Étape 4 — Accéder au share</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#recuperation-du-flag-as-rep-roasting">Récupération du flag — AS-REP Roasting</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#remediation">Remédiation</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#resume-de-la-chaine-dexploitation">Résumé de la chaîne d'exploitation</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../GUIDE-COMPLET-LAB-CTF/">LAB-CTF</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Misc</span></p>
@@ -136,7 +223,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Flag 7b — Kerberoasting et AS-REP Roasting</li>
+          <li class="breadcrumb-item">Système Windows</li>
+      <li class="breadcrumb-item active">Flag 7b — Kerberos</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -400,6 +488,10 @@ net use L: /delete
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../Flag7-KeePass/" class="btn btn-neutral float-left" title="Flag 7 — KeePass"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../GUIDE-COMPLET-LAB-CTF/" class="btn btn-neutral float-right" title="LAB-CTF">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -421,6 +513,10 @@ net use L: /delete
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
+      <span><a href="../Flag7-KeePass/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../GUIDE-COMPLET-LAB-CTF/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

