@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Write-up — Défi 1 : Le Cookie Empoisonné - CryptAbyss 2026</title>
+    <title>Défi 1 - Le Cookie Empoisonné - CryptAbyss 2026</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Write-up \u2014 D\u00e9fi 1 : Le Cookie Empoisonn\u00e9";
+        var mkdocs_page_name = "D\u00e9fi 1 - Le Cookie Empoisonn\u00e9";
         var mkdocs_page_input_path = "dev/writeup-defi1.md";
         var mkdocs_page_url = null;
       </script>
@@ -100,7 +100,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Logiciel</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_blocsCompresse/">Blocs Compressés</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_obfuscation/">Obfuscation</a>
@@ -108,6 +108,34 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/writeup_polygotte/">Polygotte</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../logiciel/emoji_jail/">Emoji_jail</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Défi 1 - Le Cookie Empoisonné</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#contexte">Contexte</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#etapes-de-resolution">Étapes de résolution</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-observer-le-cookie-attribue">1. Observer le cookie attribué</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-decoder-le-cookie">2. Décoder le cookie</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-forger-un-cookie-admin">3. Forger un cookie admin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-envoyer-le-cookie-falsifie">4. Envoyer le cookie falsifié</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-recuperer-le-flag">5. Récupérer le flag</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vulnerabilite-expliquee">Vulnérabilité expliquée</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup-defi2/">Défi 2 - Le Quine SQL</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup-defi3/">Défi 3 - SSTI "Sans Lettres"</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../writeup-defi4/">Défi 4 - La Bombe Logique Asynchrone</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Système Linux</span></p>
@@ -161,7 +189,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Write-up — Défi 1 : Le Cookie Empoisonné</li>
+          <li class="breadcrumb-item">Logiciel</li>
+      <li class="breadcrumb-item active">Défi 1 - Le Cookie Empoisonné</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -208,6 +237,10 @@
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../logiciel/emoji_jail/" class="btn btn-neutral float-left" title="Emoji_jail"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../writeup-defi2/" class="btn btn-neutral float-right" title="Défi 2 - Le Quine SQL">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -229,6 +262,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
+      <span><a href="../../logiciel/emoji_jail/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../writeup-defi2/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
