@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Challenge 2 - Multi-layer Caesar - CryptAbyss 2026</title>
+    <title>Boite noire - CryptAbyss 2026</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Challenge 2 - Multi-layer Caesar";
-        var mkdocs_page_input_path = "crypto\\challenge2.md";
+        var mkdocs_page_name = "Boite noire";
+        var mkdocs_page_input_path = "forensic\\boitenoire.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -53,63 +53,49 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Forensic</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/pdf-metadata/">PDF metadata</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier2-file-carving/">Tier 2 — File Carving</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier3-memory-dump/">Tier 3 — Memory Dump</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/tier4-disk-registre/">Tier 4 — Disk + Registre</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../forensic/boitenoire/">Boite noire</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">Cryptographie</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../challenge1/">Challenge 1 - Base64</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pdf-metadata/">PDF metadata</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Challenge 2 - Multi-layer Caesar</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier1-magic-bytes/">Tier 1 — Magic Bytes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier2-file-carving/">Tier 2 — File Carving</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier3-memory-dump/">Tier 3 — Memory Dump</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tier4-disk-registre/">Tier 4 — Disk + Registre</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Boite noire</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#difficulte">Difficulté</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#description">Description</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#fichiers-fournis">Fichiers fournis</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#etapes-de-resolution">Étapes de résolution</a>
+    <li class="toctree-l2"><a class="reference internal" href="#resolution">Résolution</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-decodage-du-fichier-principal">1. Décodage du fichier principal</a>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-1-parser-le-format-binaire">Étape 1 — Parser le format binaire</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#2-analyse-de-la-cle">2. Analyse de la clé</a>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-2-extraire-les-metadonnees-de-limage">Étape 2 — Extraire les métadonnées de l'image</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#3-dechiffrement-caesar">3. Déchiffrement Caesar</a>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-3-lire-lindice-dans-les-logs">Étape 3 — Lire l'indice dans les logs</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#etape-4-dechiffrer-le-payload">Étape 4 — Déchiffrer le payload</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#indices">Indices</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#indice-1">Indice 1</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#indice-2">Indice 2</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#indice-3">Indice 3</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#topologie">Topologie</a>
+    <li class="toctree-l2"><a class="reference internal" href="#outils">Outils</a>
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Double_Encryption_0142/">Double encryption</a>
+              </ul>
+              <p class="caption"><span class="caption-text">Cryptographie</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge1/">Challenge 1 - Base64</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/challenge2/">Challenge 2 - Multi-layer Caesar</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../writeup_falsification/">Falsification</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Double_Encryption_0142/">Double encryption</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/Myrox_Infiltration_0143/">Myrox Infiltration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../crypto/writeup_falsification/">Falsification</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">OSINT</span></p>
@@ -195,8 +181,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Cryptographie</li>
-      <li class="breadcrumb-item active">Challenge 2 - Multi-layer Caesar</li>
+          <li class="breadcrumb-item">Forensic</li>
+      <li class="breadcrumb-item active">Boite noire</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -205,91 +191,60 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="challenge-2-false-trail">Challenge 2 — False Trail</h1>
-<h2 id="difficulte">Difficulté</h2>
-<p>Medium</p>
-<hr />
+                <h1 id="0155-la-boite-noire-du-vaisseau-write-up">[0155] La Boîte Noire du Vaisseau — Write-up</h1>
+<p><strong>Catégorie</strong> : Forensic<br />
+<strong>Difficulté</strong> : Moyen-Difficile<br />
+<strong>Flag</strong> : <code>CryptAbyss{bl4ck_b0x_z3phyr9_fl1ght_d4t4_r3c0v3r3d}</code></p>
 <h2 id="description">Description</h2>
-<p>Un message codé est présent dans le fichier <code>challenge2.txt</code>.</p>
-<p>Une clé encodée est fournie dans le fichier <code>key</code>.</p>
-<hr />
-<h2 id="fichiers-fournis">Fichiers fournis</h2>
+<p>La boîte noire d'un vaisseau détruit a été récupérée dans le secteur Omega-12. Le terminal de récupération permet de télécharger le dump binaire. Retrouvez les données classifiées.</p>
+<h2 id="resolution">Résolution</h2>
+<h3 id="etape-1-parser-le-format-binaire">Étape 1 — Parser le format binaire</h3>
+<p>Le format est documenté sur la page web :
+- Magic : <code>ABYSS7BB</code> (8 octets)
+- Nombre de records : uint32 LE
+- Chaque record : type (1 octet) + longueur (uint32 LE) + données</p>
+<p>Script Python pour parser :</p>
+<pre><code class="language-python">import struct
+data = open(&quot;black_box_dump.bin&quot;, &quot;rb&quot;).read()
+assert data[:8] == b&quot;ABYSS7BB&quot;
+n = struct.unpack_from(&quot;&lt;I&quot;, data, 8)[0]
+offset = 12
+for i in range(n):
+    t = data[offset]
+    l = struct.unpack_from(&quot;&lt;I&quot;, data, offset+1)[0]
+    d = data[offset+5:offset+5+l]
+    print(f&quot;Record {i}: type={t:#x}, len={l}&quot;)
+    if t == 0x02:
+        open(&quot;extracted.png&quot;, &quot;wb&quot;).write(d)  # sauvegarder l'image
+    offset += 5 + l
+</code></pre>
+<h3 id="etape-2-extraire-les-metadonnees-de-limage">Étape 2 — Extraire les métadonnées de l'image</h3>
+<p>Le record de type 0x02 est un PNG. En examinant les chunks tEXt (ou avec <code>exiftool</code>/<code>identify -verbose</code>) :</p>
+<pre><code>Author = Commandant Zephyr-9
+</code></pre>
+<h3 id="etape-3-lire-lindice-dans-les-logs">Étape 3 — Lire l'indice dans les logs</h3>
+<p>Le record CRITIQUE (type 0x01) indique :</p>
+<blockquote>
+<p>"Clé = MD5 étendu du nom complet de l'officier dans les métadonnées photo. AES-256-CBC."</p>
+</blockquote>
+<h3 id="etape-4-dechiffrer-le-payload">Étape 4 — Déchiffrer le payload</h3>
 <ul>
-<li><code>challenge2.txt</code></li>
-<li><code>key</code></li>
+<li><code>key = MD5("Commandant Zephyr-9") + MD5(MD5("Commandant Zephyr-9"))</code> → 32 octets</li>
+<li>IV = 16 premiers octets du blob chiffré (record type 0x03)</li>
+<li>Déchiffrement AES-256-CBC → flag avec padding PKCS7</li>
 </ul>
-<hr />
-<h2 id="etapes-de-resolution">Étapes de résolution</h2>
-<h3 id="1-decodage-du-fichier-principal">1. Décodage du fichier principal</h3>
-<pre><code class="language-bash">base64 -d challenge2.txt
-</code></pre>
-<p>Résultat :</p>
-<pre><code>Fausse piste : la clé est indispensable.
-
-FubswDebvv{gF0g3_F3v@u_+E@v364}
-
-Tu es proche... mais pas encore.
-</code></pre>
-<p>Le premier message est une fausse piste.</p>
-<hr />
-<h3 id="2-analyse-de-la-cle">2. Analyse de la clé</h3>
-<pre><code class="language-bash">base64 -d key
-</code></pre>
-<p>Résultat :</p>
-<pre><code class="language-text">Essaye de deviner le chiffrement utiliser dans le contenu de challenge.txt pour trouver le flag caché. clé = 3
-</code></pre>
-<p>La clé indique un décalage de 3, ce qui oriente vers un chiffrement de Caesar.</p>
-<hr />
-<h3 id="3-dechiffrement-caesar">3. Déchiffrement Caesar</h3>
-<p>Message à traiter :</p>
-<pre><code class="language-text">RXNzYXllIGRlIGRldmluZXIgbGUgY2hpZmZyZW1lbnQgdXRpbGlzZXIgZGFucyBsZSBjb250ZW51IGRlIGNoYWxsZW5nZS50eHQgcG91ciB0cm91dmVyIGxlIGZsYWcgY2FjaMOpLiBjbMOpID0gMwo=
-</code></pre>
-<p>Appliquer un décalage de <code>-3</code>.</p>
-<p>Résultat :</p>
-<pre><code class="language-text">CryptAbyss{dC0d3_C3s@r_+B@s364}
-</code></pre>
-<hr />
-<h2 id="conclusion">Conclusion</h2>
-<p>Le challenge combine plusieurs étapes :</p>
+<h2 id="outils">Outils</h2>
 <ul>
-<li>Base64</li>
-<li>Fausse piste</li>
-<li>Chiffrement Caesar</li>
+<li>Python + struct (parsing binaire)</li>
+<li>exiftool ou parsing PNG manuel (métadonnées)</li>
+<li>PyCryptodome ou cryptography (AES)</li>
 </ul>
-<hr />
-<h2 id="indices">Indices</h2>
-<h3 id="indice-1">Indice 1</h3>
-<p>Tous les résultats ne sont pas forcément le flag.</p>
-<h3 id="indice-2">Indice 2</h3>
-<p>Une clé est fournie, elle n’est pas là par hasard.</p>
-<h3 id="indice-3">Indice 3</h3>
-<p>Le message final semble avoir subi un décalage.</p>
-<hr />
-<h2 id="topologie">Topologie</h2>
-<pre><code class="language-text">challenge2.txt
-        ↓
-Base64 decode
-        ↓
-Fausse piste + message chiffré
-
-key
-        ↓
-Base64 decode
-        ↓
-clé = 3
-
-Message chiffré
-        ↓
-Caesar -3
-        ↓
-CryptAbyss{dC0d3_C3s@r_+B@s364}
-</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../challenge1/" class="btn btn-neutral float-left" title="Challenge 1 - Base64"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../Double_Encryption_0142/" class="btn btn-neutral float-right" title="Double encryption">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../tier4-disk-registre/" class="btn btn-neutral float-left" title="Tier 4 — Disk + Registre"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../crypto/challenge1/" class="btn btn-neutral float-right" title="Challenge 1 - Base64">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -312,10 +267,10 @@ CryptAbyss{dC0d3_C3s@r_+B@s364}
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../challenge1/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../tier4-disk-registre/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../Double_Encryption_0142/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../crypto/challenge1/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
