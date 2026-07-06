@@ -32,6 +32,10 @@ nav:
     - Obfuscation: logiciel/writeup_obfuscation.md
     - Polygotte: logiciel/writeup_polygotte.md
     - Emoji_jail: logiciel/emoji_jail.md
+    - Défi 1 - Le Cookie Empoisonné: dev/writeup-defi1.md 
+    - Défi 2 - Le Quine SQL: dev/writeup-defi2.md
+    - Défi 3 - SSTI "Sans Lettres": dev/writeup-defi3.md
+    - Défi 4 - La Bombe Logique Asynchrone: dev/writeup-defi4.md
   - Système Linux:
     - XENON-1: Systeme/writeup_SUID_XENON-1.md
     - HERALD-7: Systeme/writeup_CronTab_HERALD-7_v2.md
