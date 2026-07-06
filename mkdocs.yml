@@ -11,13 +11,14 @@ nav:
     - Tier 2 — File Carving: forensic/tier2-file-carving.md
     - Tier 3 — Memory Dump: forensic/tier3-memory-dump.md
     - Tier 4 — Disk + Registre: forensic/tier4-disk-registre.md
+    - Boite noire : forensic/boitenoire.md
   - Cryptographie:
     - Challenge 1 - Base64: crypto/challenge1.md
     - Challenge 2 - Multi-layer Caesar: crypto/challenge2.md
     - Double encryption: crypto/Double_Encryption_0142.md
     - Myrox Infiltration: crypto/Myrox_Infiltration_0143.md
     - Falsification : crypto/writeup_falsification.md
-  - osint:
+  - OSINT:
     - Atterrisage Urgence: osint/Atterissage_Urgence_0145.md
   - Stegano:
     - Transmission Alien: steganographie/Transmission_Alien_0141.md
